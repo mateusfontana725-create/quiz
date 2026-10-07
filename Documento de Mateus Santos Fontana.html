@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simulado – Saúde e Segurança Aplicada ao Trabalho</title>
+<style>
+:root{
+  --bg:#f4f6fa; --card:#ffffff; --text:#1c2333; --muted:#667085; --line:#e3e7ef;
+  --brand:#2f5bea; --brand-soft:#e8eefe;
+  --ok:#12a150; --ok-soft:#e5f7ed; --err:#d92d3a; --err-soft:#fdecee;
+  --shadow:0 1px 2px rgba(16,24,40,.05),0 8px 24px rgba(16,24,40,.06);
+  --radius:16px;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#0f1420; --card:#171e2e; --text:#e8ecf5; --muted:#9aa5bd; --line:#27304a;
+    --brand:#6b8cff; --brand-soft:#1d2a52;
+    --ok:#3ccf7b; --ok-soft:#12301f; --err:#ff6b76; --err-soft:#3a1a1f;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);
+  }
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  background:var(--bg); color:var(--text);
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  line-height:1.5; min-height:100vh;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 16px 48px}
+header.top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+header.top h1{font-size:1.05rem;margin:0;font-weight:700;letter-spacing:.2px}
+header.top small{display:block;color:var(--muted);font-weight:500;font-size:.8rem}
+.stats{display:flex;gap:8px;flex-wrap:wrap}
+.chip{display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--line);
+  border-radius:999px;padding:6px 12px;font-size:.85rem;font-weight:600;box-shadow:var(--shadow)}
+.chip .dot{width:9px;height:9px;border-radius:50%}
+.chip.ok .dot{background:var(--ok)} .chip.err .dot{background:var(--err)} .chip.all .dot{background:var(--brand)}
+.progress{height:8px;background:var(--line);border-radius:99px;overflow:hidden;margin-bottom:16px}
+.progress>div{height:100%;width:0;background:linear-gradient(90deg,var(--brand),#7aa2ff);transition:width .3s}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px}
+.meta{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.qnum{font-weight:800;font-size:1.1rem}
+.tag{font-size:.75rem;font-weight:600;color:var(--brand);background:var(--brand-soft);padding:4px 10px;border-radius:999px}
+.qtext{font-size:1.05rem;font-weight:600;margin:6px 0 10px;white-space:pre-line}
+.afirm{border-left:4px solid var(--brand);background:var(--brand-soft);padding:10px 14px;border-radius:8px;margin:0 0 12px;font-size:.98rem}
+.opts{display:flex;flex-direction:column;gap:10px;margin:14px 0 4px}
+.opt{display:flex;gap:12px;align-items:flex-start;text-align:left;width:100%;
+  background:var(--card);color:var(--text);border:1.5px solid var(--line);border-radius:12px;
+  padding:12px 14px;font:inherit;cursor:pointer;transition:border-color .15s,background .15s,transform .05s}
+.opt:hover:not(:disabled){border-color:var(--brand);background:var(--brand-soft)}
+.opt:active:not(:disabled){transform:scale(.995)}
+.opt:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
+.opt .let{flex:0 0 28px;height:28px;border-radius:50%;display:grid;place-items:center;
+  font-weight:700;font-size:.85rem;background:var(--line);color:var(--text)}
+.opt .txt{flex:1;padding-top:2px}
+.opt .badge{display:none;font-size:.72rem;font-weight:700;padding:3px 8px;border-radius:999px;align-self:center;white-space:nowrap}
+.opt.selected{border-color:var(--brand);background:var(--brand-soft)}
+.opt.selected .let{background:var(--brand);color:#fff}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok);background:var(--ok-soft)}
+.opt.correct .let{background:var(--ok);color:#fff}
+.opt.correct .badge{display:inline-block;background:var(--ok);color:#fff}
+.opt.wrong{border-color:var(--err);background:var(--err-soft)}
+.opt.wrong .let{background:var(--err);color:#fff}
+.opt.wrong .badge{display:inline-block;background:var(--err);color:#fff}
+.opt.dim{opacity:.55}
+.feedback{margin-top:16px;border-radius:12px;padding:14px 16px;display:none}
+.feedback.show{display:block}
+.feedback.ok{background:var(--ok-soft);border:1px solid var(--ok)}
+.feedback.err{background:var(--err-soft);border:1px solid var(--err)}
+.feedback h3{margin:0 0 4px;font-size:1rem}
+.feedback.ok h3{color:var(--ok)} .feedback.err h3{color:var(--err)}
+.feedback p{margin:4px 0 0;font-size:.95rem}
+.feedback .label{font-weight:700}
+.actions{display:flex;justify-content:space-between;gap:10px;margin-top:18px;flex-wrap:wrap}
+.actions .mid{display:flex;gap:10px;flex:1;justify-content:center}
+button.btn{font:inherit;font-weight:700;border-radius:12px;padding:11px 20px;cursor:pointer;
+  border:1.5px solid var(--line);background:var(--card);color:var(--text);transition:filter .15s,transform .05s}
+button.btn:hover:not(:disabled){filter:brightness(.97)}
+button.btn:active:not(:disabled){transform:scale(.98)}
+button.btn:disabled{opacity:.45;cursor:not-allowed}
+button.btn:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
+button.btn.primary{background:var(--brand);border-color:var(--brand);color:#fff}
+button.btn.ghost{background:transparent}
+.nav{margin-top:18px}
+.nav summary{cursor:pointer;color:var(--muted);font-weight:600;font-size:.9rem;margin-bottom:10px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(40px,1fr));gap:8px}
+.grid button{aspect-ratio:1;border-radius:10px;border:1.5px solid var(--line);background:var(--card);
+  color:var(--text);font:inherit;font-weight:700;cursor:pointer}
+.grid button.cur{border-color:var(--brand);box-shadow:0 0 0 2px var(--brand-soft)}
+.grid button.ok{background:var(--ok);border-color:var(--ok);color:#fff}
+.grid button.err{background:var(--err);border-color:var(--err);color:#fff}
+.hint{color:var(--muted);font-size:.8rem;margin-top:14px;text-align:center}
+/* resultado */
+.result{text-align:center}
+.result h2{margin:0 0 4px;font-size:1.4rem}
+.ring{--p:0;width:170px;height:170px;border-radius:50%;margin:18px auto;display:grid;place-items:center;
+  background:conic-gradient(var(--ok) calc(var(--p)*1%),var(--line) 0)}
+.ring>div{width:134px;height:134px;border-radius:50%;background:var(--card);display:grid;place-items:center}
+.ring b{font-size:2rem}
+.ring span{display:block;font-size:.75rem;color:var(--muted);margin-top:-18px}
+.rgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin:10px 0 18px}
+.rbox{border:1px solid var(--line);border-radius:12px;padding:12px}
+.rbox strong{display:block;font-size:1.5rem}
+.rbox span{color:var(--muted);font-size:.85rem}
+.rbox.ok strong{color:var(--ok)} .rbox.err strong{color:var(--err)}
+.review{text-align:left;margin-top:20px}
+.review h3{margin:0 0 10px}
+.ritem{border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:10px;background:var(--card)}
+.ritem .q{font-weight:600;margin-bottom:6px;font-size:.95rem}
+.ritem .a{font-size:.9rem;color:var(--muted)}
+.ritem .a b{color:var(--text)}
+.rbtns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:6px}
+@media (max-width:520px){
+  .card{padding:16px}
+  .actions .mid{order:3;width:100%}
+  .actions button.btn{flex:1}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <h1>Saúde e Segurança Aplicada ao Trabalho<small>Simulado • Pelotão Bravo e Pelotão Alpha</small></h1>
+    <div class="stats">
+      <div class="chip ok"><span class="dot"></span>Acertos: <span id="sOk">0</span></div>
+      <div class="chip err"><span class="dot"></span>Erros: <span id="sErr">0</span></div>
+      <div class="chip all"><span class="dot"></span>Respondidas: <span id="sAns">0</span>/<span id="sTot">0</span></div>
+    </div>
+  </header>
+  <div class="progress" aria-hidden="true"><div id="bar"></div></div>
+  <main id="app"></main>
+</div>
+
+<script>
+/* ===== Banco de questões =====
+   c = alternativa correta (usada apenas internamente para corrigir)
+   e = explicação exibida somente após responder */
+var QUESTOES = [
+/* ---------- PELOTÃO BRAVO ---------- */
+{g:"Pelotão Bravo · Grupo 1",
+ q:"De acordo com o Decreto nº 5.869/2005, considera-se acidente em serviço aquele que ocorre com o Militar Estadual da ativa em qual das situações abaixo?",
+ o:["Apenas durante férias regulamentares","No desempenho de atribuição funcional durante o expediente regular, ou quando determinado por autoridade competente","Somente em atividades esportivas não oficiais","Exclusivamente dentro do quartel"],
+ c:"B",
+ e:"O Decreto nº 5.869/2005 caracteriza o acidente em serviço pelo desempenho de atribuição funcional no expediente regular ou por determinação de autoridade competente. As demais alternativas restringem indevidamente a hipótese (apenas férias, só esporte não oficial, exclusivamente no quartel)."},
+{g:"Pelotão Bravo · Grupo 1",
+ q:"Considere a afirmativa: todos os acidentes com trabalhadores, sem exceção alguma, envolvem algum tipo de contato inesperado entre a pessoa e algo ao seu redor.",
+ o:["Verdadeiro","Falso"],
+ c:"B",
+ e:"Falso. Há exceção: a tensão muscular causada por esforço excessivo é um acidente que não envolve contato inesperado com objetos, superfícies ou coisas ao redor. Por isso a expressão \"sem exceção alguma\" torna a afirmativa incorreta."},
+{g:"Pelotão Bravo · Grupo 1",
+ q:"Segundo a legislação estadual, considera-se acidente em serviço, EXCETO",
+ o:["no desempenho de atribuição funcional durante o expediente regular, ou quando determinado por autoridade competente, em sua prorrogação ou antecipação.","no cumprimento de ordem emanada de autoridade.","no decorrer de viagem imposta por motivo de movimentação efetuada no interesse do serviço ou a pedido.","Doenças ocupacionais, ou seja, doenças profissionais ou do trabalho que se equiparam ao acidente, causadas pelas condições da atividade ou da profissão.","no exercício de dever preconizado no art. 102 da lei nº 1943."],
+ c:"D",
+ e:"Conforme o gabarito, a alternativa D é a exceção. As demais descrevem hipóteses diretas de acidente em serviço: atribuição funcional (inclusive prorrogação ou antecipação), cumprimento de ordem, viagem no interesse do serviço e exercício de dever legal."},
+{g:"Pelotão Bravo · Grupo 2",
+ q:"Qual é a principal causa dos acidentes de trabalho?",
+ o:["Falta de habilidade técnica.","Excesso de confiança.","Atos inseguros.","Treinamento excessivo."],
+ c:"C",
+ e:"A principal causa dos acidentes de trabalho são os atos inseguros, isto é, falhas de comportamento do próprio trabalhador, como não seguir normas ou procedimentos."},
+{g:"Pelotão Bravo · Grupo 2",
+ q:"Um trabalhador sofre uma lesão lombar ao tentar levantar uma carga sozinho, sem utilizar a técnica correta. Como essa ocorrência deve ser classificada conforme o estudo das causas de acidentes?",
+ o:["Condição insegura, pois o peso da carga é um fator ambiental incontrolável.","Ato inseguro, por envolver o levantamento de peso de maneira incorreta ou superior ao recomendado.","Fator neutro, já que acidentes por excesso de força não envolvem contato com objetos externos.","Negligência exclusiva da gerência por não fornecer EPI adequado para a coluna."],
+ c:"B",
+ e:"Levantar peso de forma incorreta ou acima do recomendado é um ato inseguro: depende da conduta do trabalhador, e não de uma falha do ambiente."},
+{g:"Pelotão Bravo · Grupo 2",
+ q:"Qual das seguintes situações exemplifica uma 'Condição Insegura' relacionada à atmosfera do local de trabalho?",
+ o:["Carregar peso de modo a dificultar a visão periférica.","A inobservância das normas de segurança por parte da equipe de campo.","A presença de gases, vapores, poeiras ou névoas prejudiciais à saúde.","O não uso de sinalização e delimitação no teatro de operações."],
+ c:"C",
+ e:"Condição insegura é uma falha do ambiente. A presença de gases, vapores, poeiras ou névoas prejudiciais afeta a atmosfera do local. As demais alternativas descrevem comportamentos (atos inseguros)."},
+{g:"Pelotão Bravo · Grupo 3",
+ q:"Segundo a norma exposta no texto, como são definidos os Riscos Ambientais (NR 09) no ambiente de trabalho?",
+ o:["São exclusivamente as variações climáticas naturais, como chuva e vento, que ocorrem durante o expediente.","São acidentes causados unicamente pelo uso incorreto de ferramentas e máquinas pesadas.","São os agentes físicos, químicos e biológicos que, em função de sua natureza, concentração/intensidade e tempo de exposição, são capazes de causar danos à saúde do trabalhador.","São condutas inadequadas e erros operacionais cometidos pelos próprios trabalhadores durante suas atividades."],
+ c:"C",
+ e:"Pela NR-09, riscos ambientais são os agentes físicos, químicos e biológicos que, por sua natureza, concentração ou intensidade e tempo de exposição, podem causar danos à saúde do trabalhador."},
+{g:"Pelotão Bravo · Grupo 3",
+ q:"Com base na classificação dos agentes ambientais apresentada, qual das opções abaixo exemplifica corretamente um Agente Físico e um Agente Biológico, respectivamente?",
+ o:["Ruído / Bactérias e vírus","Poeiras e fumos / Fungos","Gases e vapores / Radiação ionizante","Vibrações / Gases tóxicos"],
+ c:"A",
+ e:"Ruído é agente físico e bactérias e vírus são agentes biológicos. Nas outras opções, poeiras, fumos, gases e vapores são agentes químicos, ou a ordem físico/biológico está invertida."},
+{g:"Pelotão Bravo · Grupo 3",
+ q:"Sobre as Normas Regulamentadoras, qual é a estrutura do sistema utilizado para a elaboração e revisão dessas normas, conforme preconizado pela Organização Internacional do Trabalho (OIT)?",
+ o:["Sistema bipartite, composto exclusivamente por representantes de empresas e sindicatos.","Sistema tripartite paritário, composto por representantes do governo, de empregadores e de trabalhadores.","Sistema centralizado, gerido unicamente por órgãos de fiscalização do governo federal.","Sistema internacional privado, gerenciado pelas associações NFPA e IFSTA."],
+ c:"B",
+ e:"O sistema é tripartite paritário: governo, empregadores e trabalhadores participam em igualdade de representação na elaboração e revisão das NRs."},
+{g:"Pelotão Bravo · Grupo 4",
+ q:"Os EPIs podem ser utilizados:",
+ o:["Nunca, eventualmente, sempre e no quartel","Continuamente, intermitentemente, eventualmente e em emergência","Calor, frio, fogo e ácidos","Apenas em emergência"],
+ c:"B",
+ e:"Os EPIs podem ser utilizados de forma contínua, intermitente, eventual e em emergência. A alternativa D limita indevidamente o uso, e a C lista riscos, não formas de utilização."},
+{g:"Pelotão Bravo · Grupo 4",
+ q:"Sobre equipamentos de proteção, assinale Verdadeiro ou Falso",
+ af:"A finalidade indireta do EPI é a de promover o gasto do estado com a formação profissional, aumentando assim despesas com custeio de tratamentos médicos e hospitalares.",
+ o:["Verdadeiro","Falso"],
+ c:"B",
+ e:"Falso. A finalidade indireta do EPI é justamente o oposto: ao prevenir acidentes e doenças, ele contribui para reduzir os gastos do Estado com tratamentos médicos e hospitalares."},
+{g:"Pelotão Bravo · Grupo 4",
+ q:"Qual das alternativas apresenta apenas exemplos de riscos contra os quais os EPIs podem oferecer proteção?",
+ o:["Calor, frio, fogo e eletricidade","Treinamento, fadiga, disciplina e calor","Organização, ruído, treinamento e liderança","Ergonomia, disciplina, liderança e capacitação"],
+ c:"A",
+ e:"Calor, frio, fogo e eletricidade são riscos físicos contra os quais o EPI protege. As outras alternativas misturam fatores organizacionais ou de gestão (treinamento, disciplina, liderança), que não são riscos que um EPI neutralize."},
+{g:"Pelotão Bravo · Grupo 5",
+ q:"Qual alternativa NÃO expressa um fator ergonômico na atividade do CBM?",
+ o:["Postura inadequada","Movimentos repetitivos","Esforços físicos","Cadeiras adequadas com regulagem"],
+ c:"D",
+ e:"Postura inadequada, movimentos repetitivos e esforços físicos são fatores ergonômicos de risco. Cadeiras adequadas com regulagem são uma medida de adequação ergonômica, não um fator de risco."},
+{g:"Pelotão Bravo · Grupo 5",
+ q:"São afastamentos frequentes (a respeito de ergonomia):",
+ o:["Intoxicação alimentar","Acidente de trânsito","Evento esportivo","Problemas ortopédicos"],
+ c:"D",
+ e:"Os problemas ortopédicos são os afastamentos frequentes ligados à ergonomia, pois decorrem de posturas inadequadas, esforços e movimentos repetitivos."},
+{g:"Pelotão Bravo · Grupo 5",
+ q:"Qual é o principal objetivo da ergonomia no ambiente de trabalho?",
+ o:["Aumentar a carga de trabalho do funcionário.","Adaptar o trabalho as características do trabalhador.","Fazer o trabalhador se adaptar ao trabalho.","Diminuir o número de funcionários."],
+ c:"B",
+ e:"A ergonomia busca adaptar o trabalho às características do trabalhador, e não o contrário."},
+
+/* ---------- PELOTÃO ALPHA ---------- */
+{g:"Pelotão Alpha · Grupo 1",
+ q:"Em relação à Saúde e Segurança no Trabalho, assinale a alternativa correta:",
+ o:["Tem como principal objetivo evitar acidentes durante a realização das atividades profissionais.","Está relacionada principalmente à utilização adequada dos equipamentos de proteção individual.","Envolve normas e procedimentos destinados à prevenção de acidentes e doenças ocupacionais, considerando também aspectos relacionados à saúde, violência e assédio no ambiente de trabalho.","Está relacionada à prevenção de acidentes e à manutenção da capacidade física do trabalhador para realizar suas atividades."],
+ c:"C",
+ e:"A alternativa C é a mais completa: abrange normas e procedimentos de prevenção de acidentes e doenças ocupacionais e também saúde, violência e assédio no trabalho. As demais tratam apenas de aspectos parciais."},
+{g:"Pelotão Alpha · Grupo 1",
+ q:"Qual é a diferença entre doença ocupacional e acidente de trabalho?",
+ o:["Doença ocupacional acontece somente em atividades administrativas, enquanto acidente ocorre apenas em atividades operacionais.","Doença ocupacional está relacionada ao trabalho, enquanto o acidente acontece durante o trabalho.","Doença ocupacional pode se desenvolver ao longo do tempo em razão das condições de trabalho, enquanto o acidente é um acontecimento durante a atividade que pode provocar uma lesão ou prejuízo à saúde.","Doença ocupacional e acidente de trabalho são situações diferentes, mas ambas podem ser prevenidas por meio de medidas de segurança."],
+ c:"C",
+ e:"A doença ocupacional se desenvolve gradualmente, por causa das condições de trabalho. O acidente é um evento pontual durante a atividade, que pode causar lesão ou prejuízo à saúde."},
+{g:"Pelotão Alpha · Grupo 1",
+ q:"De acordo com a definição da OMS apresentada na aula, o que significa ter saúde?",
+ o:["Não possuir nenhuma doença ou enfermidade.","Estar fisicamente preparado para realizar as atividades profissionais.","Ter boas condições físicas e conseguir realizar normalmente as atividades do trabalho.","Ter um estado de completo bem-estar físico, mental e social, e não somente a ausência de afecções e enfermidades."],
+ c:"D",
+ e:"Para a OMS, saúde é o completo bem-estar físico, mental e social, e não apenas a ausência de doenças."},
+{g:"Pelotão Alpha · Grupo 2",
+ q:"Com base na Portaria do Comando-Geral Nº 256/2023, que regulamenta as atribuições funcionais da Diretoria de Pessoal do Corpo de Bombeiros Militar do Paraná (CBMPR), assinale a alternativa CORRETA:",
+ o:["A execução dos atos de movimentação do pessoal militar é realizada pela Diretoria de Pessoal de forma autônoma, sem necessidade de alinhamento com as ordens do Comandante-Geral.","A preparação dos atos relativos à transição funcional (como exclusão, agregação, licenças ou transferência para a reserva e reforma) compete à Diretoria de Pessoal, sendo esses atos editados pelo Comandante-Geral.","As atividades relativas ao recrutamento e à seleção abrangem apenas a fase posterior ao ingresso, ficando a publicação de editais sob responsabilidade exclusiva de órgãos externos.","O controle de militares estaduais cedidos à disposição de outros órgãos ou autoridades fica suspenso enquanto durar o afastamento, não cabendo acompanhamento pela Diretoria de Pessoal.","A prestação de assistência religiosa e o acompanhamento psicológico dos integrantes da Corporação são atribuições estranhas à Diretoria de Pessoal."],
+ c:"B",
+ e:"A Diretoria de Pessoal prepara os atos de transição funcional (exclusão, agregação, licenças, transferência para a reserva e reforma), e quem os edita é o Comandante-Geral. As demais alternativas afirmam autonomia, exclusão ou suspensão de atribuições que não correspondem ao gabarito."},
+{g:"Pelotão Alpha · Grupo 2",
+ q:"De acordo com a vedação legal e as exceções apresentadas no slide sobre descaracterização do acidente, quando é que um evento pode ser reconhecido excepcionalmente como acidente em serviço, mesmo havendo uma situação de transgressão ou excludente inicial?",
+ o:["Quando o militar comprova perante a Junta Médica que a ocorrência ocorreu durante o seu horário regular de expediente.","Quando a Sindicância realizada pela OPM conclui que o dano sofrido foi de gravidade reduzida sem gerar incapacidade laboral.","Quando ficar devidamente provado no processo de apuração que o militar atuou em estado de necessidade ou força maior com a finalidade exclusiva de salvaguardar um bem jurídico relevante, conforme estipulado no Art. 3º, § 5º.","Quando o comandante da unidade militar emite parecer favorável justificando a utilidade pública da conduta praticada pelo subordinado."],
+ c:"C",
+ e:"A exceção exige prova, no processo de apuração, de que o militar agiu em estado de necessidade ou força maior, com a finalidade exclusiva de salvaguardar um bem jurídico relevante (Art. 3º, § 5º). Horário de expediente, gravidade do dano ou parecer do comandante não bastam."},
+{g:"Pelotão Alpha · Grupo 2",
+ q:"Com base no Decreto Estadual nº 5.869/2005 do Paraná, quais são as hipóteses em que um evento com um militar estadual é enquadrado como acidente em serviço?",
+ o:["Apenas quando o acidente ocorre no interior das dependências do quartel durante o horário de expediente regular.","Serviços e ordens; instruções e deslocamentos; trajetos (in itinere); e atuação em ações de salvamento ou segurança na folga.","Somente quando o militar está em missão operacional externa devidamente fardado e acompanhado de sua equipa.","Exclusivamente nos casos em que houver determinação judicial prévia reconhecendo o risco da atividade desempenhada.","Apenas durante viagens de serviço para fora do Estado do Paraná autorizadas pelo Governador."],
+ c:"B",
+ e:"O Decreto nº 5.869/2005 abrange várias hipóteses: serviços e ordens, instruções e deslocamentos, trajetos (in itinere) e atuação em salvamento ou segurança na folga. As outras alternativas usam termos restritivos como \"apenas\", \"somente\" e \"exclusivamente\"."},
+{g:"Pelotão Alpha · Grupo 3",
+ q:"Durante uma operação, um trabalhador deixou de utilizar todos os EPIs necessários, não seguiu as normas de segurança, excedeu o limite de velocidade com a viatura e se recusou a reconhecer uma limitação física que comprometia sua atividade. Essas atitudes podem ser classificadas como:",
+ o:["Apenas falhas operacionais relacionadas ao uso de equipamentos.","Atos inseguros que aumentam significativamente o risco de acidentes.","Procedimentos corretos em situações de urgência operacional.","Problemas relacionados exclusivamente à manutenção de equipamentos.","Situações que afetam apenas a produtividade, sem impacto na segurança."],
+ c:"B",
+ e:"Não usar EPI, descumprir normas, exceder a velocidade e ignorar limitações físicas são condutas do trabalhador que elevam o risco: atos inseguros."},
+{g:"Pelotão Alpha · Grupo 3",
+ q:"Qual das alternativas abaixo descreve corretamente os 3 elementos-chave que caracterizam um acidente?",
+ o:["Previsíveis, contatos e aumentam a produtividade.","Inesperados, contatos e interrompem o trabalho.","Planejados, evasões e atrasam o cronograma.","Inesperados, acertos e encerram a jornada.","Voluntários, desgastes e modificam a rotina."],
+ c:"B",
+ e:"Os três elementos que caracterizam um acidente são: é inesperado, envolve contato e interrompe o trabalho."},
+{g:"Pelotão Alpha · Grupo 3",
+ q:"Com base na análise das causas e mecânica dos acidentes de trabalho, qual é a única exceção de acidente que NÃO envolve contato inesperado entre o trabalhador e objetos, superfícies ou coisas ao seu redor?",
+ o:["Queda de nível diferente com impacto no solo","Contato com energia elétrica ou superfícies aquecidas","Tensão muscular causada por esforço excessivo","Prensamento do membro por parte móvel de máquina","Atropelamento por veículo de transporte interno"],
+ c:"C",
+ e:"A tensão muscular por esforço excessivo ocorre sem contato com objetos, superfícies ou coisas ao redor. Todas as outras opções envolvem contato inesperado."},
+{g:"Pelotão Alpha · Grupo 4",
+ q:"Sobre a NR-09 assinale a alternativa correta.",
+ o:["Trata somente dos riscos químicos.","É responsável pelo treinamento dos bombeiros.","É uma norma internacional da NFPA.","Trata da avaliação e controle das exposições ocupacionais e agentes ambientais.","Trata exclusivamente da elaboração das Normas Regulamentadoras."],
+ c:"D",
+ e:"A NR-09 trata da avaliação e controle das exposições ocupacionais a agentes ambientais (físicos, químicos e biológicos). Não é norma da NFPA nem se limita a riscos químicos."},
+{g:"Pelotão Alpha · Grupo 4",
+ q:"O sistema tripartição paritária envolve:",
+ o:["Apenas governo e trabalhadores.","Empregadores, NFPA, agentes químicos.","Governo, bombeiros e IFSTA.","Governo, empregadores e instituições internacionais.","Governo, empregadores e trabalhadores."],
+ c:"E",
+ e:"A tripartição paritária reúne governo, empregadores e trabalhadores em igualdade de representação."},
+{g:"Pelotão Alpha · Grupo 4",
+ q:"Sobre a NFPA e a IFSTA, assinale a alternativa correta:",
+ o:["Ambas elaboram as NRs brasileiras.","A IFSTA regulamenta os riscos químicos.","A NFPA atua apenas no APH.","As duas possuem exatamente a mesma função.","A NFPA desenvolve códigos e normas, relacionadas à segurança contra incêndios enquanto a IFSTA a formação e a treinamento dos profissionais do serviço de incêndios."],
+ c:"E",
+ e:"A NFPA desenvolve códigos e normas de segurança contra incêndios, e a IFSTA atua na formação e no treinamento dos profissionais do serviço de incêndios. Nenhuma das duas elabora as NRs brasileiras."},
+{g:"Pelotão Alpha · Grupo 5",
+ q:"Qual é o principal objetivo do Equipamento de Proteção Individual (EPI) no serviço do Corpo de Bombeiros?",
+ o:["Tornar o bombeiro completamente imune aos riscos do sinistro.","Evitar qualquer possibilidade de acidente durante a ocorrência.","Proteger a integridade física do bombeiro e minimizar as consequências dos acidentes.","Substituir todos os procedimentos de segurança durante o atendimento."],
+ c:"C",
+ e:"O EPI protege a integridade física do bombeiro e reduz as consequências dos acidentes. Ele não torna ninguém imune a riscos nem substitui os procedimentos de segurança."},
+{g:"Pelotão Alpha · Grupo 5",
+ q:"Sobre o Certificado de Aprovação (CA) dos EPIs, assinale a alternativa correta:",
+ o:["O CA é utilizado apenas para equipamentos fabricados no Brasil.","O EPI pode ser comercializado ou utilizado nas empresas independentemente de CA.","O CA indica que o EPI foi submetido a testes e está autorizado para comercialização.","O número do CA precisa estar apenas na embalagem do equipamento."],
+ c:"C",
+ e:"O Certificado de Aprovação (CA) indica que o EPI passou por testes e está autorizado para comercialização."},
+{g:"Pelotão Alpha · Grupo 5",
+ q:"Um bombeiro possui um EPI em perfeito estado de conservação, porém o Certificado de Aprovação (CA) desse equipamento está vencido. De acordo com o material, qual afirmação está correta?",
+ o:["O equipamento deve ser imediatamente descartado em qualquer situação.","O equipamento pode ser utilizado, desde que, quando adquirido, possuísse CA válido e o próprio material ainda esteja dentro da validade.","O equipamento pode ser comercializado normalmente enquanto estiver em bom estado.","O vencimento do CA significa automaticamente que o material do EPI perdeu sua validade."],
+ c:"B",
+ e:"O CA vencido não invalida automaticamente o EPI. Ele pode continuar em uso se tinha CA válido na aquisição e o próprio material ainda está dentro da validade."},
+{g:"Pelotão Alpha · Grupo 6",
+ q:"Sobre os objetivos da ergonomia na atividade do Bombeiro Militar, assinale a alternativa correta:",
+ o:["A ergonomia busca apenas aumentar a velocidade de execução das atividades operacionais, priorizando o desempenho físico do bombeiro acima de qualquer outro fator.","A ergonomia tem como principal objetivo estabelecer regras específicas para o uso de equipamentos de proteção individual durante as ocorrências.","A ergonomia busca adaptar as condições de trabalho às características psicofisiológicas dos trabalhadores, proporcionando conforto, segurança, saúde e desempenho eficiente, considerando aspectos como organização do trabalho, mobiliário, máquinas, ferramentas e condições ambientais.","A ergonomia é aplicada somente quando ocorre um acidente de trabalho, tendo como finalidade identificar o responsável pelo acidente e determinar as medidas disciplinares cabíveis."],
+ c:"C",
+ e:"A ergonomia adapta as condições de trabalho às características psicofisiológicas do trabalhador, buscando conforto, segurança, saúde e desempenho eficiente."},
+{g:"Pelotão Alpha · Grupo 6",
+ q:"Qual das alternativas apresenta fatores ergonômicos que podem estar presentes nas atividades operacionais do Bombeiro Militar?",
+ o:["Apenas a temperatura do ambiente e a iluminação dos locais de trabalho.","Somente o peso dos equipamentos utilizados durante as ocorrências.","Exclusivamente os fatores psicológicos relacionados ao atendimento de vítimas.","Posturas inadequadas ou prolongadas, aplicação de força excessiva, movimentos repetitivos, levantamento e transporte de cargas, vibrações, ritmo de trabalho, exigências cognitivas e condições ambientais, fatores que podem comprometer a saúde e a segurança do trabalhador."],
+ c:"D",
+ e:"Os fatores ergonômicos são variados: posturas, força, repetição, cargas, vibrações, ritmo, exigências cognitivas e condições ambientais. As alternativas A, B e C limitam esse conjunto com \"apenas\", \"somente\" e \"exclusivamente\"."},
+{g:"Pelotão Alpha · Grupo 6",
+ q:"De acordo com os princípios da NR-17, quais medidas podem contribuir para a prevenção de problemas relacionados à sobrecarga física e ergonômica durante o trabalho?",
+ o:["Aumentar o ritmo das atividades para diminuir o tempo de exposição aos riscos.","Manter o trabalhador na mesma atividade durante todo o turno para evitar adaptações constantes.","Utilizar pausas, alternância de atividades, posturas, grupos musculares e ritmo de trabalho, além de medidas técnicas e organizacionais que reduzam esforços excessivos e movimentos prejudiciais à saúde.","Priorizar somente o condicionamento físico individual do trabalhador, pois as características do posto e da organização do trabalho possuem pouca influência sobre os riscos ergonômicos."],
+ c:"C",
+ e:"Pausas, alternância de atividades, posturas e grupos musculares, ritmo adequado e medidas técnicas e organizacionais reduzem a sobrecarga. Acelerar o ritmo ou manter a mesma atividade o turno todo aumenta o risco."}
+];
+
+/* ===== Estado ===== */
+var LETRAS = ["A","B","C","D","E"];
+var STORE_KEY = "simulado_sst_v1";
+var N = QUESTOES.length;
+var st = { cur:0, picks:{}, answered:{}, view:"quiz" };
+
+function load(){
+  try{
+    var raw = localStorage.getItem(STORE_KEY);
+    if(!raw) return;
+    var s = JSON.parse(raw);
+    if(s && s.n === N){ st.cur = s.cur||0; st.picks = s.picks||{}; st.answered = s.answered||{}; }
+  }catch(e){}
+}
+function save(){
+  try{ localStorage.setItem(STORE_KEY, JSON.stringify({n:N,cur:st.cur,picks:st.picks,answered:st.answered})); }catch(e){}
+}
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function $(id){ return document.getElementById(id); }
+
+function counts(){
+  var ok=0, err=0;
+  for(var k in st.answered){ if(st.answered[k].ok) ok++; else err++; }
+  return {ok:ok, err:err, ans:ok+err};
+}
+function updateHeader(){
+  var c = counts();
+  $("sOk").textContent = c.ok; $("sErr").textContent = c.err;
+  $("sAns").textContent = c.ans; $("sTot").textContent = N;
+  $("bar").style.width = (c.ans/N*100)+"%";
+}
+
+/* ===== Tela de questão ===== */
+function renderQuiz(){
+  var i = st.cur, q = QUESTOES[i];
+  var a = st.answered[i];
+  var pick = a ? a.sel : st.picks[i];
+  var h = '';
+  h += '<div class="card">';
+  h += '<div class="meta"><span class="qnum">Questão '+(i+1)+' de '+N+'</span><span class="tag">'+esc(q.g)+'</span></div>';
+  h += '<div class="qtext">'+esc(q.q)+'</div>';
+  if(q.af) h += '<div class="afirm">'+esc(q.af)+'</div>';
+  h += '<div class="opts" role="radiogroup" aria-label="Alternativas">';
+  for(var k=0;k<q.o.length;k++){
+    var L = LETRAS[k], cls = "opt";
+    var badge = "";
+    if(a){
+      if(L===q.c){ cls+=" correct"; badge = (L===a.sel) ? "✓ Sua resposta · Correta" : "✓ Resposta correta"; }
+      else if(L===a.sel){ cls+=" wrong"; badge = "✗ Sua resposta"; }
+      else cls+=" dim";
+    }else if(L===pick){ cls+=" selected"; }
+    h += '<button type="button" class="'+cls+'" data-l="'+L+'" role="radio" aria-checked="'+(L===pick)+'"'+(a?' disabled':'')+'>'
+       + '<span class="let">'+L+'</span><span class="txt">'+esc(q.o[k])+'</span><span class="badge">'+badge+'</span></button>';
+  }
+  h += '</div>';
+  if(a){
+    h += '<div class="feedback show '+(a.ok?'ok':'err')+'">'
+       + '<h3>'+(a.ok?'✓ Você acertou!':'✗ Você errou')+'</h3>'
+       + '<p><span class="label">Resposta correta:</span> '+q.c+') '+esc(q.o[LETRAS.indexOf(q.c)])+'</p>'
+       + '<p><span class="label">Explicação:</span> '+esc(q.e)+'</p></div>';
+  }
+  h += '<div class="actions">'
+     + '<button type="button" class="btn" id="bPrev"'+(i===0?' disabled':'')+'>← Anterior</button>'
+     + '<div class="mid"><button type="button" class="btn primary" id="bAns"'+((a||!pick)?' disabled':'')+'>Responder</button></div>'
+     + '<button type="button" class="btn" id="bNext">'+(i===N-1?'Finalizar':'Próxima →')+'</button>'
+     + '</div>';
+  h += '</div>';
+  h += '<details class="nav" open><summary>Navegar pelas questões</summary><div class="grid" id="grid">';
+  for(var j=0;j<N;j++){
+    var c2 = (j===i?"cur ":"") + (st.answered[j] ? (st.answered[j].ok?"ok":"err") : "");
+    h += '<button type="button" class="'+c2+'" data-j="'+j+'" aria-label="Questão '+(j+1)+'">'+(j+1)+'</button>';
+  }
+  h += '</div></details>';
+  h += '<p class="hint">Atalhos: A–E escolhem a alternativa · Enter responde · ← → navegam</p>';
+  h += '<div class="rbtns" style="margin-top:14px"><button type="button" class="btn ghost" id="bFin">Encerrar e ver resultado</button><button type="button" class="btn ghost" id="bReset">Reiniciar simulado</button></div>';
+  $("app").innerHTML = h;
+  updateHeader();
+
+  var opts = document.querySelectorAll(".opt");
+  for(var m=0;m<opts.length;m++){
+    opts[m].addEventListener("click", function(){ if(!st.answered[st.cur]) selectOpt(this.getAttribute("data-l")); });
+  }
+  $("bPrev").onclick = function(){ go(st.cur-1); };
+  $("bNext").onclick = function(){ if(st.cur===N-1) finish(); else go(st.cur+1); };
+  $("bAns").onclick = responder;
+  $("bFin").onclick = finish;
+  $("bReset").onclick = reset;
+  var gb = document.querySelectorAll("#grid button");
+  for(var n=0;n<gb.length;n++){ gb[n].onclick = function(){ go(parseInt(this.getAttribute("data-j"),10)); }; }
+}
+
+function selectOpt(L){
+  st.picks[st.cur] = L; save(); renderQuiz();
+}
+function responder(){
+  var i = st.cur, pick = st.picks[i];
+  if(!pick || st.answered[i]) return;
+  st.answered[i] = { sel:pick, ok:(pick===QUESTOES[i].c) };
+  save(); renderQuiz();
+}
+function go(j){
+  if(j<0||j>=N) return;
+  st.cur = j; save(); renderQuiz(); window.scrollTo({top:0,behavior:"smooth"});
+}
+function reset(){
+  if(counts().ans>0 && !confirm("Reiniciar o simulado? Suas respostas serão apagadas.")) return;
+  st = { cur:0, picks:{}, answered:{}, view:"quiz" }; save(); renderQuiz(); window.scrollTo({top:0});
+}
+
+/* ===== Resultado ===== */
+function finish(){
+  var c = counts();
+  if(c.ans<N && !confirm("Você respondeu "+c.ans+" de "+N+" questões. Deseja ver o resultado mesmo assim?")) return;
+  st.view = "result"; renderResult(); window.scrollTo({top:0});
+}
+function renderResult(){
+  var c = counts();
+  var pct = Math.round(c.ok / N * 1000)/10;
+  var pctTxt = (pct%1===0? pct.toFixed(0) : pct.toFixed(1)).replace(".",",");
+  var naoResp = N - c.ans;
+  var msg = pct>=80 ? "Excelente desempenho!" : pct>=60 ? "Bom resultado, continue revisando." : "Vale revisar o conteúdo e tentar novamente.";
+  var h = '<div class="card result"><h2>Resultado do simulado</h2><div style="color:var(--muted)">'+msg+'</div>';
+  h += '<div class="ring" style="--p:'+pct+'"><div><b>'+pctTxt+'%</b></div></div>';
+  h += '<div class="rgrid">'
+     + '<div class="rbox"><strong>'+N+'</strong><span>Total de questões</span></div>'
+     + '<div class="rbox ok"><strong>'+c.ok+'</strong><span>Acertos</span></div>'
+     + '<div class="rbox err"><strong>'+c.err+'</strong><span>Erros</span></div>'
+     + '<div class="rbox"><strong>'+pctTxt+'%</strong><span>Aproveitamento</span></div>'
+     + '</div>';
+  if(naoResp>0) h += '<p style="color:var(--muted)">'+naoResp+' questão(ões) não respondida(s) — contam no aproveitamento como não acertadas.</p>';
+  h += '<div class="rbtns"><button type="button" class="btn" id="bBack">Revisar questões</button><button type="button" class="btn primary" id="bRedo">Refazer simulado</button></div>';
+  if(c.err>0){
+    h += '<div class="review"><h3>Questões que você errou</h3>';
+    for(var i=0;i<N;i++){
+      var a = st.answered[i];
+      if(a && !a.ok){
+        var q = QUESTOES[i];
+        h += '<div class="ritem"><div class="q">Questão '+(i+1)+' — '+esc(q.q)+'</div>'
+           + '<div class="a">Sua resposta: <b>'+a.sel+') '+esc(q.o[LETRAS.indexOf(a.sel)])+'</b></div>'
+           + '<div class="a">Correta: <b>'+q.c+') '+esc(q.o[LETRAS.indexOf(q.c)])+'</b></div></div>';
+      }
+    }
+    h += '</div>';
+  }
+  h += '</div>';
+  $("app").innerHTML = h;
+  updateHeader();
+  $("bBack").onclick = function(){ st.view="quiz"; renderQuiz(); window.scrollTo({top:0}); };
+  $("bRedo").onclick = function(){ st = { cur:0, picks:{}, answered:{}, view:"quiz" }; save(); renderQuiz(); window.scrollTo({top:0}); };
+}
+
+/* ===== Teclado ===== */
+document.addEventListener("keydown", function(e){
+  if(st.view!=="quiz") return;
+  if(e.ctrlKey||e.metaKey||e.altKey) return;
+  var k = e.key;
+  var q = QUESTOES[st.cur];
+  if(/^[a-eA-E]$/.test(k)){
+    var L = k.toUpperCase();
+    if(LETRAS.indexOf(L) < q.o.length && !st.answered[st.cur]) selectOpt(L);
+  }else if(k==="Enter"){
+    if(document.activeElement && document.activeElement.tagName==="BUTTON" && document.activeElement.id!=="bAns") return;
+    e.preventDefault(); responder();
+  }else if(k==="ArrowRight"){ if(st.cur<N-1) go(st.cur+1); }
+  else if(k==="ArrowLeft"){ if(st.cur>0) go(st.cur-1); }
+});
+
+/* ===== Início ===== */
+load();
+$("sTot").textContent = N;
+if(st.cur<0||st.cur>=N) st.cur=0;
+renderQuiz();
+</script>
+</body>
+</html>

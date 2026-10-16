@@ -1,191 +1,984 @@
-<!DOCTYPE html>
-<html lang="pt-BR"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Simulado APH</title>
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Estudo SCIP e NPT 014</title>
+<meta name="description" content="Resumo em PDF, banco de questões e simulados sobre o CSCIP, o enquadramento e as NPTs de medidas de segurança contra incêndio.">
 <style>
-:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#f6f5f1;--c:#fff;--t:#1d1d1b;--m:#6b6b66;--b:#d9d7cf;--ok:#1b7f4b;--okb:#e0f3e9;--er:#b3261e;--erb:#fbe4e2;--ac:#c0392b}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1b1b1a;--c:#262624;--t:#eee;--m:#a5a5a0;--b:#3d3d3a;--okb:#16382a;--erb:#432120;--ok:#5fd394;--er:#ff8a80}}
-html{scroll-padding-top:env(safe-area-inset-top,0px)}
-body{margin:0;background:var(--bg);color:var(--t);font:16px/1.5 system-ui,sans-serif}
-main{max-width:720px;margin:0 auto;padding:16px}
-h1{font-size:1.3rem;margin:8px 0}
-.bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
-select,button{font:inherit;padding:8px 12px;border-radius:8px;border:1px solid var(--b);background:var(--c);color:var(--t)}
-button{cursor:pointer}
-.sc{margin-left:auto;font-weight:600}
-.card{background:var(--c);border:1px solid var(--b);border-radius:12px;padding:14px;margin-bottom:14px}
-.tag{font-size:.75rem;color:var(--m);text-transform:uppercase;letter-spacing:.04em}
-.q{margin:6px 0 10px;font-weight:600;white-space:pre-line}
-.o{display:block;width:100%;text-align:left;margin:6px 0}
-.o.ok{background:var(--okb);border-color:var(--ok)}
-.o.er{background:var(--erb);border-color:var(--er)}
-.o:disabled{cursor:default;color:var(--t)}
-.vf{display:flex;gap:8px;align-items:center;margin:6px 0}
-.vf span{flex:1}
-.vf button{min-width:44px}
-.fb{margin-top:8px;font-size:.9rem;color:var(--m)}
-.fb.ok{color:var(--ok)}.fb.er{color:var(--er)}
-.res{text-align:center;font-size:1.1rem}
-</style></head><body><main>
-<h1>🚑 Simulado APH — Alfa &amp; Bravo</h1>
-<div class="bar">
-<select id="f"></select>
-<button id="rs">Reiniciar</button>
-<span class="sc" id="sc"></span>
+:root{
+  --bg:#14120e; --panel:#1f1b15; --panel2:#2a251d; --line:#3d3528; --txt:#f3ebdc; --mut:#b5a88e;
+  --acc:#e0a526; --acc2:#ef7d57; --ok:#6fcf8a; --bad:#ec6a5a; --r:14px;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){
+    --bg:#f6f1e6; --panel:#fffdf7; --panel2:#f0e8d6; --line:#dcd0b6; --txt:#2a2317; --mut:#6e6250;
+    --acc:#b97a00; --acc2:#c4532a; --ok:#207a3c; --bad:#b3261e;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#14120e; --panel:#1f1b15; --panel2:#2a251d; --line:#3d3528; --txt:#f3ebdc; --mut:#b5a88e;
+  --acc:#e0a526; --acc2:#ef7d57; --ok:#6fcf8a; --bad:#ec6a5a;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--txt);font:16px/1.5 var(--sans);min-height:100vh}
+button,input,select,textarea{font:inherit;color:inherit}
+.shell{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+aside{background:var(--panel);border-right:1px solid var(--line);padding:22px 16px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:6px}
+.logo{font-weight:800;font-size:18px;letter-spacing:.2px;margin:0 8px 14px}
+.logo span{color:var(--acc)}
+.nav{all:unset;cursor:pointer;padding:10px 12px;border-radius:10px;color:var(--mut);display:block}
+.nav:hover{background:var(--panel2);color:var(--txt)}
+.nav.on{background:var(--panel2);color:var(--txt);box-shadow:inset 3px 0 0 var(--acc)}
+.nav.pdf{margin-top:auto;color:var(--acc);border:1px solid var(--line)}
+main{padding:28px clamp(16px,4vw,48px) 60px;max-width:1040px;width:100%}
+h1{font-size:clamp(26px,4vw,38px);line-height:1.15;margin:0 0 10px;letter-spacing:-.3px}
+h2{font-size:22px;margin:26px 0 10px}
+h3{font-size:17px;margin:0 0 8px}
+p{margin:0 0 12px}
+.lead{color:var(--mut);font-size:17px;max-width:62ch}
+.muted{color:var(--mut);font-size:14px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:20px}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.hero{background:linear-gradient(135deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:18px;padding:clamp(20px,4vw,34px);margin-bottom:22px;position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;right:-60px;top:-60px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,var(--acc2),transparent 65%);opacity:.25}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:11px 18px;border-radius:11px;border:1px solid var(--line);background:var(--panel2);cursor:pointer;text-decoration:none;font-weight:600;color:var(--txt)}
+.btn:hover{border-color:var(--acc)}
+.btn.pri{background:var(--acc);border-color:var(--acc);color:#1b1407}
+.btn.pdf{background:var(--acc2);border-color:var(--acc2);color:#fff}
+.btn.ghost{background:transparent}
+.btn.danger{border-color:var(--bad);color:var(--bad);background:transparent}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.bar{height:10px;background:var(--panel2);border-radius:99px;overflow:hidden;border:1px solid var(--line)}
+.bar>i{display:block;height:100%;background:linear-gradient(90deg,var(--acc),var(--acc2));width:0;transition:width .4s}
+.chip{display:inline-block;font-size:12px;padding:3px 9px;border-radius:99px;border:1px solid var(--line);color:var(--mut);margin-right:6px}
+.qhead{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap;margin-bottom:12px}
+.enun{font-size:18px;font-weight:600;line-height:1.45;margin:6px 0 16px}
+.alt{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border:1px solid var(--line);border-radius:12px;margin-bottom:9px;cursor:pointer;background:var(--panel2)}
+.alt input{margin-top:5px}
+.alt .let{flex:0 0 28px;height:28px;border-radius:8px;background:var(--panel);display:grid;place-items:center;font-weight:700;font-size:13px;border:1px solid var(--line)}
+.alt.sel{border-color:var(--acc)}
+.alt.ok{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 14%,var(--panel2))}
+.alt.bad{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 14%,var(--panel2))}
+.item{border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:10px;background:var(--panel2)}
+.tf{display:flex;gap:8px;flex-wrap:wrap}
+.tf button{padding:8px 14px;border-radius:9px;border:1px solid var(--line);background:var(--panel);cursor:pointer}
+.tf button.on{border-color:var(--acc);background:color-mix(in srgb,var(--acc) 20%,var(--panel))}
+.tf button:disabled{cursor:default}
+select,textarea{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:9px 10px;max-width:100%}
+textarea{width:100%;min-height:150px}
+.fb{margin-top:8px;font-size:15px}
+.fb.ok{color:var(--ok)} .fb.bad{color:var(--bad)}
+.expl{margin-top:16px;padding:14px 16px;border-left:4px solid var(--acc);background:var(--panel2);border-radius:10px}
+.step{border-top:1px dashed var(--line);padding-top:14px;margin-top:14px}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px;align-items:center;justify-content:space-between}
+.msg{color:var(--acc2);margin:10px 0}
+.warn{border:1px solid var(--acc2);border-radius:12px;padding:12px 14px;color:var(--txt);background:color-mix(in srgb,var(--acc2) 10%,var(--panel));margin:14px 0}
+table{width:100%;border-collapse:collapse;font-size:15px}
+th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--mut);font-weight:600;font-size:13px}
+.pbar{display:grid;grid-template-columns:1fr 60px;gap:10px;align-items:center}
+.stat{font-size:30px;font-weight:800;color:var(--acc)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px}
+.fgroup{margin:12px 0}
+.fgroup label{display:inline-flex;gap:6px;align-items:center;margin:4px 12px 4px 0;cursor:pointer}
+details{border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin:8px 0;background:var(--panel2)}
+summary{cursor:pointer;font-weight:600}
+details .expl{margin-top:10px}
+.st-ok{color:var(--ok);font-weight:700} .st-bad{color:var(--bad);font-weight:700} .st-no{color:var(--mut)}
+footer{color:var(--mut);font-size:13px;padding:0 0 30px;text-align:center}
+@media (max-width:820px){
+  .shell{grid-template-columns:1fr}
+  aside{position:sticky;top:0;height:auto;flex-direction:row;flex-wrap:wrap;align-items:center;padding:10px 12px;gap:6px;z-index:5}
+  .logo{margin:0 8px 0 4px;font-size:16px}
+  .nav{padding:8px 10px;font-size:14px}
+  .nav.pdf{margin-top:0;margin-left:auto}
+  main{padding:20px 16px 50px}
+  .btn{width:auto}
+  .actions{flex-direction:column;align-items:stretch}
+  .actions .row{justify-content:stretch}
+  .actions .btn{flex:1;justify-content:center}
+  table{font-size:13px}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside>
+    <div class="logo">Estudo <span>SCIP</span></div>
+    <button class="nav" data-act="home" data-go="home">Início</button>
+    <button class="nav" data-act="setup" data-mode="practice" data-go="setup">Praticar</button>
+    <button class="nav" data-act="setup" data-mode="sim" data-go="setup">Simulado</button>
+    <button class="nav" data-act="stats" data-go="stats">Progresso</button>
+    <a class="nav pdf" href="public/resumo-scip.pdf" target="_blank" rel="noopener">Resumo em PDF ↗</a>
+  </aside>
+  <main id="app" aria-live="polite"></main>
 </div>
-<div id="app"></div>
-</main>
+<footer>Material de estudo elaborado a partir do material fornecido. Em caso de dúvida, confira sempre a norma original.</footer>
+
 <script>
-const Q=[],mc=(s,q,o,a)=>Q.push({s,q,o,a}),vf=(s,q,i,a)=>Q.push({s,q,i,a,v:1});
-let s="Alfa · G1";
-mc(s,"O Acidente Vascular Encefálico (AVE) pode ser classificado em dois tipos principais. Quais são eles?",["Traumático e infeccioso.","Cardíaco e hemorrágico","Isquêmico e hemorrágico.","Isquêmico e neurológico"],2);
-mc(s,"O que caracteriza uma convulsão?",["Apenas uma alteração da pressão arterial.","Uma dor muscular causada por esforço físico.","Uma alteração respiratória sem envolvimento cerebral.","Uma contração involuntária da musculatura, provocando movimentos desordenados, geralmente acompanhada de perda da consciência e relacionada a uma desordem elétrica cerebral."],3);
-mc(s,"Durante uma crise convulsiva, qual deve ser uma das principais preocupações do profissional?",["Fazer a pessoa beber água.","Segurar os braços e as pernas da vítima.","Colocar algum objeto dentro da boca para evitar que morda a língua.","Evitar lesões secundárias, protegendo a cabeça, afastando objetos perigosos, mantendo as vias aéreas livres e colocando a pessoa em posição lateral de segurança assim que possível."],3);
-s="Alfa · G2";
-mc(s,"A síncope (desmaio) é uma intercorrência frequente no APH. Assinale a alternativa que traz a sua correta caracterização fisiopatológica:",["Perda gradual e prolongada da consciência com rigidez muscular persistente.","Perda abrupta da consciência decorrente da privação temporária de oxigênio no cérebro, com perda do tônus postural e rápida recuperação espontânea.","Alteração permanente do estado mental sem capacidade de recuperação espontânea.","Parada cardiorrespiratória irreversível decorrente de infarto agudo do miocárdio."],1);
-mc(s,"Nas emergências respiratórias, a dispneia é clinicamente descrita como:",["Parada completa da ventilação com ausência de movimentos torácicos.","Uma respiração difícil, desconfortável ou desagradável, comumente relatada pelo paciente como 'fome de ar'.","Aumento fisiológico da frequência respiratória exclusivamente durante o sono.","Diminuição da frequência cardíaca associada a pulso pleno e forte."],1);
-mc(s,"Quais são os objetivos terapêuticos da administração de oxigênio suplementar?",["Induzir broncodilatação direta e promover a eliminação de CO2","Corrigir a hipoxemia, melhorar a difusão tecidual e reduzir a carga de trabalho cardiopulmonar.","Estimular a frequência respiratória e elevar a pressão arterial.","Substituir a ventilação assistida em pacientes em parada respiratória."],1);
-s="Alfa · G3";
-mc(s,"Qual é o mecanismo fisiopatológico primário responsável pela maioria dos casos de Infarto Agudo do Miocárdio (IAM)?",["O descolamento de um coágulo no ventrículo direito que se aloja em pequenos vasos cerebrais.","O espasmo vascular transitório decorrente de estresse emocional em artérias sem acúmulo prévio de gordura.","A destruição irreversível dos alvéolos pulmonares provocada por hiperinsuflação e retenção de dióxido de carbono.","A ruptura física de uma placa aterosclerótica com subsequente formação de um trombo oclusivo na artéria coronária."],3);
-mc(s,"Sobre a formação da placa aterosclerótica, assinale a alternativa CORRETA:",["O colesterol permanece apenas no sangue, sem entrar na parede arterial.","A aterosclerose ocorre exclusivamente pela formação de coágulos dentro das artérias.","A lesão do endotélio permite a entrada de LDL na parede arterial, desencadeando inflamação e formação de células espumosas.","As células musculares da artéria destroem completamente o colesterol acumulado.","A formação da placa aumenta o espaço disponível para a passagem do sangue."],2);
-mc(s,"Qual das opções abaixo apresenta um sinal de gravidade na exacerbação aguda da DPOC?",["Sibilância.","Taquipneia (aumento da frequência respiratória).","Edema periférico.","Confusão mental.","Hiperinsuflação pulmonar."],3);
-s="Alfa · G4";
-vf(s,"Em uma ocorrência de emergências psiquiátricas, em que a vítima apresenta sinais de alerta para risco suicida, o socorrista:",["não deve deixar o paciente sozinho quando houver risco imediato","remover, quando possível e seguro, objetos ou meios potencialmente perigosos","encaminhar para avaliação especializada","dizer “não existe ninguém querendo te machucar”"],[1,1,1,0]);
-mc(s,"Durante a triagem pelo Método START em um IMUV, um socorrista avalia uma vítima adulta que não caminha. Ao abrir a via aérea (manobra manual), a vítima volta a respirar com frequência de 24 irpm e perfusão maior que dois segundos. Qual deve ser a cor da prioridade?",["Preta","Vermelha","Amarela","Verde"],1);
-mc(s,"Em resposta inicial a IMUVs/desastres, dentro das delimitações das zonas quente, morna e fria, qual é o ponto ideal para o tratamento da vítima?",["Zona morna","Zona fria","Zona quente","Zona neutra"],-1);
-s="Alfa · G5";
-mc(s,"A guarnição encontra uma vítima com queimadura por líquido quente. Após garantir a segurança e interromper o processo da queimadura, parte da roupa está aderida à pele. A conduta correta é:",["Retirar toda a roupa imediatamente, inclusive a parte aderida à pele.","Resfriar a queimadura utilizando gelo diretamente sobre a pele.","Retirar as roupas da vítima e, caso alguma parte esteja aderida à pele, não arrancá-la à força; realizar o resfriamento com água em temperatura ambiente, deixando-a correr suavemente sobre o local, sem esfregar a pele.","Cobrir imediatamente a queimadura com uma pomada e iniciar o transporte, evitando qualquer contato da água."],2);
-mc(s,"Na avaliação de um paciente em exacerbação de asma no APH, qual achado é sinal de gravidade indicativo para acionar o Suporte Avançado de Vida (SAV)?",["Presença de tórax silencioso ou rebaixamento de nível de consciência","FC entre 100-120 bpm","SpO2 > 90%","Capacidade de falar frases completas e preferência por ficar sentado."],0);
-mc(s,"Sobre a classificação das queimaduras quanto à profundidade, assinale a correta:",["A queimadura de 1º grau atinge a derme e apresenta bolhas intensas.","A queimadura de 2º grau atinge a epiderme e parte da derme, podendo apresentar bolhas e dor acentuada.","A queimadura de 3º grau atinge somente a epiderme e apresenta vermelhidão.","A queimadura de 3º grau sempre provoca dor intensa em toda a região afetada."],1);
-s="Bravo · G1";
-mc(s,"Qual é o principal mecanismo fisiopatológico responsável pelo Infarto Agudo do Miocárdio (IAM)?",["Ocorre devido a um espasmo muscular passageiro e isolado na parede da artéria coronária.","É desencadeado pelo acúmulo direto e repentino de oxigênio na musculatura do coração.","Decorre da ruptura ou erosão de uma placa aterosclerótica com formação de trombo oclusivo, processo iniciado por lesão endotelial (hipertensão, diabetes, tabagismo), acúmulo de LDL na íntima, formação de células espumosas e de uma capa fibrosa que, ao se romper, bloqueia o fluxo de oxigênio ao miocárdio.","É provocado por uma inflamação aguda nas válvulas cardíacas sem qualquer envolvimento de placas de gordura."],2);
-mc(s,"Em relação ao diagnóstico diferencial das dores torácicas, como se caracteriza a Angina Instável em comparação à Estável?",["Surge apenas durante esforço físico intenso e dura menos de 10 minutos.","É totalmente previsível e alivia rapidamente apenas com o repouso.","Possui baixo risco imediato de evolução para infarto e melhora com nitrato sublingual.","Ocorre no repouso ou com mínimo esforço, é imprevisível e súbita, tem duração prolongada (podendo superar 20 minutos), frequentemente não melhora com repouso ou medicação usual e decorre da ruptura de placa com trombo parcial, com alto risco iminente de infarto."],3);
-mc(s,"Quais são as condutas recomendadas no APH para paciente com suspeita de IAM?",["Transporte imediato em alta velocidade com sirene ligada para qualquer posto de saúde próximo.","Abordagem primária ABCD e histórico SAMPLE, vítima confortável e semissentada em repouso absoluto, oferta de oxigênio, monitorização constante de sinais vitais e SpO2, transporte calmo e sem sirene para hospital com unidade coronariana.","Orientação para o paciente caminhar até a ambulância e aguardar atendimento em pé.","Administração imediata de água fria e liberação do paciente sem regulação médica."],1);
-mc(s,"Como são classificados os tipos de AVE/AVC e quais são seus mecanismos desencadeantes?",["Apenas isquêmico, decorrente exclusivamente de hipoglicemia grave.","O hemorrágico é causado pelo bloqueio da artéria por placas de gordura calcificadas sem sangramento.","Isquêmico — subdividido em Trombose (trombo sobre placa aterosclerótica cerebral) e Embolia (coágulo de outra região, como o coração, que se aloja em vaso menor) — e Hemorrágico, por rompimento de vasos devido principalmente a pressão alta descontrolada, aneurismas ou malformações arteriovenosas.","Alteração muscular periférica causada por esforço físico excessivo nos membros superiores."],2);
-mc(s,"Qual ferramenta é usada na avaliação pré-hospitalar para identificação rápida de suspeita de AVE e quais parâmetros analisa?",["Escala de dor torácica, para avaliar se há radiação para os membros inferiores.","Escala de Cincinnati: Assimetria Facial (sorrir/mostrar os dentes), Debilidade dos Braços (olhos fechados e braços estendidos) e Fala Anormal (repetir uma frase), como apoio diante de paresia, parestesia e cefaleia súbita.","Medição isolada da glicemia capilar para confirmar o diagnóstico definitivo de derrame.","Aferição da frequência respiratória durante o repouso."],1);
-mc(s,"Quais são os cuidados e condutas indicados no APH durante o atendimento a vítima de AVE?",["Posicionar o paciente com a cabeça rebaixada a 0° e transportar rápido com sirene ligada.","Manter o paciente calmo com cabeceira elevada a 30°, avaliação ABCDE primária e secundária (sinais vitais e saturação), registrar com precisão o horário de início dos sintomas devido à janela terapêutica do trombolítico (< 4,5 h), histórico SAMPLA e transporte suave e monitorado.","Oferecer medicação oral para dor e liberar o paciente para repousar em residência.","Verificar apenas o pulso e aguardar a melhora espontânea dos déficits motores."],1);
-s="Bravo · G2";
-mc(s,"Convulsão — Qual é a conduta NÃO adequada no atendimento à vítima em convulsão?",["Adotar posição lateral de segurança.","Observar o período de crise.","Após a crise realizar avaliação primária e secundária.","Transportar o paciente de maneira tranquila e oferecer O2 se necessário.","Colocar as mãos ou objetos dentro da boca da vítima para evitar que ela enrole a língua."],4);
-mc(s,"Convulsão — A cerca da convulsão, assinale a correta:",["É a contração involuntária da musculatura que provoca movimentos desordenados, geralmente com perda da consciência, por desordem elétrica cerebral, podendo ter origens clínicas ou traumáticas.","Se durar mais de cinco minutos é uma crise leve que não necessita de cuidados médicos.","É condição exclusivamente neurológica causada por movimentos voluntários.","A proteção da cabeça da vítima é dispensável por parte do socorrista.","Ocorre exclusivamente pela falta de oxigênio no cérebro."],0);
-vf(s,"Convulsão — Assinale V ou F:",["A convulsão é classificada em crise generalizada tônico-clônica, ausência, mioclônica ou crises focais."],[1]);
-mc(s,"Desmaio — O desmaio pode indicar problemas, EXCETO:",["Cardíacos.","Neurológicos.","Queda súbita de pressão arterial.","Crise de ansiedade ou histeria.","Hiperglicemia e problemas de circulação."],4);
-vf(s,"Desmaio — Assinale V ou F:",["Um dos sinais e sintomas do desmaio é a sensação de fraqueza muscular."],[1]);
-mc(s,"Desmaio — Sobre o desmaio é correto afirmar, EXCETO:",["Não jogar água ou molhar o rosto da vítima.","Não dar tapas no rosto da vítima.","Oferecer alimentos ou bebidas até que a pessoa esteja totalmente acordada.","Se associada a um IAM ou AVC, acionar suporte avançado de vida.","É chamado cientificamente como termo síncope."],2);
-s="Bravo · G3";
-mc(s,"Em casos de DPOC, um dos tratamentos indicados é:",["Oxigênio suplementar: cateter nasal ou venturi se <88-92% SpO2","Oxigênio suplementar: cateter nasal ou venturi se <90-94% SpO2","Sentar na posição vertical levemente inclinado","Realizar exame primário e secundário detalhado","Utilizar bombinha de asma"],0);
-mc(s,"São sinais clínicos de DPOC:",["Sibilância, taquipneia, redução da saturação de O₂, uso da musculatura acessória, edema periférico e hiperinsuflação pulmonar.","Bradipneia, saturação normal, ausência de sibilância e ausência de uso da musculatura acessória.","Taquipneia, saturação normal, tosse seca e ausência de edema.","Frequência respiratória normal, saturação elevada, sibilância e ausência de hiperinsuflação.","Bradipneia, saturação elevada, ausência de esforço respiratório e redução da frequência cardíaca."],0);
-mc(s,"Principais causas da DPOC:",["Poeira doméstica, frio intenso, estresse e sedentarismo.","Infecções respiratórias, alergias, umidade e falta de exercícios.","Cigarros, cigarros eletrônicos, cachimbos, narguilés e poluição ambiental.","Alimentação inadequada, obesidade, álcool e exposição ao sol.","Vírus, bactérias, mudanças climáticas e baixa ingestão de água."],2);
-mc(s,"No APH a uma vítima em crise de asma, assinale a conduta INCORRETA:",["Folgar as roupas da vítima para diminuir a sensação de opressão.","Incentivar a vítima a respirar de forma lenta e profunda, inspirando pelo nariz e expirando pela boca.","Posicionar a vítima sentada na posição vertical, levemente inclinada para a frente.","Administrar oxigenioterapia suplementar para manter a saturação de 94%.","Orientar a vítima a realizar apneia forçada por 20 segundos repetidas vezes para expandir os alvéolos."],4);
-mc(s,"Sobre a fisiopatologia da crise asmática em comparação com outras patologias respiratórias, assinale a sequência CORRETA:",["Alérgeno → Inflamação aguda → Broncoespasmo → Crise → Reversível","Tabagismo → Inflamação crônica → Destruição/obstrução → Progressão → Irreversível","Crise → Inflamação aguda → Broncoespasmo → Reversível → Alérgeno","Tabagismo → Alérgeno → Destruição/obstrução → Progressão → Reversível","Alérgeno → Tosse → Crise → Falta de ar → Reversível"],0);
-mc(s,"Sobre o uso do inalador dosimetrado (sem espaçador), indique o procedimento INCORRETO:",["Agitar bem o medicamento antes da aplicação e remover a tampa do dispositivo.","Colocar o dispositivo distante da boca (cerca de 30 cm) para facilitar a inalação pelo ar.","Esvaziar totalmente o ar dos pulmões antes de acionar a bombinha.","Encaixar o bocal entre os dentes, fechar os lábios, apertar a bombinha e puxar o ar de forma lenta e profunda.","Segurar o ar (apneia) por 10 segundos após a inalação e soltar o ar na sequência."],1);
-s="Bravo · G4";
-mc(s,"Quais indicações para uso de oxigênio no paciente são corretas?",["Aumentar a taxa de oxigênio no tecido musculoesquelético.","Corrigir hipoxemia/hipóxia tissular e prevenir trabalho cardiopulmonar excessivo.","Dificultar a quantidade de CO no sangue.","Aumentar a imunidade e melhorar a saúde cardiopulmonar."],1);
-mc(s,"De acordo com o material sobre oxigenoterapia, qual alternativa apresenta um dos objetivos do tratamento?",["Reduzir o trabalho respiratório aumentando o dióxido de carbono.","Minimizar a necessidade de intubação em pacientes estáveis.","Aumentar a ventilação alveolar através da retenção metabólica de oxigênio.","Facilitar a absorção de ar nas cavidades orgânicas e minimizar a carga de trabalho cardiopulmonar"],3);
-mc(s,"Sobre a máscara não reinalante utilizada em oxigenoterapia de alto fluxo, assinale a correta:",["Não possui válvulas de proteção.","Provoca alta reinalação do CO2 expirado.","É indicada apenas para traumas com indicação de intubação.","Possui válvula anti-retorno e é utilizada no trauma quando a intubação ainda não está indicada, bem como em emergências clínicas com hipoxemia moderada-grave."],3);
-s="Bravo · Emerg. Psiquiátrica";
-mc(s,"O que é uma emergência psiquiátrica?",["Uma situação que envolve apenas doenças físicas.","Uma situação de saúde mental que exige avaliação e atendimento imediato.","Uma consulta de rotina, sem urgência.","Uma situação que pode ser ignorada sem riscos."],1);
-mc(s,"Paciente com agitação intensa, grita e demonstra comportamento agressivo. Qual deve ser a primeira conduta da equipe?",["Realizar imediatamente a contenção física do paciente.","Garantir a segurança do local, avaliar os riscos e tentar estabelecer uma comunicação calma e respeitosa.","Administrar medicamentos imediatamente, sem avaliação inicial.","Confrontar verbalmente o paciente para interromper seu comportamento.","Deixar o paciente sozinho até que ele se acalme."],1);
-mc(s,"Paciente com sinais de possível tentativa de suicídio relata que não deseja mais viver. Qual é a conduta mais adequada?",["Dizer que ele precisa ser forte e parar de pensar nisso.","Deixar o paciente sozinho para que possa descansar.","Evitar falar sobre suicídio para não incentivar esse comportamento.","Avaliar imediatamente o risco de suicídio, garantir a segurança do paciente e oferecer acolhimento e atendimento especializado.","Liberar o paciente se ele afirmar que está se sentindo melhor."],3);
-s="Bravo · G5";
-mc(s,"Sobre a definição de queimadura e os fatores de sua gravidade clínica, assinale a correta:",["Lesões restritas à epiderme, causadas somente pela exposição direta ao calor.","A gravidade depende exclusivamente da intensidade da dor apresentada pela vítima.","Tecidos profundos, como músculos, ossos e órgãos internos, nunca podem ser atingidos.","Lesão provocada por agentes externos sobre o revestimento corporal, cuja gravidade depende da associação entre profundidade, extensão e área corporal atingida, além das características do agente causador."],3);
-mc(s,"Quanto aos agentes etiológicos das queimaduras (físicos, químicos e biológicos), é correto afirmar:",["Podem ser físicos (térmicos, elétricos, radiantes); químicos (ácidos e álcalis de produtos industriais ou domésticos); e biológicos (animais e organismos como taturanas, águas-vivas e urtigas).","Raios e correntes elétricas são agentes biológicos.","Produtos de limpeza, como soda cáustica, são agentes físicos.","Fogo e líquidos quentes pertencem exclusivamente ao grupo dos agentes químicos."],0);
-mc(s,"Aplicando a Regra dos Nove em um adulto, assinale a correlação correta:",["Cabeça 18%, membros superiores 18% cada e genitais 9%.","Membros inferiores 9% cada, tronco anterior 9% e dorso 9%.","Cabeça 9%; cada membro superior 9%; tronco anterior 18%; tronco posterior 18%; cada membro inferior 18%; região genital 1%.","Cada membro superior 4,5% e cada membro inferior 36%."],2);
-mc(s,"Na resposta inicial a um IMUV, com demanda excedendo os recursos, a diferença fundamental em relação ao APH convencional é que o objetivo principal é:",["Fazer o melhor para cada paciente individualmente, dedicando todos os recursos à vítima mais grave até estabilizá-la.","Fazer o melhor para o maior número de vítimas com os recursos disponíveis, no menor tempo possível, para então direcioná-las ao tratamento definitivo.","Atender apenas as vítimas conscientes, deixando as demais para recursos adicionais.","Aguardar a chegada do médico para iniciar qualquer atendimento ou triagem."],1);
-vf(s,"Verdadeiro ou falso:",["IMV é definido, segundo o PHTLS, como incidentes com vítimas em massa: incidentes cuja demanda (número de vítimas) excede os recursos disponíveis na comunidade."],[1]);
-mc(s,"No algoritmo START, qual parâmetro de FR classifica diretamente na categoria Vermelha a vítima que não consegue caminhar?",["FR superior a 30 mrpm.","FR superior a 50 mrpm associada a sangramento periférico.","FR exatamente igual a 0 mrpm antes da abertura das vias aéreas.","FR estritamente entre 12 e 20 mrpm."],0);
+/* Banco de questões. Todo gabarito foi conferido com o texto extraído dos slides, do CSCIP ou das NPTs.
+   Questões cujo conteúdo não pôde ser confirmado no material foram removidas. */
+const ASSUNTOS = [
+  {id:"leg",   nome:"Legislação e processo administrativo", modulo:"1", cor:"#e0a526"},
+  {id:"cscip", nome:"CSCIP: aplicação, idade e altura", modulo:"2", cor:"#4fb3a9"},
+  {id:"enq",   nome:"Enquadramento: área, risco e Tabela 5", modulo:"2", cor:"#ef7d57"},
+  {id:"ilum",  nome:"Iluminação de emergência (NPT 018)", modulo:"3", cor:"#f2d16b"},
+  {id:"sinal", nome:"Sinalização de emergência (NPT 020)", modulo:"3", cor:"#8fd694"},
+  {id:"ext",   nome:"Extintores de incêndio (NPT 021)", modulo:"3", cor:"#e8604c"},
+  {id:"humano",nome:"Comportamento humano e evacuação", modulo:"3", cor:"#b7a6f0"},
+  {id:"brig",  nome:"Brigada de incêndio (NPT 017)", modulo:"4", cor:"#6ec6ff"},
+  {id:"alarm", nome:"Alarme e detecção (NPT 019)", modulo:"5", cor:"#ffa3c4"},
+  {id:"hidr",  nome:"Hidrantes e mangotinhos (NPT 022)", modulo:"6", cor:"#7fd3d9"},
+  {id:"glp",   nome:"GLP (NPT 028)", modulo:"7", cor:"#c7e07a"}
+];
 
-s="Afogamento · Questões";
-mc(s,"Segundo a OMS (Congresso de Amsterdã, 2002), o afogamento é definido como:",["A aspiração de líquido causada por submersão do indivíduo ou imersão das vias aéreas em meio aquoso.", "A obstrução das vias aéreas pelo líquido ingerido durante um engasgo.", "A perda de consciência por queda brusca da pressão arterial dentro da água.", "A ingestão de água que chega ao esôfago e ao estômago."],0);
-vf(s,"Assinale V ou F:",["Aspiração é a entrada de líquido nas vias aéreas (traqueia, brônquios e/ou pulmões).","Engolir água, que chega ao esôfago e ao estômago, é o mesmo que aspiração."],[1,0]);
-mc(s,"Durante o afogamento, o laringoespasmo (fechamento da glote) é uma resposta do organismo que:",["Ocorre apenas após a parada cardiorrespiratória.", "Aumenta a entrada de água nos pulmões para facilitar a respiração.", "Impede a entrada de água nas vias aéreas; com a hipóxia o reflexo cessa, mas se a vítima não for retirada da água o afogamento continua.", "Garante a oxigenação do cérebro sem necessidade de socorro."],2);
-mc(s,"Qual é a diferença entre imersão e submersão no afogamento?",["Imersão é a água cobrindo totalmente o corpo; submersão é apenas a água na face.", "Não há diferença, são dois nomes para o mesmo evento.", "Imersão ocorre apenas em água salgada; submersão, apenas em água doce.", "Imersão é a água na face (vias aéreas em contato com o líquido); submersão é a pessoa abaixo da superfície do líquido."],3);
-mc(s,"Qual situação caracteriza um afogamento SECUNDÁRIO?",["Uma pessoa que não sabe nadar e entra no mar sem supervisão.", "Uma convulsão ou infarto que impede a vítima de manter o rosto fora da água.", "Cansaço físico excessivo dentro da água.", "Correntes marítimas fortes que arrastam o nadador."],1);
-mc(s,"A hidrocussão (choque térmico na água) ocorre quando:",["A pessoa engole água gelada durante um mergulho em água doce.", "A vítima perde o surfactante dos alvéolos após inspirar ar frio.", "O corpo aquecido é exposto de repente a água cerca de 5 °C mais fria que a temperatura corporal.", "A pessoa fica muito tempo submersa em água morna."],2);
-mc(s,"Uma vítima foi classificada como Grau 4 de afogamento no atendimento em área seca. Após 5 minutos, evolui para PCR. Como ela deve ser considerada?",["Continua Grau 4; o grau não muda após a classificação, apenas o quadro clínico evolui.", "Reclassificada como Grau 6, pois evoluiu para PCR.", "Passa a Resgate, por ter sido estabilizada.", "Passa a Grau 1, pois a PCR é reversível."],0);
-mc(s,"Uma vítima de afogamento está sem respiração, mas apresenta sinais de circulação após 5 ventilações iniciais. Qual é o grau e a conduta?",["Grau 6; RCP 30:2.", "Grau 2; oxigênio nasal a 5 L/min.", "Resgate; liberar a vítima do local.", "Grau 5; 1 ventilação a cada 5 a 6 segundos (10 a 12 por minuto)."],3);
-mc(s,"No grau 6 do afogamento (PCR), em adulto atendido por um socorrista, a relação de compressões e ventilações é:",["15 compressões para 2 ventilações.", "3 compressões para 1 ventilação.", "30 compressões para 2 ventilações.", "5 ventilações e depois 2 compressões."],2);
-vf(s,"Quando não fazer RCP, assinale V ou F:",["Não se deve iniciar a RCP em PCR com tempo de submersão maior que 1 hora, rigidez cadavérica, decomposição ou livores.","Rigidez cadavérica e livores são sinais que indicam que a RCP deve ser iniciada imediatamente."],[1,0]);
-mc(s,"A espuma que sai pela boca e pelo nariz da vítima de afogamento é formada por:",["Saliva em excesso produzida pelo medo.", "Ar + proteína alveolar (surfactante) + água, formada nas vias aéreas durante o esforço de respirar.", "Sangue proveniente de lesões pulmonares.", "Vômito formado pela ingestão de água do mar."],1);
-mc(s,"Na Posição Lateral de Segurança (PLS) em vítimas de afogamento, a posição deve ser feita para o lado:",["Esquerdo, por ser o lado de menor alagamento.", "Ventral, com o rosto voltado para o chão.", "Tanto faz, desde que a cabeça fique abaixada.", "Direito, pois o pulmão direito alaga muito mais que o esquerdo."],3);
-mc(s,"Ao usar a pocket mask boca a boca, a oferta aproximada de oxigênio é de:",["17%", "21%", "60%", "100%"],0);
-mc(s,"Um adulto em PCR por afogamento é atendido por 2 guarda-vidas. Qual é a sequência de SBV em área seca?",["5 ventilações iniciais e depois 30 compressões para 2 ventilações, com 1 socorrista.", "Apenas compressões, sem ventilações.", "5 ventilações iniciais e depois 15 compressões para 2 ventilações, com 2 socorristas.", "10 ventilações iniciais e depois 3 compressões para 1 ventilação."],2);
-mc(s,"No afogamento, qual ritmo é o mais comum na PCR (grau 6), e por quê?",["FV ou TVSP, por arritmia cardíaca primária.", "Bradicardia sinusal, por hipotermia.", "Taquicardia supraventricular, por estresse.", "AESP e assistolia (não chocáveis), por causa da hipóxia que antecede a PCR."],3);
-mc(s,"Quando o DEA deve ser usado no afogamento?",["Em todas as vítimas de afogamento, independentemente do ritmo.", "Nas PCR por afogamento secundário (ex.: trauma ou arritmia), em geral com FV ou TVSP, e assim que houver acesso ao aparelho.", "Somente após 1 hora de submersão.", "Nunca, pois o DEA não pode ser usado em área seca."],1);
-mc(s,"Quanto à imobilização da coluna cervical no afogamento, assinale a correta:",["É indicada somente em casos de forte suspeita (ex.: mergulho, esqui aquático, surf ou embarcação), pois lesões cervicais ocorrem em menos de 0,5% dos afogados.", "Deve ser feita em todas as vítimas, pois lesões cervicais são comuns.", "Não deve ser feita nunca, mesmo com forte suspeita.", "Deve ser feita apenas em vítimas conscientes."],0);
-mc(s,"No transporte da água para a área seca, qual posição deve ser mantida na vítima de afogamento?",["Deitada de bruços, com a cabeça abaixada.", "Com as pernas elevadas acima do coração.", "Na vertical, com as vias aéreas abertas, para prevenir vômitos e aspiração.", "Sentada com a cabeça apoiada no peito."],2);
-mc(s,"Qual é a conduta correta na área seca para uma vítima de afogamento?",["Tentar retirar a água dos pulmões, pressionando o abdômen.", "Virar a vítima de cabeça para baixo para drenar a água.", "Dar água à vítima para que ela se hidrate.", "Posicionar a cabeça no mesmo nível do tronco e não tentar retirar a água do pulmão, pois isso aumenta o risco de vômito e atrasa a ventilação."],3);
-mc(s,"Na triagem START em múltiplas vítimas de afogamento, a prioridade é:",["Atender primeiro a vítima de maior gravidade, dedicando todos os recursos a ela.", "Salvar o maior número possível de vidas com os recursos disponíveis, e não atender somente a de maior gravidade no primeiro momento.", "Atender apenas as vítimas conscientes.", "Aguardar a chegada de todos os recursos antes de iniciar qualquer resgate."],1);
-mc(s,"No START aplicado ao afogamento, a vítima de cor PRETA (sem movimentos, submersa) deve receber qual conduta?",["Resgate prioritário com aproximação imediata.", "Orientação e liberação do local.", "Ressuscitação dentro da água e avaliação de RCP em área seca.", "Transporte imediato em posição sentada."],2);
-mc(s,"Segundo o instrutor, qual é o maior objetivo do atendimento, independentemente do serviço ou da área de atuação?",["O bem-estar da vítima, com maior possibilidade de sobrevida e menor probabilidade de sequelas por causas alheias ao acidente principal.", "Atender o maior número de pessoas no menor tempo possível.", "Garantir a remoção rápida da vítima ao hospital, sem outras condutas.", "Registrar corretamente o grau de afogamento antes de qualquer conduta."],0);
-
-s="SCIP · Enquadramento (tabelas)";
-mc(s,"Hotel Central Curitibano: hotel com 76 leitos. Qual é a divisão de ocupação, segundo a Tabela 1 do CSCIP?",["A-3","B-2","B-1","C-1"],2);
-mc(s,"Hotel Central Curitibano (20 pavimentos de 400 m², pé-direito de 3,0 m). Qual é a tabela do CSCIP que se aplica?",["Tabela 6A","Tabela 6B","Tabela 6C","Tabela 5"],1);
-mc(s,"Hotel Central Curitibano (20 pavimentos, pé-direito de 3,0 m). Qual é a altura considerada para enquadramento?",["60 m","54 m","57 m","63 m"],2);
-mc(s,"Hotel Central Curitibano: passagem coberta de 25 m², com 2,5 m de largura e laterais abertas, ligando a recepção ao bloco de quartos. Como ela deve ser tratada no cálculo da área?",["Somada à área total: 8.025 m².","Não computada, pois tem 2,5 m de largura (Art. 21, III).","Computada como área de 25 m² por pavimento.","Computada somente se estiver no último pavimento."],1);
-mc(s,"Loja de Ferragens Reparos & Cia (térrea, 1.200 m², 40 pessoas). Qual é a divisão de ocupação?",["A-1","D-1","C-2","C-1"],3);
-mc(s,"Loja de Ferragens Reparos & Cia (térrea, 1.200 m², 40 pessoas). Qual é a tabela do CSCIP e a carga de incêndio?",["Tabela 6A, 300 MJ/m²","Tabela 5, 300 MJ/m²","Tabela 5, 200 MJ/m²","Tabela 6C, 800 MJ/m²"],1);
-mc(s,"Magazine Central São José: 3 pavimentos de 800 m² e um subsolo exclusivo para estacionamento com exaustão mecânica. Qual é a área considerada para enquadramento?",["2.400 m²","3.200 m²","3.650 m²","4.000 m²"],1);
-mc(s,"Magazine Central São José: 3 pavimentos com pé-direito de 3,5 m, mais subsolo para estacionamento com exaustão mecânica. Qual é a altura considerada?",["10,5 m","14 m","3,5 m","7 m"],3);
-mc(s,"PF Estrela (restaurante, 2 pavimentos de 400 m², 250 pessoas). Qual é a divisão de ocupação?",["D-1","F-2","B-1","F-8"],3);
-mc(s,"Direito Office Building (escritórios de advocacia, 3 pavimentos com permanência humana e um subsolo de vestiários sem permanência): a altura considerada é de 9,0 m. Qual é a tabela do CSCIP aplicável?",["Tabela 6B","Tabela 5","Tabela 6C","Tabela 6D"],1);
-mc(s,"Agência Banco Million Dollar (agência bancária, térrea, 450 m²): qual é a carga de incêndio específica?",["200 MJ/m²","300 MJ/m²","500 MJ/m²","600 MJ/m²"],1);
-mc(s,"Laboratório de Análises Clínicas HBM (3 pavimentos de 500 m², pé-direito de 3,0 m, 90 pessoas). Qual é a tabela do CSCIP?",["Tabela 6C","Tabela 6D","Tabela 6E","Tabela 6F.1"],1);
-mc(s,"Escola Estadual do Estado (3 pavimentos de 600 m², pé-direito de 3,2 m, cobertura de quadra de 400 m² aberta lateralmente). Qual é a área considerada?",["2.200 m²","1.800 m²","1.400 m²","600 m²"],1);
-mc(s,"Escola Estadual do Estado (3 pavimentos, pé-direito de 3,2 m): qual é a altura considerada e a tabela aplicável?",["9,6 m e Tabela 6F.2","6,0 m e Tabela 5","6,4 m e Tabela 6E","3,2 m e Tabela 6E"],2);
-mc(s,"CEMEI Formiguinha (creche, divisão E-5, 2 pavimentos, 110 pessoas): qual é a conclusão sobre a brigada e a detecção de incêndio?",["Não são exigidas, pois a carga de incêndio é leve.","São exigidas, por força da nota específica 4 para a divisão E-5.","São exigidas apenas acima de 200 pessoas.","São exigidas apenas no subsolo."],1);
-mc(s,"Ginásio Campeão (ginásio poliesportivo, 3.250 m² de área computada, 2.500 pessoas). Qual é a tabela do CSCIP e a carga de incêndio?",["Tabela 6F.2, 150 MJ/m²","Tabela 6F.1, 150 MJ/m²","Tabela 6E, 300 MJ/m²","Tabela 6F.2, 500 MJ/m²"],0);
-vf(s,"Ginásio Campeão (público de 2.500 pessoas). Assinale V ou F:",["O plano de emergência é exigido, pois o público é superior a 1.000 pessoas."],[1]);
-mc(s,"Segundo a NPT 014, para o levantamento da carga de incêndio, qual é o tamanho máximo de módulo em área de piso?",["500 m²","1.000 m²","2.000 m²","Não há limite."],1);
-mc(s,"Segundo a NPT 014, considerando 1 kg de madeira, qual é o valor de energia utilizado no cálculo?",["4,185 MJ","12,0 MJ","19,0 MJ","252 MJ"],2);
-mc(s,"Segundo a NPT 018 (iluminação de emergência), qual é a autonomia mínima do sistema?",["30 minutos, com perda de até 20% da luminosidade","1 hora, com perda de no máximo 10% da luminosidade inicial","2 horas, com perda de no máximo 5%","4 horas, sem perda"],1);
-mc(s,"Segundo a NPT 018, qual é o nível mínimo de iluminamento em locais planos, como corredores e halls?",["1 lux","3 lux","5 lux","10 lux"],1);
-mc(s,"Segundo a NPT 020 (sinalização de emergência), qual é a distância máxima entre as placas de sinalização de alerta e de orientação em uma área de risco, e a altura de instalação?",["10 m entre si e 1,5 m de altura","15 m entre si e 1,8 m de altura","20 m entre si e 2,0 m de altura","15 m entre si e 1,2 m de altura"],1);
-mc(s,"Segundo a NPT 020, qual é a função da sinalização de proibição?",["Indicar as rotas de saída.","Alertar para áreas com risco de explosão.","Coibir ações que possam iniciar ou agravar um incêndio.","Indicar a localização dos extintores."],2);
-
-const L="ABCDE",$=id=>document.getElementById(id);
-const sets=["Todos",...new Set(Q.map(q=>q.s.split(" · ")[0])),...new Set(Q.map(q=>q.s))];
-$("f").innerHTML=sets.map(x=>`<option>${x}</option>`).join("");
-let st={};
-function list(){const v=$("f").value;return Q.map((q,i)=>[q,i]).filter(([q])=>v=="Todos"||q.s==v||q.s.startsWith(v+" "))}
-function score(){let a=0,e=0;for(const k in st){if(st[k]===true)a++;else if(st[k]===false)e++}$("sc").textContent=`✔ ${a}  ✘ ${e}`}
-function render(){
- const l=list();
- $("app").innerHTML=l.map(([q,i],n)=>{
-  let h=`<div class="card" id="c${i}"><div class="tag">${n+1}/${l.length} · ${q.s}</div><div class="q">${q.q}</div>`;
-  if(q.v)h+=q.i.map((t,j)=>`<div class="vf"><span>${t}</span><button data-i="${i}" data-j="${j}" data-v="1">V</button><button data-i="${i}" data-j="${j}" data-v="0">F</button></div>`).join("");
-  else h+=q.o.map((t,j)=>`<button class="o" data-i="${i}" data-j="${j}">${L[j]}) ${t}</button>`).join("");
-  return h+`<div class="fb" id="fb${i}"></div></div>`}).join("")+`<div class="card res" id="res"></div>`;
- st={};score();$("res").textContent="";
-}
-function fin(i){
- const q=Q[i],c=$("c"+i),fb=$("fb"+i);
- if(q.v){
-  const r=q.i.map((_,j)=>c.querySelector(`[data-j="${j}"].done`)?.dataset.v);
-  if(r.some(x=>x==null))return;
-  const ok=r.every((x,j)=>+x===q.a[j]);st[i]=ok;
-  fb.className="fb "+(ok?"ok":"er");
-  fb.textContent=ok?"Correto!":"Gabarito: "+q.a.map(x=>x?"V":"F").join(", ");
- }
- score();
- const l=list();if(l.every(([,k])=>k in st)){const a=l.filter(([,k])=>st[k]===true).length,t=l.filter(([,k])=>st[k]!==undefined).length;$("res").textContent=`Resultado: ${a} de ${t} (${Math.round(a/t*100)}%)`}
-}
-$("app").onclick=e=>{
- const b=e.target.closest("button");if(!b||b.disabled)return;
- const i=+b.dataset.i,j=+b.dataset.j,q=Q[i],c=$("c"+i);
- if(q.v){
-  const v=+b.dataset.v,bs=c.querySelectorAll(`[data-j="${j}"]`);
-  bs.forEach(x=>{x.disabled=true});b.classList.add("done");
-  const ok=v===q.a[j];bs.forEach(x=>{if(+x.dataset.v===q.a[j])x.classList.add("ok");else if(x===b)x.classList.add("er")});
-  fin(i);return;
- }
- const bs=c.querySelectorAll(".o");bs.forEach(x=>x.disabled=true);
- const fb=$("fb"+i);
- if(q.a<0){b.classList.add("er");fb.textContent="O PDF não indica o gabarito desta questão.";st[i]=null;score();return}
- bs[q.a].classList.add("ok");
- const ok=j===q.a;if(!ok)b.classList.add("er");
- st[i]=ok;fb.className="fb "+(ok?"ok":"er");fb.textContent=ok?"Correto!":`Gabarito: ${L[q.a]}`;
- fin(i);
+const NIVEIS = {1:"Fácil", 2:"Intermediário", 3:"Difícil"};
+const TIPOS = {
+  mc:"Múltipla escolha", vf:"Verdadeiro ou falso", ac:"Afirmação e justificativa",
+  assoc:"Associação", lac:"Completar lacunas", prat:"Exercício em etapas", disc:"Discursiva"
 };
-$("f").onchange=render;$("rs").onclick=render;render();
-</script></body></html>
+
+const QUESTOES = [
+/* ---------- LEGISLAÇÃO ---------- */
+{id:"leg01",sub:"leg",tipo:"mc",nivel:1,enun:"A Lei Estadual nº 19.449/2018 trata de qual tema?",
+ alts:["Licitações e contratos da administração pública","Poder de polícia administrativa em prevenção e combate a incêndio","Regras de trânsito e habilitação de condutores","Organização do sistema de saúde estadual"],
+ correta:1,expl:"A Lei 19.449/2018 regula o poder de polícia administrativa do Corpo de Bombeiros em prevenção e combate a incêndio."},
+
+{id:"leg02",sub:"leg",tipo:"mc",nivel:2,enun:"Segundo o conceito de poder de polícia apresentado na aula, esse poder:",
+ alts:["Extingue o direito do particular quando o interesse coletivo exige","Limita e restringe direitos, mas não os extingue","Transfere ao particular a responsabilidade pela fiscalização","Aplica-se apenas às empresas de grande porte"],
+ correta:1,expl:"O poder de polícia limita e restringe direitos em favor do interesse coletivo, mas não os extingue."},
+
+{id:"leg03",sub:"leg",tipo:"vf",nivel:1,enun:"Marque se cada afirmação sobre o processo administrativo é verdadeira (V) ou falsa (F).",
+ itens:[
+  {t:"O poder de polícia extingue o direito do particular que não cumpre a norma.",v:false,e:"Falso. O poder de polícia limita e restringe, mas não extingue o direito."},
+  {t:"Pela regra atual, a notificação da autuação é feita no ato da fiscalização.",v:true,e:"Verdadeiro, conforme os slides de legislação."}
+ ],expl:"A notificação no ato da fiscalização é uma das mudanças do processo atual."},
+
+{id:"leg05",sub:"leg",tipo:"mc",nivel:1,enun:"Qual lei federal ficou conhecida como Lei Kiss?",
+ alts:["Lei Federal 13.425/2017","Lei Federal 13.874/2019","Lei Estadual 19.449/2018","Decreto Estadual 11.868/2018"],
+ correta:0,expl:"A Lei Federal 13.425/2017 ficou conhecida como Lei Kiss, em referência à tragédia da Boate Kiss em Santa Maria (RS)."},
+
+{id:"leg07",sub:"leg",tipo:"mc",nivel:2,enun:"Pelo Decreto Estadual 11.868/2018, o prazo de vencimento de uma multa é de:",
+ alts:["5 dias úteis","20 dias úteis, contados da notificação","60 dias corridos","90 dias corridos"],
+ correta:1,expl:"O vencimento da multa ocorre em 20 dias úteis a contar da notificação, conforme os slides de legislação."},
+
+{id:"leg08",sub:"leg",tipo:"mc",nivel:3,enun:"Em uma advertência, qual é a regra de regularização prevista (conforme o slide)?",
+ alts:["60 dias, sem verificação do CBMPR, com fiscalização posterior e multa, se não regularizado","20 dias úteis com opção obrigatória de TCAC","Imediata interdição total do estabelecimento","Multa obrigatória antes de qualquer prazo"],
+ correta:0,expl:"O slide traz a regularização da advertência em 60 dias, sem verificação do CBMPR, com fiscalização e multa caso não haja regularização."},
+
+{id:"leg13",sub:"leg",tipo:"disc",nivel:3,enun:"Explique a diferença entre advertência e multa no processo administrativo de prevenção a incêndio, citando um prazo de cada uma.",
+ criterios:["Diferencia advertência (escrita, com prazo para regularização) de multa (com valor e prazo de vencimento).","Cita o prazo de regularização da advertência (60 dias, sem verificação do CBMPR).","Cita o prazo de vencimento da multa (20 dias úteis a contar da notificação).","Explica que a notificação ocorre no ato da fiscalização."],
+ modelo:"A advertência tem prazo de regularização de 60 dias, sem verificação do CBMPR, e não há multa imediata. Já a multa tem valor e vence em 20 dias úteis a contar da notificação, que hoje ocorre no ato da fiscalização."},
+
+/* ---------- CSCIP ---------- */
+{id:"cscip01",sub:"cscip",tipo:"mc",nivel:1,enun:"A quais edificações e áreas o CSCIP se aplica (art. 5º)?",
+ alts:["Apenas residências unifamiliares","Edificações e áreas de risco no Estado do Paraná","Somente atividades agrossilvipastoris","Apenas ambulantes e food trucks"],
+ correta:1,expl:"O art. 5º aplica o CSCIP às edificações e áreas de risco no Estado do Paraná."},
+
+{id:"cscip02",sub:"cscip",tipo:"vf",nivel:2,enun:"Sobre as exceções ao CSCIP, marque V ou F.",
+ itens:[
+  {t:"Carrinhos de lanche e barracas itinerantes, como atividade econômica ambulante individual, estão fora do CSCIP.",v:true,e:"Verdadeiro, conforme a lista de exceções do código."},
+  {t:"A propriedade destinada à atividade agrossilvipastoril, inclusive silos e armazéns, está fora do CSCIP.",v:false,e:"Falso. A exceção é 'excetuando-se silos e armazéns': silos e armazéns continuam no CSCIP."},
+  {t:"Residências exclusivamente unifamiliares estão fora do CSCIP.",v:true,e:"Verdadeiro."}
+ ],expl:"A expressão 'excetuando-se silos e armazéns' é o detalhe que costuma confundir."},
+
+{id:"cscip03",sub:"cscip",tipo:"mc",nivel:1,enun:"Qual das situações abaixo NÃO é hipótese de aplicação do CSCIP?",
+ alts:["Construção de uma edificação","Ampliação de área construída","Mudança de ocupação ou uso","Residência exclusivamente unifamiliar"],
+ correta:3,expl:"A residência exclusivamente unifamiliar está entre as exceções. As outras três são hipóteses de aplicação."},
+
+{id:"cscip04",sub:"cscip",tipo:"mc",nivel:1,enun:"Qual é o objetivo III do CSCIP (art. 2º)?",
+ alts:["Proteger a vida dos ocupantes","Proporcionar meios de controle e extinção do incêndio","Dar acesso às operações do Corpo de Bombeiros","Proporcionar a continuidade dos serviços"],
+ correta:1,expl:"Os cinco objetivos são: I) proteger a vida; II) dificultar a propagação; III) meios de controle e extinção; IV) acesso às operações do CBM; V) continuidade dos serviços."},
+
+{id:"cscip05",sub:"cscip",tipo:"mc",nivel:2,enun:"Uma edificação foi construída em 15/03/2015. Pela Tabela 4 do CSCIP, ela é classificada como:",
+ alts:["Antiga","Existente tipo 1","Existente tipo 2","Nova"],
+ correta:2,expl:"A faixa de 8 de janeiro de 2012 a 31 de dezembro de 2018 corresponde à 'existente tipo 2' na Tabela 4."},
+
+{id:"cscip06",sub:"cscip",tipo:"mc",nivel:1,enun:"Uma edificação construída a partir de 1º de janeiro de 2019 é considerada:",
+ alts:["Existente tipo 1","Existente tipo 2","Nova, com exigência do CSCIP atual","Antiga, com exigência da NPT 002"],
+ correta:2,expl:"A faixa existente tipo 2 termina em 31/12/2018. A partir de 2019, a edificação é nova e se aplica o CSCIP atual."},
+
+{id:"cscip07",sub:"cscip",tipo:"mc",nivel:3,enun:"Uma edificação foi construída em 1985. Pela Tabela 4, a faixa 'existente tipo 1' (de 1976 até 7 de janeiro de 2012) tem como referência:",
+ alts:["Somente a NPT 002","A CPI/CB de 2001","O CSCIP atual sem exceções","Nenhuma norma, pois é anterior à Lei 19.449"],
+ correta:1,expl:"A Tabela 4 indica CPI/CB de 2001 para a existente tipo 1."},
+
+{id:"cscip10",sub:"cscip",tipo:"disc",nivel:2,enun:"Explique por que o risco de uma edificação depende da carga de incêndio e como o estudante pode obter essa carga sem precisar calcular.",
+ criterios:["Define carga de incêndio como energia calorífica liberável pela combustão dos materiais combustíveis (MJ/m²).","Relaciona a carga à classificação de risco pela Tabela 3 (leve até 300; moderado de 300 a 1.200; elevado acima de 1.200).","Explica que a NPT 014 traz a carga tabelada por ocupação, sem necessidade de cálculo."],
+ modelo:"Carga de incêndio é a energia calorífica liberável pela combustão dos materiais combustíveis do espaço, em MJ/m². A Tabela 3 do CSCIP classifica o risco: leve até 300 MJ/m²; moderado acima de 300 até 1.200; elevado acima de 1.200. A NPT 014 já traz o valor tabelado para cada ocupação, então basta consultá-la."},
+
+/* ---------- ENQUADRAMENTO ---------- */
+{id:"enq01",sub:"enq",tipo:"mc",nivel:1,enun:"Uma ocupação tem carga de incêndio de 350 MJ/m². Pela Tabela 3 do CSCIP, o risco é:",
+ alts:["Leve","Moderado","Elevado","Não classificável"],
+ correta:1,expl:"Acima de 300 até 1.200 MJ/m² é risco moderado."},
+
+{id:"enq02",sub:"enq",tipo:"mc",nivel:1,enun:"Uma ocupação tem carga de incêndio de 1.500 MJ/m². O risco, pela Tabela 3, é:",
+ alts:["Leve","Moderado","Elevado","Moderado, porque a carga está próxima de 1.200"],
+ correta:2,expl:"Acima de 1.200 MJ/m² é risco elevado."},
+
+{id:"enq05",sub:"enq",tipo:"mc",nivel:2,enun:"Um reservatório de água de 50 m² ocupa o último pavimento de um edifício. Para a área de classificação:",
+ alts:["Ele entra no cálculo da área","Ele não é computado","Ele entra somente se a área total passar de 1.000 m²","Ele entra apenas na área de risco"],
+ correta:1,expl:"Os slides de enquadramento trazem o exemplo: o reservatório de 50 m² no último pavimento não é computado."},
+
+{id:"enq06",sub:"enq",tipo:"mc",nivel:3,enun:"Um magazine tem 3 pavimentos de 800 m² cada e um subsolo de 800 m². Qual é a área de classificação?",
+ alts:["2.400 m²","3.200 m²","2.600 m²","2.000 m²"],
+ correta:1,expl:"(800 × 3) + 800 (subsolo) = 3.200 m², conforme a resolução do exercício de enquadramento."},
+
+{id:"enq07",sub:"enq",tipo:"mc",nivel:2,enun:"Um hotel tem 20 pavimentos, com pé-direito de 3,0 m cada. Considerando a altura do piso mais baixo ocupado até o piso do último pavimento, a altura para medidas de segurança é:",
+ alts:["60 m","57 m","63 m","54 m"],
+ correta:1,expl:"São 19 intervalos entre pisos de 3 m (19 × 3 = 57 m), já que o cálculo vai do piso mais baixo ocupado até o piso do último pavimento."},
+
+{id:"enq08",sub:"enq",tipo:"mc",nivel:2,enun:"A Tabela 5 do CSCIP se aplica, para risco leve, a edificações de até 1.500 m² e altura de até 9,0 m. Uma edificação de risco leve com 1.200 m² e altura de 9,5 m:",
+ alts:["Enquadra-se na Tabela 5","Não se enquadra na Tabela 5 e deve ser consultada a Tabela 6 correspondente","Enquadra-se na Tabela 5, porque a área é menor que 1.500 m²","Está dispensada de qualquer medida"],
+ correta:1,expl:"Os dois limites valem juntos. A altura de 9,5 m ultrapassa os 9,0 m da Tabela 5 para risco leve, então é preciso consultar a Tabela 6."},
+
+{id:"enq09",sub:"enq",tipo:"mc",nivel:3,enun:"Uma edificação de risco moderado tem 1.100 m² e altura de 5,0 m. Pela Tabela 5:",
+ alts:["Enquadra-se, porque a altura é inferior a 6,0 m","Não se enquadra, porque a área ultrapassa 1.000 m²","Enquadra-se, porque a área é inferior a 1.500 m²","Não se enquadra, porque a altura é inferior a 9,0 m"],
+ correta:1,expl:"Para risco moderado ou elevado, o limite da Tabela 5 é de 1.000 m² de área e 6,0 m de altura. A área de 1.100 m² ultrapassa o limite."},
+
+{id:"enq14",sub:"enq",tipo:"disc",nivel:3,enun:"Descreva, em etapas, como classificar uma edificação e encontrar as medidas de segurança exigidas.",
+ criterios:["Classifica a edificação quanto à altura, à ocupação, ao risco e à área.","Verifica se a edificação se enquadra na Tabela 5 pelos limites de área e altura do seu risco.","Se enquadra, lê as medidas na coluna da ocupação; se não enquadra, consulta a Tabela 6 correspondente.","Considera as notas da tabela (lotação para brigada e detecção, divisões E-5 e E-6)."],
+ modelo:"Primeiro, classifique a edificação quanto à altura, à ocupação (Tabela 1), ao risco (carga da NPT 014 pela Tabela 3) e à área de classificação. Depois, verifique se ela cabe na Tabela 5 pelos limites de área e altura do seu risco. Se couber, leia na coluna da ocupação as medidas exigidas e aplique as notas. Se não couber, consulte a Tabela 6 correspondente."},
+
+{id:"enq15",sub:"enq",tipo:"vf",nivel:1,enun:"Marque V ou F sobre a Tabela 3 e a classificação de risco.",
+ itens:[
+  {t:"Risco leve corresponde a carga de incêndio de até 300 MJ/m².",v:true,e:"Verdadeiro."},
+  {t:"Risco elevado corresponde a carga acima de 1.200 MJ/m².",v:true,e:"Verdadeiro."},
+  {t:"Para classificar o risco, é obrigatório calcular a carga de incêndio da edificação.",v:false,e:"Falso. A NPT 014 traz a carga tabelada por ocupação, então não é preciso calcular."}
+ ],expl:"A Tabela 3 define as faixas, e a NPT 014 entrega o valor pronto para cada ocupação."},
+
+{id:"prat03",sub:"enq",tipo:"mc",nivel:3,enun:"Uma edificação de risco moderado tem 1.100 m² e altura de 5,0 m. Qual é o primeiro passo para encontrar as medidas exigidas?",
+ alts:["Aplicar diretamente a Tabela 5, sem verificar os limites","Verificar a Tabela 5 e, como a área ultrapassa 1.000 m², consultar a Tabela 6 da ocupação","Concluir que não há exigências","Consultar apenas a Tabela 4"],
+ correta:1,expl:"O primeiro passo é verificar se a edificação cabe na Tabela 5. Como a área ultrapassa o limite de 1.000 m² para risco moderado, consulta-se a Tabela 6 correspondente."},
+
+/* ---------- ILUMINAÇÃO ---------- */
+{id:"ilum01",sub:"ilum",tipo:"mc",nivel:1,enun:"Qual norma técnica a NPT 018 adota subsidiariamente para iluminação de emergência?",
+ alts:["NBR 10898","NBR 14276","NBR 13434-1","NBR 15808"],
+ correta:0,expl:"A NPT 018 adota a NBR 10898 no que não contrariar a NPT."},
+
+{id:"ilum02",sub:"ilum",tipo:"mc",nivel:1,enun:"Qual é a autonomia mínima do sistema de iluminação de emergência, com perda máxima de 10% da luminosidade inicial?",
+ alts:["30 minutos","1 hora","2 horas","4 horas"],
+ correta:1,expl:"O item 5.4.2 exige no mínimo 1 hora de funcionamento, com perda máxima de 10% da luminosidade inicial."},
+
+{id:"ilum03",sub:"ilum",tipo:"mc",nivel:2,enun:"Qual é o nível mínimo de iluminamento em escadas ou passagens com desnível (item 5.5.2.1)?",
+ alts:["1 lux","3 lux","5 lux","10 lux"],
+ correta:2,expl:"Locais planos (corredores, halls, áreas de refúgio) exigem 3 lux. Locais com desnível, como escadas ou passagens com obstáculos, exigem 5 lux."},
+
+{id:"ilum04",sub:"ilum",tipo:"mc",nivel:1,enun:"No sistema centralizado com baterias, o tempo de comutação não pode ser superior a:",
+ alts:["1 segundo","2 segundos","5 segundos","15 segundos"],
+ correta:1,expl:"No centralizado com baterias, a comutação é de até 2 s. O arranque de 5 s se refere ao grupo motogerador."},
+
+{id:"ilum05",sub:"ilum",tipo:"mc",nivel:3,enun:"Um grupo motogerador será instalado em local confinado. Qual exigência se aplica ao compartimento onde ele fica?",
+ alts:["Resistência ao fogo de 1 h, com porta comum","Resistência ao fogo de 2 h, com acesso protegido por PCF P-90","Não há exigência de resistência ao fogo","Resistência ao fogo de 4 h, com porta de vidro"],
+ correta:1,expl:"Pelos itens 5.1.2 a 5.1.4: compartimento resistente ao fogo por 2 h, com acesso protegido por PCF P-90, e tomada de ar que não capte fumaça."},
+
+{id:"ilum06",sub:"ilum",tipo:"vf",nivel:2,enun:"Sobre a iluminação de emergência, marque V ou F.",
+ itens:[
+  {t:"O grupo motogerador deve arrancar automaticamente ou em até 5 s após a queda de energia.",v:true,e:"Verdadeiro, conforme o item 5.1."},
+  {t:"A vida útil das baterias do sistema centralizado deve ser de 2 anos.",v:false,e:"Falso. A vida útil é de 4 anos, comprovada pelo fabricante (item 5.2.3)."},
+  {t:"Blocos autônomos ficam em um único invólucro, selado, sem acesso e isento de manutenção.",v:true,e:"Verdadeiro, conforme os slides."},
+  {t:"A autonomia pode ser de apenas 30 minutos, se houver grupo motogerador.",v:false,e:"Falso. O mínimo é de 1 hora."}
+ ],expl:"Atenção aos números: 5 s para o arranque, 4 anos de bateria e 1 hora de autonomia."},
+
+{id:"ilum07",sub:"ilum",tipo:"assoc",nivel:1,enun:"Associe cada tipo de iluminação de emergência à sua descrição.",
+ pares:[["Grupo motogerador","Gerador que assume quando falta energia externa, com painel de controle e rede de alimentação"],["Centralizado com baterias","Bateria recarregada continuamente pela energia predial, alimentando painel e rede"],["Blocos autônomos","Um único invólucro selado, com uma ou mais lâmpadas"]],
+ expl:"No motogerador há um motor; no centralizado, a bateria é recarregada pela energia predial; nos blocos, tudo fica no mesmo invólucro."},
+
+{id:"ilum08",sub:"ilum",tipo:"mc",nivel:2,enun:"Qual das alternativas NÃO é uma função do sistema de iluminação de emergência, segundo a NPT 018?",
+ alts:["Clarear os ambientes de passagem para evitar acidentes","Permitir o controle visual das áreas abandonadas","Decorar o ambiente para fins estéticos","Sinalizar as rotas de fuga"],
+ correta:2,expl:"As funções são clarear, permitir o controle visual, sinalizar rotas, entre outras. Decoração não está entre elas."},
+
+{id:"ilum09",sub:"ilum",tipo:"ac",nivel:3,afirm:"Os componentes da fonte de energia centralizada devem ficar em local não acessível ao público.",just:"Porque o item 5.2.1 exige que a fonte e seus comandos fiquem em local sem risco de incêndio, ventilado e sem risco de acidentes aos usuários.",
+ alts:["As duas são verdadeiras e a segunda justifica a primeira","As duas são verdadeiras, mas a segunda não justifica a primeira","A primeira é verdadeira e a segunda é falsa","A primeira é falsa e a segunda é verdadeira","As duas são falsas"],
+ correta:0,expl:"As duas são verdadeiras, e a segunda justifica a primeira: o item 5.2.1 traz esse requisito de local."},
+
+{id:"ilum10",sub:"ilum",tipo:"disc",nivel:2,enun:"Explique quando o grupo motogerador precisa ser complementado por sistema centralizado com bateria ou por blocos autônomos.",
+ criterios:["Afirma que o complemento é necessário quando o tempo de comutação do motogerador for superior ao estabelecido pela NBR 10898 (item 5.1.5).","Cita a alternativa de sistema centralizado por bateria ou bloco autônomo."],
+ modelo:"Se o tempo de comutação do grupo motogerador for maior que o estabelecido pela NBR 10898, a NPT exige complemento por sistema centralizado com bateria ou por blocos autônomos (item 5.1.5)."},
+
+/* ---------- SINALIZAÇÃO ---------- */
+{id:"sinal01",sub:"sinal",tipo:"mc",nivel:1,enun:"A NPT 020 se aplica a quais edificações e áreas de risco?",
+ alts:["Apenas a edificações com mais de dois pavimentos","Todas, exceto residências unifamiliares","Somente a edificações de risco elevado","Somente a eventos temporários"],
+ correta:1,expl:"A NPT 020 se aplica a todas as edificações e áreas de risco, exceto residências unifamiliares."},
+
+{id:"sinal02",sub:"sinal",tipo:"mc",nivel:1,enun:"A sinalização de proibição deve ser instalada, medida do piso acabado à base da sinalização, a:",
+ alts:["1,20 m","1,50 m","1,80 m","2,20 m"],
+ correta:2,expl:"A sinalização é instalada a 1,80 m do piso acabado à base da sinalização."},
+
+{id:"sinal03",sub:"sinal",tipo:"mc",nivel:2,enun:"A distância máxima entre sinalizações de proibição ou alerta é de:",
+ alts:["5 m","10 m","15 m","20 m"],
+ correta:2,expl:"As sinalizações de proibição e alerta devem estar distanciadas em no máximo 15 m entre si."},
+
+{id:"sinal04",sub:"sinal",tipo:"mc",nivel:2,enun:"Em qual local a sinalização de piso é obrigatória para hidrantes ou extintores?",
+ alts:["Escritórios administrativos","Garagem, área de fabricação, depósito ou grande varejo","Residências unifamiliares","Corredores de escolas"],
+ correta:1,expl:"Nos locais de garagem, área de fabricação, depósito e grande varejo, a sinalização de piso deve ser implantada junto aos hidrantes ou extintores."},
+
+{id:"sinal05",sub:"sinal",tipo:"mc",nivel:2,enun:"A sinalização que indica obstáculos, como desnível de piso, rebaixo de teto e saliências, é:",
+ alts:["Facultativa","Obrigatória","Proibida","Dispensada em grandes edificações"],
+ correta:1,expl:"A indicação de obstáculos é obrigatória. Já a indicação contínua das rotas é facultativa."},
+
+{id:"sinal06",sub:"sinal",tipo:"vf",nivel:2,enun:"Sobre a sinalização de emergência, marque V ou F.",
+ itens:[
+  {t:"A sinalização de equipamentos fica imediatamente acima do equipamento sinalizado.",v:true,e:"Verdadeiro, conforme o item 6.1.4."},
+  {t:"Na porta de saída, a sinalização pode ficar a até 0,20 m da verga.",v:false,e:"Falso. A distância máxima é de 0,10 m da verga."},
+  {t:"Em escadas, a sinalização de saída fica sobre o patamar, visível nos dois sentidos.",v:true,e:"Verdadeiro."},
+  {t:"A sinalização de proibição indica as rotas de saída.",v:false,e:"Falso. Quem indica rotas é a sinalização de orientação e salvamento."}
+ ],expl:"Os números e a função de cada tipo de sinalização são muito cobrados."},
+
+{id:"sinal07",sub:"sinal",tipo:"assoc",nivel:1,enun:"Associe cada tipo de sinalização básica à sua finalidade.",
+ pares:[["Proibição","Coibir ações que levem ao início ou agravamento do incêndio"],["Alerta","Indicar áreas e materiais com potencial de risco"],["Orientação e salvamento","Indicar rotas de saída e as ações para acessá-las"],["Equipamentos","Indicar a localização de equipamentos de combate e alarme"]],
+ expl:"Cada tipo básico tem uma função própria."},
+
+{id:"sinal08",sub:"sinal",tipo:"lac",nivel:2,enun:"A indicação continuada de rotas de fuga é {0} e, quando feita, deve ser repetida a cada {1}.",
+ lacunas:[{opcoes:["facultativa","obrigatória","dispensada em todos os casos"],correta:0},{opcoes:["1 m","3 m","8 m"],correta:1}],
+ expl:"A indicação continuada das rotas é facultativa e é feita a cada 3 m, em altura constante, de 25 a 50 cm do piso."},
+
+{id:"sinal09",sub:"sinal",tipo:"disc",nivel:2,enun:"Descreva os requisitos que a sinalização de emergência deve atender quanto à visibilidade, ao idioma e ao material.",
+ criterios:["Cita destaque e fácil visualização.","Cita língua portuguesa.","Cita material fotoluminescente e, em locais de reunião de público, iluminação de balizamento.","Cita resistência mecânica, não propagação de chamas, resistência a agentes químicos, água e intempérie."],
+ modelo:"A sinalização deve ter destaque e fácil visualização, com texto em língua portuguesa. Deve ser fotoluminescente e, em locais de reunião de público, ter iluminação de balizamento. Quanto ao material, deve ter resistência mecânica, não propagar chamas e resistir a agentes químicos, água e intempérie."},
+
+/* ---------- EXTINTORES ---------- */
+{id:"ext01",sub:"ext",tipo:"mc",nivel:1,enun:"Na capacidade extintora 2-A : 20-B : C, a letra indica:",
+ alts:["O peso do extintor","O tipo de material (classe de incêndio)","O número de unidades por pavimento","A validade da carga"],
+ correta:1,expl:"O número indica a capacidade e a letra indica a classe: A (sólidos), B (líquidos inflamáveis) e C (equipamentos energizados)."},
+
+{id:"ext02",sub:"ext",tipo:"mc",nivel:1,enun:"Qual é a unidade extintora mínima de um extintor portátil de água?",
+ alts:["1-A","2-A","5-B:C","10-A"],
+ correta:1,expl:"No item 5.1.1, a carga d'água portátil tem no mínimo 2-A. O 10-A é o mínimo da carga d'água sobre rodas (5.1.2)."},
+
+{id:"ext03",sub:"ext",tipo:"mc",nivel:2,enun:"Qual é a unidade extintora mínima de um extintor portátil de CO₂?",
+ alts:["2-A","5-B:C","20-B:C","10-B:C"],
+ correta:1,expl:"No portátil, o CO₂ tem no mínimo 5-B:C. O 10-B:C é o mínimo para CO₂ sobre rodas."},
+
+{id:"ext04",sub:"ext",tipo:"mc",nivel:2,enun:"Qual é o mínimo de extintores por pavimento, pela NPT 021, em uma edificação comum?",
+ alts:["Um extintor de pó ABC","Duas unidades, sendo uma de classe A e outra de classe B:C","Três unidades, uma de cada classe","Quatro unidades"],
+ correta:1,expl:"O item 5.2.1.5 exige no mínimo duas unidades por pavimento: uma para classe A e outra para classe B:C. Também é permitido instalar duas unidades iguais de pó ABC."},
+
+{id:"ext05",sub:"ext",tipo:"mc",nivel:2,enun:"O extintor de pó ABC pode substituir:",
+ alts:["Apenas o extintor de classe A","Apenas os extintores de classe B:C","Qualquer extintor específico de classes A, B ou C","Nenhum outro, pois é exclusivo"],
+ correta:2,expl:"Pelo item 5.2.1.5.1, o pó ABC pode substituir qualquer extintor de classes A, B ou C dentro da edificação ou área de risco."},
+
+{id:"ext06",sub:"ext",tipo:"mc",nivel:2,enun:"Em qual situação basta um único extintor de pó ABC no pavimento?",
+ alts:["Em edificações, mezaninos e pavimentos com até 100 m²","Em qualquer pavimento com mais de 500 m²","Somente em residências unifamiliares","Somente em áreas de risco de GLP"],
+ correta:0,expl:"O slide traz essa exceção: um único pó ABC em edificações, mezaninos e pavimentos com até 100 m²."},
+
+{id:"ext08",sub:"ext",tipo:"vf",nivel:2,enun:"Sobre extintores, marque V ou F.",
+ itens:[
+  {t:"Extintor pode ser instalado sobre a escada, desde que sinalizado.",v:false,e:"Falso. Extintores não devem ser instalados em escadas."},
+  {t:"Devem estar desobstruídos e sinalizados.",v:true,e:"Verdadeiro."},
+  {t:"Devem ter selo de conformidade do Inmetro e estar lacrados.",v:true,e:"Verdadeiro, conforme o item 5.3."},
+  {t:"A manutenção de 3º nível é feita a cada 12 meses.",v:false,e:"Falso. O 2º nível é a cada 12 meses; o 3º nível (revisão total e ensaio hidrostático) é a cada 5 anos."}
+ ],expl:"Atenção: 2º nível = 12 meses; 3º nível = 5 anos. E nunca em escadas."},
+
+{id:"ext09",sub:"ext",tipo:"assoc",nivel:2,enun:"Associe cada tipo de manutenção ou inspeção à sua periodicidade.",
+ pares:[["2º nível de manutenção","12 meses ou fim da garantia"],["3º nível de manutenção","5 anos"],["Inspeção técnica de extintor de CO₂","6 meses"]],
+ expl:"O 2º nível inclui desmontagem, limpeza, inspeção e recarga. O 3º nível inclui revisão total e ensaio hidrostático. O CO₂ tem inspeção técnica semestral."},
+
+{id:"ext10",sub:"ext",tipo:"disc",nivel:2,enun:"Explique o que significa a capacidade extintora 2-A : 20-B : C e por que cada letra importa na escolha do extintor.",
+ criterios:["Explica que o número é a capacidade do extintor, obtida em ensaio normalizado.","Associa A a sólidos, B a líquidos inflamáveis e C a equipamentos energizados.","Relaciona a escolha do extintor à classe de incêndio predominante no local."],
+ modelo:"2-A : 20-B : C indica a capacidade extintora em ensaios normalizados. O número antes de A indica o poder em sólidos, como madeira; o número antes de B, o poder em líquidos inflamáveis; e C indica que o agente não conduz eletricidade, podendo ser usado em equipamentos energizados. A escolha leva em conta a classe de incêndio predominante."},
+
+/* ---------- HUMANO ---------- */
+{id:"humano01",sub:"humano",tipo:"mc",nivel:1,enun:"Qual definição corresponde ao tempo de abandono efetivo (fase 3)?",
+ alts:["Do início do incêndio até o ocupante tomar conhecimento","Da identificação dos sinais até a decisão de deixar o edifício","Da decisão de deixar o edifício até estar no exterior ou em local seguro","Do alarme até a chegada do bombeiro"],
+ correta:2,expl:"O tempo de evacuação ou abandono efetivo vai da decisão de deixar o edifício até estar no exterior ou em local seguro."},
+
+/* ---------- BRIGADA ---------- */
+{id:"brig01",sub:"brig",tipo:"mc",nivel:1,enun:"Qual é a carga horária mínima para habilitação de profissional que forma e capacita brigadistas orgânicos?",
+ alts:["40 horas","120 horas","360 horas","720 horas"],
+ correta:2,expl:"São habilitados para formar brigadistas orgânicos os profissionais com formação ou especialização em segurança do trabalho ou segurança contra incêndio, com carga horária mínima de 360 horas."},
+
+{id:"brig02",sub:"brig",tipo:"mc",nivel:2,enun:"Para uma população de 1.260 pessoas, o número de brigadistas orgânicos, pelo cálculo de 1 para cada 200 pessoas, é:",
+ alts:["6","7","8","63"],
+ correta:1,expl:"1.260 / 200 = 6,3, que arredondado para cima dá 7 brigadistas orgânicos."},
+
+{id:"brig04",sub:"brig",tipo:"mc",nivel:2,enun:"Pelas notas das Tabelas 5 e 6 do CSCIP, a brigada é exigida para lotação superior a:",
+ alts:["100 pessoas","200 pessoas","400 pessoas","1.000 pessoas"],
+ correta:2,expl:"A nota 1 aplica-se a lotação superior a 100 pessoas, e a nota 3 a lotação superior a 400 pessoas. A nota 4 se refere apenas às divisões E-5 e E-6."},
+
+{id:"brig05",sub:"brig",tipo:"vf",nivel:2,enun:"Sobre a formação e a atuação da brigada, marque V ou F.",
+ itens:[
+  {t:"Bombeiro da ativa pode dar aula em curso de brigadista.",v:false,e:"Falso. Os slides afirmam que bombeiro da ativa não pode dar aula em curso de brigadista."},
+  {t:"Técnico de segurança do trabalho é obrigado a se registrar no CREA para atuar como formador.",v:false,e:"Falso. Os slides afirmam que ele não tem essa obrigação."}
+ ],expl:"Regras de quem pode dar aula e de registro profissional são pontos cobrados com frequência."},
+
+{id:"brig06",sub:"brig",tipo:"mc",nivel:2,enun:"Um estabelecimento de ocupação secundária F-3 tem população potencialmente exposta de 450 pessoas. Pelo item 5.1.1 da NPT 017, a brigada:",
+ alts:["Não é exigida, porque F-3 só exige brigada acima de 1.000 pessoas","É exigida, porque a população supera 400 pessoas em ocupação secundária das divisões F-3, F-6, F-7 ou F-11","É exigida apenas se houver extintor de pó ABC","É exigida somente para E-5"],
+ correta:1,expl:"O item 5.1.1 exige brigada na ocupação secundária quando a população potencialmente exposta é superior a 400 pessoas nas divisões F-3, F-6, F-7 ou F-11."},
+
+{id:"brig07",sub:"brig",tipo:"prat",nivel:3,enun:"Exercício em etapas. Área comum de um aeroporto (divisão F-4, 8.000 m², tabela 6F.2 exige brigada em edificação térrea), com população de 520 pessoas.",
+ etapas:[
+  {enun:"Quantos brigadistas orgânicos, pelo cálculo de 1 para cada 200 pessoas?",alts:["2","3","5","520"],correta:1,expl:"520 / 200 = 2,6, arredondado para cima: 3 brigadistas orgânicos."},
+  {enun:"Qual outra forma equivalente de atender a exigência é indicada na resolução do exercício?",alts:["Dois brigadistas profissionais","Um brigadista profissional","Nenhuma, pois a área comum não tem brigada","Cinco brigadistas orgânicos"],correct:1,correta:1,expl:"A resolução registra que os 3 orgânicos podem ser substituídos por 1 brigadista profissional."}
+ ],expl:"O cálculo usa a população da área comum, e a tabela da ocupação indica se a brigada é exigida."},
+
+{id:"brig08",sub:"brig",tipo:"mc",nivel:2,enun:"Entre as responsabilidades do proprietário ou responsável pela edificação, está:",
+ alts:["Vedar o uso de uniformes que pareçam do Corpo de Bombeiros","Dispensar o uso de EPIs para evitar custos","Permitir que o brigadista atue sem a declaração de brigada","Ministrar pessoalmente o curso de capacitação"],
+ correta:0,expl:"Os slides listam a vedação de uniformes que pareçam do CBM entre as responsabilidades do proprietário."},
+
+/* ---------- ALARME ---------- */
+{id:"alarm02",sub:"alarm",tipo:"mc",nivel:1,enun:"Os acionadores manuais de alarme devem ser instalados a uma altura entre:",
+ alts:["0,50 m e 0,70 m","0,90 m e 1,35 m","1,50 m e 2,00 m","2,20 m e 3,50 m"],
+ correta:1,expl:"Os acionadores ficam entre 0,90 m e 1,35 m de altura, na cor vermelha."},
+
+{id:"alarm03",sub:"alarm",tipo:"mc",nivel:2,enun:"Em um edifício residencial de até 30 m, o alarme pode ser substituído por interfone, com fonte autônoma de duração mínima de:",
+ alts:["15 minutos","30 minutos","60 minutos","24 horas"],
+ correta:2,expl:"Pelo item 5.21, a fonte autônoma do interfone deve durar no mínimo 60 minutos, com central na portaria e vigilância humana de 24 horas."},
+
+{id:"alarm05",sub:"alarm",tipo:"assoc",nivel:1,enun:"Associe cada componente do sistema de detecção e alarme à sua função.",
+ pares:[["Central de detecção e alarme","Receber os sinais, vigiar o sistema e acionar o alarme"],["Acionador manual","Permitir que uma pessoa dispare o alarme"],["Avisador sonoro ou visual","Alertar as pessoas na edificação"],["Detector","Perceber sinais do início do incêndio"]],
+ expl:"Cada componente tem uma função: detectar, acionar, avisar e centralizar."},
+
+{id:"alarm06",sub:"alarm",tipo:"lac",nivel:1,enun:"Os acionadores manuais devem estar a no máximo {0} uns dos outros e ser de cor {1}.",
+ lacunas:[{opcoes:["15 m","30 m","50 m"],correta:1},{opcoes:["amarela","vermelha","azul"],correta:1}],
+ expl:"Acionadores manuais: distância máxima de 30 m entre si, altura de 0,90 m a 1,35 m e cor vermelha."},
+
+/* ---------- HIDRANTES ---------- */
+{id:"hidr01",sub:"hidr",tipo:"mc",nivel:1,enun:"Pela Tabela 2 da NPT 022, qual é o sistema tipo 1?",
+ alts:["Hidrantes","Mangotinhos (somente esguicho)","Chuveiros automáticos","Espuma mecânica"],
+ correta:1,expl:"O tipo 1 é composto apenas por esguicho, o que corresponde ao mangotinho. Os tipos 2 a 5 incluem abrigo, mangueira e chave."},
+
+{id:"hidr04",sub:"hidr",tipo:"mc",nivel:2,enun:"Qualquer ponto da área protegida deve ser atendido por um esguicho com alcance mínimo de jato de:",
+ alts:["5 m","10 m","15 m","25 m"],
+ correta:1,expl:"O alcance mínimo de jato é de 10 m, com contato visual sem barreiras físicas, após adentrar pelo menos 1 m no compartimento."},
+
+/* ---------- GLP ---------- */
+{id:"glp01",sub:"glp",tipo:"mc",nivel:1,enun:"O GLP é mais pesado que o ar. Na prática, isso significa que ele:",
+ alts:["Sobe rapidamente e se dispersa","Se acumula rente ao chão","Não oferece risco em ambientes fechados","Flutua acima dos telhados"],
+ correta:1,expl:"Por ser mais pesado que o ar, o GLP tende a se acumular rente ao chão, o que reforça a proibição de instalações em locais confinados."},
+
+{id:"glp02",sub:"glp",tipo:"mc",nivel:1,enun:"Pela NPT 028, a diferença entre recipiente transportável e estacionário é dada pela capacidade. O transportável vai até:",
+ alts:["P-13","P-45","P-190 (até 0,5 m³)","P-500"],
+ correta:2,expl:"Recipientes de até 0,5 m³ (até P-190) são transportáveis; acima disso, são estacionários."},
+
+{id:"glp03",sub:"glp",tipo:"mc",nivel:2,enun:"Uma central de GLP com capacidade total entre 2 m³ e 3,5 m³ deve ter afastamento de:",
+ alts:["0 m","1,5 m","3 m","5 m"],
+ correta:1,expl:"Pelo Anexo B: 1,5 m para capacidade total entre 2 e 3,5 m³; 3 m para capacidade entre 3,5 e 5,5 m³."},
+
+{id:"glp04",sub:"glp",tipo:"mc",nivel:2,enun:"Uma central de GLP com capacidade total de até 190 kg pode:",
+ alts:["Ser encostada na divisa ou na edificação, desde que tenha abertura frontal inteiramente ventilada","Ficar obrigatoriamente em porão","Ficar sem qualquer ventilação","Ser instalada no interior de garagem subterrânea"],
+ correta:0,expl:"Centrais de até 190 kg podem ser encostadas na divisa ou na edificação, com abertura frontal inteiramente ventilada e área livre igual ou maior que a projeção da central."},
+
+{id:"glp08",sub:"glp",tipo:"vf",nivel:2,enun:"Sobre o GLP, marque V ou F.",
+ itens:[
+  {t:"É proibido instalar recipientes de GLP em porão.",v:true,e:"Verdadeiro. Porão é local confinado."},
+  {t:"O GLP é mais leve que o ar e tende a subir.",v:false,e:"Falso. É mais pesado que o ar."},
+  {t:"O plugue-fusível de um recipiente é acionado entre 70 °C e 77 °C.",v:true,e:"Verdadeiro, conforme os slides."}
+ ],expl:"Atenção à densidade do GLP: ele é mais pesado que o ar."},
+
+{id:"glp09",sub:"glp",tipo:"ac",nivel:2,afirm:"A central de GLP não pode ser instalada em garagem subterrânea.",just:"Porque é proibida a instalação de recipientes de GLP em locais confinados, como porão, garagem subterrânea e forro.",
+ alts:["As duas são verdadeiras e a segunda justifica a primeira","As duas são verdadeiras, mas a segunda não justifica a primeira","A primeira é verdadeira e a segunda é falsa","A primeira é falsa e a segunda é verdadeira","As duas são falsas"],
+ correta:0,expl:"As duas são verdadeiras, e a segunda justifica a primeira pela regra dos locais confinados."},
+
+{id:"glp10",sub:"glp",tipo:"lac",nivel:2,enun:"O limite de inflamabilidade inferior do GLP no ar está entre {0} %, e o superior, entre {1} %.",
+ lacunas:[{opcoes:["1,8 a 2,1","8,5 a 9,5","0,5 a 1,0"],correta:0},{opcoes:["1,8 a 2,1","8,5 a 9,5","15 a 20"],correta:1}],
+ expl:"Os slides indicam 1,8 a 2,1% (inferior) e 8,5 a 9,5% (superior)."},
+
+{id:"glp11",sub:"glp",tipo:"disc",nivel:3,enun:"Explique quais fatores determinam a distância de afastamento de uma central de GLP e por que ela aumenta com a capacidade.",
+ criterios:["Menciona a capacidade total da central e as faixas do Anexo B (2 a 3,5 m³: 1,5 m; 3,5 a 5,5 m³: 3 m).","Explica que a distância aumenta porque a quantidade de gás e o potencial de dano crescem com a capacidade.","Menciona que, em centrais encostadas, a construção e a ventilação entram na análise."],
+ modelo:"O afastamento depende principalmente da capacidade total da central, conforme o Anexo B: 1,5 m para capacidade entre 2 e 3,5 m³ e 3 m entre 3,5 e 5,5 m³. A distância cresce com a capacidade porque aumenta a quantidade de gás que pode vazar. Em centrais encostadas, também contam a construção e a ventilação."}
+];
+
+</script>
+<script>
+(() => {
+"use strict";
+const KEY = "scip-estudo-v1";
+const LET = "ABCDE";
+const $ = (s, r = document) => r.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const BY = Object.fromEntries(QUESTOES.map(q => [q.id, q]));
+const SUBS = Object.fromEntries(ASSUNTOS.map(a => [a.id, a]));
+
+/* ---------- armazenamento (localStorage, com proteção) ---------- */
+function loadStore(){
+  let s = null;
+  try { s = JSON.parse(localStorage.getItem(KEY)); } catch (e) { s = null; }
+  return Object.assign({ answers:{}, fav:[], session:null }, s && typeof s === "object" ? s : {});
+}
+let store = loadStore();
+function persist(){ try { localStorage.setItem(KEY, JSON.stringify(store)); } catch (e) { /* armazenamento indisponível: segue sem salvar */ } }
+
+/* ---------- utilidades ---------- */
+function shuffle(a){ a = a.slice(); for (let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+function perm(key, n){
+  const s = store.session;
+  if (!s.perms[key] || s.perms[key].length !== n){ s.perms[key] = shuffle([...Array(n).keys()]); persist(); }
+  return s.perms[key];
+}
+function curQ(){ return BY[store.session.ids[store.session.idx]]; }
+function setResp(q, v){ store.session.resp[q.id] = v; persist(); }
+function defaultResp(q){
+  switch (q.tipo){
+    case "mc": case "ac": return null;
+    case "vf": return q.itens.map(() => null);
+    case "assoc": case "lac": return q.tipo === "lac" ? q.lacunas.map(() => null) : q.pares.map(() => null);
+    case "prat": return q.etapas.map(() => null);
+    case "disc": return { texto: "", marks: null };
+  }
+}
+function getResp(q){ const s = store.session; if (s.resp[q.id] === undefined) s.resp[q.id] = defaultResp(q); return s.resp[q.id]; }
+
+/* ---------- avaliação ---------- */
+function evaluate(q){
+  const r = getResp(q);
+  switch (q.tipo){
+    case "mc": case "ac": { const ok = r !== null && perm(q.id, q.alts.length)[r] === q.correta; return { ok, parts:[ok] }; }
+    case "vf": { const parts = q.itens.map((it, i) => r[i] === it.v); return { ok: parts.every(Boolean), parts }; }
+    case "assoc": { const p = perm(q.id, q.pares.length); const parts = q.pares.map((_, i) => r[i] !== null && p[r[i]] === i); return { ok: parts.every(Boolean), parts }; }
+    case "lac": { const parts = q.lacunas.map((L, k) => r[k] !== null && perm(q.id + "#" + k, L.opcoes.length)[r[k]] === L.correta); return { ok: parts.every(Boolean), parts }; }
+    case "prat": { const parts = q.etapas.map((E, i) => r[i] !== null && perm(q.id + "#" + i, E.alts.length)[r[i]] === E.correta); return { ok: parts.every(Boolean), parts }; }
+    case "disc": { const m = r.marks || []; const ok = m.length === q.criterios.length && m.every(Boolean); return { ok, parts: m }; }
+  }
+}
+function complete(q){
+  const r = getResp(q);
+  if (q.tipo === "mc" || q.tipo === "ac") return r !== null;
+  if (q.tipo === "disc") return Array.isArray(r.marks) || r.marks === null && false;
+  return r.every(x => x !== null);
+}
+function answerText(q){
+  const p = (k, n) => perm(k, n);
+  switch (q.tipo){
+    case "mc": case "ac": return `<p><strong>Resposta correta:</strong> ${esc(LET[p(q.id, q.alts.length).indexOf(q.correta)])}) ${esc(q.alts[q.correta])}</p>`;
+    case "vf": return "<ul>" + q.itens.map(it => `<li>${it.v ? "V" : "F"}: ${esc(it.t)}</li>`).join("") + "</ul>";
+    case "assoc": return "<ul>" + q.pares.map(([a, b]) => `<li>${esc(a)} → ${esc(b)}</li>`).join("") + "</ul>";
+    case "lac": return "<ul>" + q.lacunas.map((L, k) => `<li>Lacuna ${k + 1}: ${esc(L.opcoes[L.correta])}</li>`).join("") + "</ul>";
+    case "prat": return "<ol>" + q.etapas.map(E => `<li>${esc(E.alts[E.correta])}</li>`).join("") + "</ol>";
+    case "disc": return `<p><strong>Modelo de resposta:</strong> ${esc(q.modelo)}</p><p><strong>Critérios:</strong></p><ul>${q.criterios.map(c => `<li>${esc(c)}</li>`).join("")}</ul>`;
+  }
+}
+
+/* ---------- sessões ---------- */
+function newSession(kind, ids, title){
+  store.session = { kind, title, ids, idx:0, resp:{}, checked:{}, revealed:{}, perms:{}, done:false, startedAt: Date.now() };
+  persist();
+}
+function poolFor(st){
+  let ids = QUESTOES.filter(q => st.subs.includes(q.sub) && st.tipos.includes(q.tipo) && st.niveis.includes(q.nivel)).map(q => q.id);
+  if (st.mode === "sim") ids = ids.filter(id => BY[id].tipo !== "disc");
+  if (st.onlyNew) ids = ids.filter(id => !store.answers[id]);
+  if (st.onlyFav) ids = ids.filter(id => store.fav.includes(id));
+  if (st.onlyWrong) ids = ids.filter(id => store.answers[id] && !store.answers[id].ok);
+  return ids;
+}
+function startFromSetup(st){
+  let ids = poolFor(st);
+  if (!ids.length){ ui.msg = "Nenhuma questão com esses filtros. Ajuste as opções e tente de novo."; render(); return; }
+  if (st.mode === "sim"){
+    ids = shuffle(ids);
+    if (st.count !== "all") ids = ids.slice(0, Math.min(+st.count, ids.length));
+    newSession("sim", ids, `Simulado (${ids.length} questões)`);
+  } else {
+    if (st.shuffle) ids = shuffle(ids);
+    newSession("practice", ids, "Prática");
+  }
+  ui.view = "quiz"; ui.msg = ""; render();
+}
+function startFromIds(kind, ids, title){
+  if (!ids.length) return;
+  newSession(kind, ids, title); ui.view = "quiz"; render();
+}
+function submit(q){
+  const s = store.session;
+  if (s.checked[q.id]) return;
+  const ev = evaluate(q);
+  s.checked[q.id] = true;
+  if (s.kind === "practice"){
+    store.answers[q.id] = { ok: ev.ok && !s.revealed[q.id], consulted: !!s.revealed[q.id], ts: Date.now() };
+  }
+  persist(); render();
+}
+function next(){
+  const s = store.session;
+  s.idx++;
+  if (s.idx >= s.ids.length) finish();
+  persist(); render();
+}
+function finish(){
+  const s = store.session;
+  if (s.done) return;
+  s.done = true; s.finishedAt = Date.now();
+  if (s.kind === "sim"){
+    for (const id of s.ids){
+      if (!s.checked[id]) continue;
+      const q = BY[id]; const ev = evaluate(q);
+      store.answers[id] = { ok: ev.ok, ts: Date.now(), mode:"sim" };
+    }
+  }
+  persist();
+  ui.view = "result";
+}
+
+/* ---------- estado da interface ---------- */
+const ui = { view:"home", setup:null, msg:"", resetAsk:false };
+function freshSetup(mode){
+  return { mode, subs: ASSUNTOS.map(a => a.id), tipos: Object.keys(TIPOS).filter(t => mode !== "sim" || t !== "disc"),
+    niveis:[1,2,3], onlyNew:false, onlyFav:false, onlyWrong:false, shuffle:true, count:"20" };
+}
+
+/* ---------- renderização: partes ---------- */
+function pct(a, b){ return b ? Math.round(a / b * 100) : 0; }
+function altHTML(text, cls, attrs, checked, disabled){
+  return `<label class="alt ${cls}"><input type="radio" ${attrs} ${checked ? "checked" : ""} ${disabled ? "disabled" : ""}><span class="let">${"" /*letra*/}</span><span>${esc(text)}</span></label>`;
+}
+function optionList(q){
+  const s = store.session, r = getResp(q), checked = !!s.checked[q.id];
+  const showFb = s.kind === "practice" && (checked || s.revealed[q.id]);
+  const p = perm(q.id, q.alts.length);
+  let h = "";
+  p.forEach((orig, d) => {
+    let cls = "";
+    if (showFb){ if (orig === q.correta) cls = "ok"; else if (r === d) cls = "bad"; }
+    else if (r === d) cls = "sel";
+    h += `<label class="alt ${cls}"><input type="radio" name="q-${esc(q.id)}" data-act="pick" data-q="${q.id}" data-v="${d}" ${r === d ? "checked" : ""} ${checked ? "disabled" : ""}><span class="let">${LET[d]}</span><span>${esc(q.alts[orig])}</span></label>`;
+  });
+  return `<div>${h}</div>`;
+}
+function bodyHTML(q){
+  const s = store.session, r = getResp(q), checked = !!s.checked[q.id];
+  const rev = !!s.revealed[q.id];
+  const prac = s.kind === "practice";
+  const showFb = prac && (checked || rev);
+  switch (q.tipo){
+    case "mc": return `<p class="enun">${esc(q.enun)}</p>` + optionList(q);
+    case "ac": return `<p class="enun">Julgue as duas afirmações.</p>
+      <div class="item"><strong>I.</strong> ${esc(q.afirm)}</div><div class="item"><strong>II.</strong> ${esc(q.just)}</div>` + optionList(q);
+    case "vf": return `<p class="enun">${esc(q.enun)}</p>` + q.itens.map((it, i) => {
+        const fb = showFb ? `<div class="fb ${r[i] === it.v ? "ok" : "bad"}">${r[i] === it.v ? "✓ Correto." : "✗ Incorreto."} ${esc(it.e)}</div>` : "";
+        return `<div class="item"><p>${esc(it.t)}</p><div class="tf">
+          <button data-act="vf" data-q="${q.id}" data-i="${i}" data-v="1" class="${r[i] === true ? "on" : ""}" ${checked ? "disabled" : ""}>Verdadeiro</button>
+          <button data-act="vf" data-q="${q.id}" data-i="${i}" data-v="0" class="${r[i] === false ? "on" : ""}" ${checked ? "disabled" : ""}>Falso</button></div>${fb}</div>`;
+      }).join("");
+    case "assoc": {
+      const p = perm(q.id, q.pares.length);
+      return `<p class="enun">${esc(q.enun)}</p>` + q.pares.map(([a], i) => {
+        const ok = showFb && r[i] !== null && p[r[i]] === i;
+        const opts = p.map((pi, d) => `<option value="${d}" ${r[i] === d ? "selected" : ""}>${esc(q.pares[pi][1])}</option>`).join("");
+        const fb = showFb ? `<div class="fb ${ok ? "ok" : "bad"}">${ok ? "✓ Correto." : "✗ Correto: " + esc(q.pares[i][1])}</div>` : "";
+        return `<div class="item"><p><strong>${esc(a)}</strong></p><select data-act="assoc" data-q="${q.id}" data-i="${i}" ${checked ? "disabled" : ""}><option value="">Escolha…</option>${opts}</select>${fb}</div>`;
+      }).join("");
+    }
+    case "lac": {
+      const parts = q.enun.split(/\{(\d)\}/);
+      let txt = "";
+      parts.forEach((t, idx) => {
+        if (idx % 2 === 0){ txt += esc(t); return; }
+        const k = +t, L = q.lacunas[k], p = perm(q.id + "#" + k, L.opcoes.length);
+        const opts = p.map((oi, d) => `<option value="${d}" ${r[k] === d ? "selected" : ""}>${esc(L.opcoes[oi])}</option>`).join("");
+        const ok = showFb && r[k] !== null && p[r[k]] === L.correta;
+        const cls = showFb ? (ok ? "ok" : "bad") : "";
+        txt += `<select class="${cls}" data-act="lac" data-q="${q.id}" data-k="${k}" ${checked ? "disabled" : ""}><option value="">…</option>${opts}</select>`;
+      });
+      const fbs = showFb ? `<div class="fb ${evaluate(q).ok ? "ok" : "bad"}">${evaluate(q).ok ? "✓ Todas as lacunas corretas." : "✗ Há lacuna incorreta. Gabarito: " + q.lacunas.map(L => esc(L.opcoes[L.correta])).join(" / ")}</div>` : "";
+      return `<p class="enun">${txt}</p>${fbs}`;
+    }
+    case "prat": {
+      return `<p class="enun">${esc(q.enun)}</p>` + q.etapas.map((E, i) => {
+        const p = perm(q.id + "#" + i, E.alts.length);
+        let opts = "";
+        p.forEach((orig, d) => {
+          let cls = "";
+          if (showFb){ if (orig === E.correta) cls = "ok"; else if (r[i] === d) cls = "bad"; }
+          else if (r[i] === d) cls = "sel";
+          opts += `<label class="alt ${cls}"><input type="radio" name="p-${q.id}-${i}" data-act="step" data-q="${q.id}" data-i="${i}" data-v="${d}" ${r[i] === d ? "checked" : ""} ${checked ? "disabled" : ""}><span class="let">${LET[d]}</span><span>${esc(E.alts[orig])}</span></label>`;
+        });
+        const fb = showFb ? `<div class="fb ${r[i] !== null && p[r[i]] === E.correta ? "ok" : "bad"}">${esc(E.expl)}</div>` : "";
+        return `<div class="step"><h3>Etapa ${i + 1}</h3><p>${esc(E.enun)}</p>${opts}${fb}</div>`;
+      }).join("");
+    }
+    case "disc": {
+      const marks = r.marks;
+      let h = `<p class="enun">${esc(q.enun)}</p>
+        <textarea data-act="texto" data-q="${q.id}" placeholder="Escreva sua resposta aqui (ela fica salva neste navegador)." ${checked ? "disabled" : ""}>${esc(r.texto)}</textarea>`;
+      if (prac && rev){
+        h += `<div class="expl"><strong>Critérios de avaliação</strong><ul>${q.criterios.map(c => `<li>${esc(c)}</li>`).join("")}</ul>
+          <strong>Modelo de resposta</strong><p>${esc(q.modelo)}</p></div>`;
+        if (!checked){
+          h += `<p class="muted" style="margin-top:14px">Marque os critérios que sua resposta atende:</p>` + q.criterios.map((c, i) =>
+            `<label class="alt"><input type="checkbox" data-act="mark" data-q="${q.id}" data-i="${i}" ${marks && marks[i] ? "checked" : ""}><span>${esc(c)}</span></label>`).join("");
+        } else {
+          h += `<p class="fb ${evaluate(q).ok ? "ok" : "bad"}">Autoavaliação: ${evaluate(q).ok ? "atende a todos os critérios." : "não atende a todos os critérios."}</p>`;
+        }
+      }
+      return h;
+    }
+  }
+}
+function explHTML(q){
+  if (!q.expl) return "";
+  return `<div class="expl"><strong>Resolução</strong><p>${esc(q.expl)}</p></div>`;
+}
+
+/* ---------- telas ---------- */
+function viewHome(){
+  const total = QUESTOES.length;
+  const answered = Object.keys(store.answers).filter(id => BY[id]).length;
+  const correct = Object.keys(store.answers).filter(id => BY[id] && store.answers[id].ok).length;
+  const s = store.session;
+  const resume = s && !s.done ? `<button class="btn" data-act="resume">Continuar sessão (${s.idx + 1}/${s.ids.length})</button>` : "";
+  const lastRes = s && s.done ? `<button class="btn" data-act="result">Ver último resultado</button>` : "";
+  return `
+  <section class="hero">
+    <span class="chip">CSCIP · NPT 014 · NPTs</span>
+    <h1>Estude o CSCIP e as NPTs no seu ritmo</h1>
+    <p class="lead">Resumo em PDF, banco de ${total} questões com gabarito e resolução para cada uma, modos de prática e simulado, e acompanhamento do seu desempenho por assunto.</p>
+    <div class="row" style="margin-top:18px">
+      <a class="btn pdf" href="public/resumo-scip.pdf" target="_blank" rel="noopener">📄 Abrir resumo em PDF</a>
+      <button class="btn pri" data-act="setup" data-mode="practice">Praticar</button>
+      <button class="btn" data-act="setup" data-mode="sim">Fazer simulado</button>
+    </div>
+  </section>
+  ${resume || lastRes ? `<div class="row" style="margin-bottom:18px">${resume}${lastRes}</div>` : ""}
+  <div class="grid">
+    <div class="card"><div class="stat">${answered}/${total}</div><p class="muted">questões respondidas</p>
+      <div class="bar"><i style="width:${pct(answered, total)}%"></i></div></div>
+    <div class="card"><div class="stat">${pct(correct, answered)}%</div><p class="muted">de acerto nas respondidas</p></div>
+    <div class="card"><div class="stat">${store.fav.length}</div><p class="muted">questões favoritas</p></div>
+  </div>
+  <h2>Como funciona</h2>
+  <div class="card">
+    <p><strong>Praticar:</strong> escolha assuntos e tipos de questão. Você responde e vê a resolução na hora.</p>
+    <p><strong>Simulado:</strong> questões sorteadas, sem resolução durante a prova. O gabarito aparece ao final. Questões discursivas não entram no simulado.</p>
+    <p><strong>Ocultação:</strong> as respostas e resoluções só aparecem depois que você responde, ou quando você escolhe "Ver resolução".</p>
+    <p class="muted" style="margin:0">Seu progresso fica salvo somente neste navegador. Nada é enviado para servidores.</p>
+  </div>
+  <h2>Assuntos</h2>
+  <div class="grid">${ASSUNTOS.map(a => {
+    const n = QUESTOES.filter(q => q.sub === a.id).length;
+    return `<div class="card" style="border-left:5px solid ${a.cor}"><span class="chip">Módulo ${a.modulo}</span><h3>${esc(a.nome)}</h3><p class="muted" style="margin:0">${n} questões</p></div>`;
+  }).join("")}</div>
+  <div class="warn" style="margin-top:22px"><strong>Limitações do banco.</strong> Algumas partes do material não têm gabarito legível ou completo (por exemplo, exercícios de enquadramento sem resposta no arquivo e parte das tabelas de exercícios). Essas questões não foram incluídas, para não inventar respostas. Itens com dados conflitantes no material original também não foram usados como gabarito.</div>`;
+}
+
+function viewSetup(){
+  const st = ui.setup;
+  const isSim = st.mode === "sim";
+  const cnt = QUESTOES.filter(q => st.subs.includes(q.sub)).length;
+  const pool = poolFor(st).length;
+  const tipoBox = Object.keys(TIPOS).filter(t => !(isSim && t === "disc")).map(t =>
+    `<label><input type="checkbox" data-act="sf" data-f="tipos" data-v="${t}" ${st.tipos.includes(t) ? "checked" : ""}>${esc(TIPOS[t])}</label>`).join("");
+  return `
+  <h1>${isSim ? "Simulado" : "Praticar"}</h1>
+  <p class="lead">${isSim ? "Escolha o tamanho e os assuntos. As respostas só aparecem no final." : "Filtre o que quer estudar. Você verá a resolução depois de cada resposta."}</p>
+  ${ui.msg ? `<p class="msg">${esc(ui.msg)}</p>` : ""}
+  <div class="card">
+    <div class="fgroup"><h3>Assuntos</h3>${ASSUNTOS.map(a => `<label><input type="checkbox" data-act="sf" data-f="subs" data-v="${a.id}" ${st.subs.includes(a.id) ? "checked" : ""}>${esc(a.nome)}</label>`).join("")}</div>
+    <div class="fgroup"><h3>Tipos de questão</h3>${tipoBox}</div>
+    <div class="fgroup"><h3>Dificuldade</h3>${[1,2,3].map(n => `<label><input type="checkbox" data-act="sf" data-f="niveis" data-v="${n}" ${st.niveis.includes(n) ? "checked" : ""}>${NIVEIS[n]}</label>`).join("")}</div>
+    <div class="fgroup"><h3>Mostrar só</h3>
+      <label><input type="checkbox" data-act="sf" data-f="onlyNew" ${st.onlyNew ? "checked" : ""}>Não respondidas</label>
+      <label><input type="checkbox" data-act="sf" data-f="onlyWrong" ${st.onlyWrong ? "checked" : ""}>Erradas antes</label>
+      <label><input type="checkbox" data-act="sf" data-f="onlyFav" ${st.onlyFav ? "checked" : ""}>Favoritas</label></div>
+    ${isSim ? `<div class="fgroup"><h3>Tamanho do simulado</h3>${["10","20","30","all"].map(c => `<label><input type="radio" name="cnt" data-act="sf" data-f="count" data-v="${c}" ${st.count === c ? "checked" : ""}>${c === "all" ? "Todas disponíveis" : c + " questões"}</label>`).join("")}</div>`
+      : `<div class="fgroup"><label><input type="checkbox" data-act="sf" data-f="shuffle" ${st.shuffle ? "checked" : ""}>Embaralhar a ordem das questões</label></div>`}
+    <p class="muted">Questões disponíveis com estes filtros: <strong>${pool}</strong> de ${cnt}.${isSim ? " Discursivas não entram no simulado." : ""}</p>
+    <div class="row"><button class="btn pri" data-act="start" ${pool ? "" : "disabled"}>Começar</button><button class="btn ghost" data-act="home" data-go="home">Voltar</button></div>
+  </div>`;
+}
+
+function viewQuiz(){
+  const s = store.session;
+  if (s.idx >= s.ids.length){ finish(); return viewResult(); }
+  const q = curQ();
+  const n = s.ids.length, cur = s.idx + 1;
+  const prac = s.kind === "practice";
+  const checked = !!s.checked[q.id], rev = !!s.revealed[q.id];
+  const fav = store.fav.includes(q.id);
+  const sub = SUBS[q.sub];
+  const isLast = s.idx === n - 1;
+  let act = "";
+  if (!checked){
+    const canSubmit = q.tipo === "disc" ? (rev && Array.isArray(getResp(q).marks)) : complete(q);
+    act += `<button class="btn pri" data-act="submit" data-q="${q.id}" ${canSubmit ? "" : "disabled"}>${q.tipo === "disc" ? "Registrar autoavaliação" : "Responder"}</button>`;
+    if (prac && !rev && q.tipo !== "disc") act += `<button class="btn ghost" data-act="reveal" data-q="${q.id}">Ver resolução</button>`;
+    if (prac && !rev && q.tipo === "disc") act += `<button class="btn ghost" data-act="reveal" data-q="${q.id}">Ver critérios e modelo</button>`;
+  }
+  if (checked || (prac && rev && q.tipo !== "disc")) { /* sem ações extras */ }
+  act += `<button class="btn ${checked ? "pri" : "ghost"}" data-act="next">${isLast ? "Finalizar" : (checked ? "Próxima" : "Pular")}</button>`;
+  act += `<button class="btn ghost" data-act="finish">Encerrar e ver resultado</button>`;
+
+  const feedback = prac && (checked || rev) && q.tipo !== "disc" && !checked ? "" : "";
+  const showExpl = prac && (checked || rev) && q.tipo !== "disc";
+  return `
+  <div class="qhead">
+    <div style="flex:1;min-width:220px">
+      <span class="chip">${esc(s.kind === "sim" ? "Simulado" : "Prática")}</span>
+      <span class="chip">${esc(sub.nome)}</span>
+      <span class="chip">${esc(TIPOS[q.tipo])}</span>
+      <span class="chip">${esc(NIVEIS[q.nivel])}</span>
+    </div>
+    <button class="btn ghost" data-act="fav" data-q="${q.id}" aria-pressed="${fav}">${fav ? "★ Favorita" : "☆ Favoritar"}</button>
+  </div>
+  <div class="pbar"><div class="bar"><i style="width:${pct(s.idx, n)}%"></i></div><span class="muted">${cur}/${n}</span></div>
+  <div class="card" style="margin-top:16px">
+    ${bodyHTML(q)}
+    ${showExpl ? explHTML(q) : ""}
+    ${checked && !prac ? `<p class="fb">Resposta registrada. A resolução aparece no final do simulado.</p>` : ""}
+    ${checked && prac ? `<p class="fb ${store.answers[q.id] && store.answers[q.id].ok ? "ok" : "bad"}">${store.answers[q.id] && store.answers[q.id].ok ? "Acertou." : (rev ? "Resolução consultada: não conta como acerto." : "Errou.")}</p>` : ""}
+    <div class="actions"><div class="row">${act}</div></div>
+  </div>
+  ${q.tipo === "disc" && !rev && prac ? `<p class="muted" style="margin-top:12px">Discursiva: escreva sua resposta, depois veja os critérios e marque os que atendeu.</p>` : ""}
+  `;
+}
+
+function viewResult(){
+  const s = store.session;
+  const checkedIds = s.ids.filter(id => s.checked[id]);
+  const scored = checkedIds.filter(id => BY[id].tipo !== "disc" || true);
+  const oks = scored.filter(id => evaluate(BY[id]).ok);
+  const wrong = scored.filter(id => !evaluate(BY[id]).ok);
+  const unanswered = s.ids.length - checkedIds.length;
+  const score = pct(oks.length, scored.length);
+  const bySub = ASSUNTOS.map(a => {
+    const ids = s.ids.filter(id => BY[id].sub === a.id); if (!ids.length) return "";
+    const c = ids.filter(id => s.checked[id]); const ok = c.filter(id => evaluate(BY[id]).ok);
+    return `<tr><td>${esc(a.nome)}</td><td>${ok.length}/${c.length}</td><td>${pct(ok.length, c.length)}%</td></tr>`;
+  }).join("");
+  const rows = s.ids.map((id, i) => {
+    const q = BY[id];
+    const st = !s.checked[id] ? `<span class="st-no">Não respondida</span>` : evaluate(q).ok ? `<span class="st-ok">Certa</span>` : `<span class="st-bad">Errada</span>`;
+    const en = (q.enun || q.afirm).replace(/\{\d\}/g, "___");
+    return `<details><summary>${i + 1}. ${esc(en.slice(0, 110))}${en.length > 110 ? "…" : ""} — ${st}</summary>
+      <div style="margin-top:8px">${answerText(q)}${explHTML(q)}</div></details>`;
+  }).join("");
+  return `
+  <h1>Resultado</h1>
+  <p class="lead">${esc(s.title)}</p>
+  <div class="grid" style="margin:18px 0">
+    <div class="card"><div class="stat">${score}%</div><p class="muted">de acerto (${oks.length} de ${scored.length} respondidas)</p></div>
+    <div class="card"><div class="stat">${oks.length}</div><p class="muted">acertos</p></div>
+    <div class="card"><div class="stat">${wrong.length}</div><p class="muted">erros</p></div>
+    <div class="card"><div class="stat">${unanswered}</div><p class="muted">não respondidas</p></div>
+  </div>
+  <h2>Por assunto</h2>
+  <div class="card"><table><thead><tr><th>Assunto</th><th>Acertos</th><th>%</th></tr></thead><tbody>${bySub}</tbody></table></div>
+  <h2>Questões</h2>
+  ${rows}
+  <div class="row" style="margin-top:22px">
+    ${wrong.length ? `<button class="btn pri" data-act="revisar" data-ids="${esc(wrong.join(","))}">Revisar as ${wrong.length} erradas</button>` : ""}
+    <button class="btn" data-act="retry">Refazer com as mesmas questões</button>
+    <button class="btn ghost" data-act="home" data-go="home">Início</button>
+  </div>`;
+}
+
+function viewStats(){
+  const answeredIds = QUESTOES.filter(q => store.answers[q.id]);
+  const okN = answeredIds.filter(q => store.answers[q.id].ok).length;
+  const row = (label, qs) => {
+    const a = qs.filter(q => store.answers[q.id]); const c = a.filter(q => store.answers[q.id].ok);
+    return `<tr><td>${esc(label)}</td><td>${a.length}/${qs.length}</td><td style="min-width:140px"><div class="bar"><i style="width:${pct(c.length, a.length)}%"></i></div></td><td>${pct(c.length, a.length)}%</td></tr>`;
+  };
+  return `
+  <h1>Progresso</h1>
+  <p class="lead">Acertos por assunto e por tipo de questão. Considera a última resposta de cada questão.</p>
+  <div class="grid" style="margin:18px 0">
+    <div class="card"><div class="stat">${okN}</div><p class="muted">acertos de ${answeredIds.length} respondidas</p></div>
+    <div class="card"><div class="stat">${pct(okN, answeredIds.length)}%</div><p class="muted">aproveitamento geral</p></div>
+    <div class="card"><div class="stat">${store.fav.length}</div><p class="muted">favoritas</p></div>
+  </div>
+  <h2>Por assunto</h2>
+  <div class="card"><table><thead><tr><th>Assunto</th><th>Respondidas</th><th>Acerto</th><th>%</th></tr></thead><tbody>
+    ${ASSUNTOS.map(a => row(a.nome, QUESTOES.filter(q => q.sub === a.id))).join("")}</tbody></table></div>
+  <h2>Por tipo</h2>
+  <div class="card"><table><thead><tr><th>Tipo</th><th>Respondidas</th><th>Acerto</th><th>%</th></tr></thead><tbody>
+    ${Object.keys(TIPOS).map(t => row(TIPOS[t], QUESTOES.filter(q => q.tipo === t))).join("")}</tbody></table></div>
+  <h2>Gerenciar</h2>
+  <div class="card">
+    <p class="muted">Apagar limpa respostas, favoritas e a sessão em andamento, somente neste navegador.</p>
+    ${ui.resetAsk
+      ? `<div class="row"><strong>Tem certeza?</strong><button class="btn danger" data-act="resetOk">Sim, apagar tudo</button><button class="btn ghost" data-act="resetNo">Cancelar</button></div>`
+      : `<button class="btn danger" data-act="resetAsk">Apagar meu progresso</button>`}
+  </div>`;
+}
+
+/* ---------- ciclo de renderização ---------- */
+function render(){
+  const v = ui.view;
+  let html;
+  if (v === "setup") html = viewSetup();
+  else if (v === "quiz" && store.session && !store.session.done) html = viewQuiz();
+  else if (v === "result" && store.session) html = viewResult();
+  else if (v === "stats") html = viewStats();
+  else { ui.view = "home"; html = viewHome(); }
+  $("#app").innerHTML = html;
+  document.querySelectorAll(".nav[data-go]").forEach(b => b.classList.toggle("on", b.dataset.go === ui.view));
+}
+
+/* ---------- eventos ---------- */
+function act(a, el){
+  switch (a){
+    case "home": ui.view = "home"; ui.msg = ""; render(); break;
+    case "stats": ui.view = "stats"; ui.resetAsk = false; render(); break;
+    case "setup": ui.setup = freshSetup(el.dataset.mode); ui.view = "setup"; ui.msg = ""; render(); break;
+    case "sf": {
+      const st = ui.setup, f = el.dataset.f, v = el.dataset.v;
+      if (f === "onlyNew" || f === "onlyFav" || f === "onlyWrong" || f === "shuffle") st[f] = el.checked;
+      else if (f === "count") st.count = v;
+      else {
+        const val = f === "niveis" ? +v : v, arr = st[f], i = arr.indexOf(val);
+        if (el.checked && i < 0) arr.push(val);
+        if (!el.checked && i >= 0) arr.splice(i, 1);
+      }
+      render(); break;
+    }
+    case "start": startFromSetup(ui.setup); break;
+    case "resume": ui.view = "quiz"; render(); break;
+    case "result": ui.view = "result"; render(); break;
+    case "pick": { const q = BY[el.dataset.q]; setResp(q, +el.dataset.v); render(); break; }
+    case "step": { const q = BY[el.dataset.q], i = +el.dataset.i, r = getResp(q).slice(); r[i] = +el.dataset.v; setResp(q, r); render(); break; }
+    case "vf": { const q = BY[el.dataset.q], i = +el.dataset.i, r = getResp(q).slice(); r[i] = el.dataset.v === "1"; setResp(q, r); render(); break; }
+    case "assoc": case "lac": {
+      const q = BY[el.dataset.q], i = +(el.dataset.i ?? el.dataset.k), r = getResp(q).slice();
+      r[i] = el.value === "" ? null : +el.value; setResp(q, r); render(); break;
+    }
+    case "texto": { const q = BY[el.dataset.q]; getResp(q).texto = el.value; persist(); break; }
+    case "mark": {
+      const q = BY[el.dataset.q], r = getResp(q);
+      const marks = r.marks ? r.marks.slice() : q.criterios.map(() => false);
+      marks[+el.dataset.i] = el.checked; r.marks = marks; persist(); render(); break;
+    }
+    case "reveal": { store.session.revealed[el.dataset.q] = true; persist(); render(); break; }
+    case "submit": submit(BY[el.dataset.q]); break;
+    case "next": next(); break;
+    case "finish": finish(); render(); break;
+    case "fav": {
+      const id = el.dataset.q, i = store.fav.indexOf(id);
+      if (i < 0) store.fav.push(id); else store.fav.splice(i, 1);
+      persist(); render(); break;
+    }
+    case "revisar": startFromIds("practice", el.dataset.ids.split(",").filter(Boolean), "Revisão das erradas"); break;
+    case "retry": { const s = store.session; startFromIds(s.kind, s.ids.slice(), s.kind === "sim" ? "Simulado refeito" : "Prática refeita"); break; }
+    case "resetAsk": ui.resetAsk = true; render(); break;
+    case "resetNo": ui.resetAsk = false; render(); break;
+    case "resetOk": {
+      store = { answers:{}, fav:[], session:null };
+      persist(); ui.resetAsk = false; ui.view = "home"; render(); break;
+    }
+  }
+}
+document.addEventListener("click", e => {
+  const el = e.target.closest("[data-act]");
+  if (!el || el.tagName === "INPUT" || el.tagName === "SELECT" || el.tagName === "TEXTAREA") return;
+  if (el.tagName === "A") return;
+  act(el.dataset.act, el);
+});
+document.addEventListener("change", e => {
+  const el = e.target.closest("[data-act]");
+  if (!el || el.tagName === "TEXTAREA") return;
+  act(el.dataset.act, el);
+});
+document.addEventListener("input", e => {
+  const el = e.target.closest('[data-act="texto"]');
+  if (el) act("texto", el);
+});
+
+/* Inicialização: se a sessão anterior já terminou, a tela inicial mostra o botão de resultado. */
+render();
+})();
+</script>
+</body>
+</html>

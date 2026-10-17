@@ -3,122 +3,72 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Estudo SCIP e NPT 014</title>
-<meta name="description" content="Resumo em PDF, banco de questões e simulados sobre o CSCIP, o enquadramento e as NPTs de medidas de segurança contra incêndio.">
+<title>Questões SCIP e NPT 014</title>
+<meta name="description" content="Questões e simulados sobre o CSCIP, o enquadramento e as NPTs de medidas de segurança contra incêndio.">
 <style>
-:root{
-  --bg:#14120e; --panel:#1f1b15; --panel2:#2a251d; --line:#3d3528; --txt:#f3ebdc; --mut:#b5a88e;
-  --acc:#e0a526; --acc2:#ef7d57; --ok:#6fcf8a; --bad:#ec6a5a; --r:14px;
-  --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+:root{--bg:#fff;--txt:#1c1c1c;--mut:#666;--line:#d9d9d9;--soft:#f5f5f5;--ok:#1b7f3b;--bad:#b3261e;--acc:#1c1c1c;--r:8px}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){--bg:#161616;--txt:#eee;--mut:#aaa;--line:#3a3a3a;--soft:#222;--ok:#6fcf8a;--bad:#ff8a80;--acc:#eee}
 }
-@media (prefers-color-scheme: light){
-  :root:not([data-theme="dark"]){
-    --bg:#f6f1e6; --panel:#fffdf7; --panel2:#f0e8d6; --line:#dcd0b6; --txt:#2a2317; --mut:#6e6250;
-    --acc:#b97a00; --acc2:#c4532a; --ok:#207a3c; --bad:#b3261e;
-  }
-}
-:root[data-theme="dark"]{
-  --bg:#14120e; --panel:#1f1b15; --panel2:#2a251d; --line:#3d3528; --txt:#f3ebdc; --mut:#b5a88e;
-  --acc:#e0a526; --acc2:#ef7d57; --ok:#6fcf8a; --bad:#ec6a5a;
-}
+:root[data-theme="dark"]{--bg:#161616;--txt:#eee;--mut:#aaa;--line:#3a3a3a;--soft:#222;--ok:#6fcf8a;--bad:#ff8a80;--acc:#eee}
 *{box-sizing:border-box}
-html,body{margin:0}
-body{background:var(--bg);color:var(--txt);font:16px/1.5 var(--sans);min-height:100vh}
+body{margin:0;background:var(--bg);color:var(--txt);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
 button,input,select,textarea{font:inherit;color:inherit}
-.shell{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
-aside{background:var(--panel);border-right:1px solid var(--line);padding:22px 16px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:6px}
-.logo{font-weight:800;font-size:18px;letter-spacing:.2px;margin:0 8px 14px}
-.logo span{color:var(--acc)}
-.nav{all:unset;cursor:pointer;padding:10px 12px;border-radius:10px;color:var(--mut);display:block}
-.nav:hover{background:var(--panel2);color:var(--txt)}
-.nav.on{background:var(--panel2);color:var(--txt);box-shadow:inset 3px 0 0 var(--acc)}
-.nav.pdf{margin-top:auto;color:var(--acc);border:1px solid var(--line)}
-main{padding:28px clamp(16px,4vw,48px) 60px;max-width:1040px;width:100%}
-h1{font-size:clamp(26px,4vw,38px);line-height:1.15;margin:0 0 10px;letter-spacing:-.3px}
-h2{font-size:22px;margin:26px 0 10px}
-h3{font-size:17px;margin:0 0 8px}
-p{margin:0 0 12px}
-.lead{color:var(--mut);font-size:17px;max-width:62ch}
+.wrap{max-width:760px;margin:0 auto;padding:20px 16px 60px}
+header{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;border-bottom:1px solid var(--line);padding-bottom:12px;margin-bottom:20px}
+h1{font-size:20px;margin:0}
+h2{font-size:17px;margin:22px 0 8px}
+p{margin:0 0 10px}
 .muted{color:var(--mut);font-size:14px}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:20px}
-.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
-.hero{background:linear-gradient(135deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:18px;padding:clamp(20px,4vw,34px);margin-bottom:22px;position:relative;overflow:hidden}
-.hero::after{content:"";position:absolute;right:-60px;top:-60px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,var(--acc2),transparent 65%);opacity:.25}
-.btn{display:inline-flex;align-items:center;gap:8px;padding:11px 18px;border-radius:11px;border:1px solid var(--line);background:var(--panel2);cursor:pointer;text-decoration:none;font-weight:600;color:var(--txt)}
-.btn:hover{border-color:var(--acc)}
-.btn.pri{background:var(--acc);border-color:var(--acc);color:#1b1407}
-.btn.pdf{background:var(--acc2);border-color:var(--acc2);color:#fff}
-.btn.ghost{background:transparent}
-.btn.danger{border-color:var(--bad);color:var(--bad);background:transparent}
-.btn:disabled{opacity:.45;cursor:not-allowed}
-.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
-.bar{height:10px;background:var(--panel2);border-radius:99px;overflow:hidden;border:1px solid var(--line)}
-.bar>i{display:block;height:100%;background:linear-gradient(90deg,var(--acc),var(--acc2));width:0;transition:width .4s}
-.chip{display:inline-block;font-size:12px;padding:3px 9px;border-radius:99px;border:1px solid var(--line);color:var(--mut);margin-right:6px}
-.qhead{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap;margin-bottom:12px}
-.enun{font-size:18px;font-weight:600;line-height:1.45;margin:6px 0 16px}
-.alt{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border:1px solid var(--line);border-radius:12px;margin-bottom:9px;cursor:pointer;background:var(--panel2)}
-.alt input{margin-top:5px}
-.alt .let{flex:0 0 28px;height:28px;border-radius:8px;background:var(--panel);display:grid;place-items:center;font-weight:700;font-size:13px;border:1px solid var(--line)}
-.alt.sel{border-color:var(--acc)}
-.alt.ok{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 14%,var(--panel2))}
-.alt.bad{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 14%,var(--panel2))}
-.item{border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:10px;background:var(--panel2)}
-.tf{display:flex;gap:8px;flex-wrap:wrap}
-.tf button{padding:8px 14px;border-radius:9px;border:1px solid var(--line);background:var(--panel);cursor:pointer}
-.tf button.on{border-color:var(--acc);background:color-mix(in srgb,var(--acc) 20%,var(--panel))}
-.tf button:disabled{cursor:default}
-select,textarea{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:9px 10px;max-width:100%}
-textarea{width:100%;min-height:150px}
-.fb{margin-top:8px;font-size:15px}
+.box{border:1px solid var(--line);border-radius:var(--r);padding:16px;margin-bottom:14px}
+.btn{display:inline-block;padding:9px 16px;border-radius:var(--r);border:1px solid var(--line);background:var(--bg);cursor:pointer;text-decoration:none;color:var(--txt)}
+.btn.pri{background:var(--acc);color:var(--bg);border-color:var(--acc)}
+.btn.link{border:none;padding:4px 0;color:var(--mut);text-decoration:underline;background:none}
+.btn.danger{color:var(--bad);border-color:var(--bad)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.grp label{display:block;padding:3px 0;cursor:pointer}
+.grp input{margin-right:8px}
+.grp.inline label{display:inline-block;margin-right:14px}
+.bar{height:6px;background:var(--soft);border-radius:4px;overflow:hidden;margin:10px 0}
+.bar>i{display:block;height:100%;background:var(--acc);width:0}
+.tag{display:inline-block;font-size:12px;color:var(--mut);border:1px solid var(--line);border-radius:4px;padding:1px 7px;margin-right:6px}
+.enun{font-size:17px;margin:8px 0 14px}
+.alt{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1px solid var(--line);border-radius:var(--r);margin-bottom:8px;cursor:pointer}
+.alt.ok{border-color:var(--ok);color:var(--ok)}
+.alt.bad{border-color:var(--bad);color:var(--bad)}
+.alt.sel{border-color:var(--acc);border-width:2px}
+.alt .let{font-weight:700;min-width:18px}
+.item{border:1px solid var(--line);border-radius:var(--r);padding:10px 12px;margin-bottom:10px}
+.tf{display:flex;gap:8px;margin-top:6px}
+.tf button{padding:6px 12px;border:1px solid var(--line);border-radius:6px;background:var(--bg);cursor:pointer}
+.tf button.on{border-color:var(--acc);border-width:2px}
+select,textarea,input[type=text]{background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:7px 9px;max-width:100%}
+textarea{width:100%;min-height:90px}
+input[type=text].campo{width:100%;margin-top:4px}
+.fb{margin-top:6px;font-size:15px}
 .fb.ok{color:var(--ok)} .fb.bad{color:var(--bad)}
-.expl{margin-top:16px;padding:14px 16px;border-left:4px solid var(--acc);background:var(--panel2);border-radius:10px}
-.step{border-top:1px dashed var(--line);padding-top:14px;margin-top:14px}
-.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px;align-items:center;justify-content:space-between}
-.msg{color:var(--acc2);margin:10px 0}
-.warn{border:1px solid var(--acc2);border-radius:12px;padding:12px 14px;color:var(--txt);background:color-mix(in srgb,var(--acc2) 10%,var(--panel));margin:14px 0}
-table{width:100%;border-collapse:collapse;font-size:15px}
-th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:top}
-th{color:var(--mut);font-weight:600;font-size:13px}
-.pbar{display:grid;grid-template-columns:1fr 60px;gap:10px;align-items:center}
-.stat{font-size:30px;font-weight:800;color:var(--acc)}
-.legend{display:flex;flex-wrap:wrap;gap:6px 14px}
-.fgroup{margin:12px 0}
-.fgroup label{display:inline-flex;gap:6px;align-items:center;margin:4px 12px 4px 0;cursor:pointer}
-details{border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin:8px 0;background:var(--panel2)}
-summary{cursor:pointer;font-weight:600}
-details .expl{margin-top:10px}
-.st-ok{color:var(--ok);font-weight:700} .st-bad{color:var(--bad);font-weight:700} .st-no{color:var(--mut)}
-footer{color:var(--mut);font-size:13px;padding:0 0 30px;text-align:center}
-@media (max-width:820px){
-  .shell{grid-template-columns:1fr}
-  aside{position:sticky;top:0;height:auto;flex-direction:row;flex-wrap:wrap;align-items:center;padding:10px 12px;gap:6px;z-index:5}
-  .logo{margin:0 8px 0 4px;font-size:16px}
-  .nav{padding:8px 10px;font-size:14px}
-  .nav.pdf{margin-top:0;margin-left:auto}
-  main{padding:20px 16px 50px}
-  .btn{width:auto}
-  .actions{flex-direction:column;align-items:stretch}
-  .actions .row{justify-content:stretch}
-  .actions .btn{flex:1;justify-content:center}
-  table{font-size:13px}
-}
+.expl{margin-top:14px;padding:12px 14px;background:var(--soft);border-radius:var(--r)}
+.step{border-top:1px solid var(--line);padding-top:12px;margin-top:12px}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;align-items:center}
+.msg{color:var(--bad)}
+details{border-bottom:1px solid var(--line);padding:8px 0}
+summary{cursor:pointer}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:6px;border-bottom:1px solid var(--line);vertical-align:top}
+.st-ok{color:var(--ok)} .st-bad{color:var(--bad)} .st-no{color:var(--mut)}
+.gab td:first-child{width:38%;color:var(--mut)}
+@media (max-width:520px){ .gab td:first-child{width:auto} }
 </style>
 </head>
 <body>
-<div class="shell">
-  <aside>
-    <div class="logo">Estudo <span>SCIP</span></div>
-    <button class="nav" data-act="home" data-go="home">Início</button>
-    <button class="nav" data-act="setup" data-mode="practice" data-go="setup">Praticar</button>
-    <button class="nav" data-act="setup" data-mode="sim" data-go="setup">Simulado</button>
-    <button class="nav" data-act="stats" data-go="stats">Progresso</button>
-    <a class="nav pdf" href="public/resumo-scip.pdf" target="_blank" rel="noopener">Resumo em PDF ↗</a>
-  </aside>
-  <main id="app" aria-live="polite"></main>
+<div class="wrap">
+<header>
+  <h1>Questões SCIP e NPT 014</h1>
+  <a class="btn" href="public/resumo-scip.pdf" target="_blank" rel="noopener">Resumo em PDF</a>
+</header>
+<main id="app" aria-live="polite"></main>
 </div>
-<footer>Material de estudo elaborado a partir do material fornecido. Em caso de dúvida, confira sempre a norma original.</footer>
-
 <script>
 /* Banco de questões. Todo gabarito foi conferido com o texto extraído dos slides, do CSCIP ou das NPTs.
    Questões cujo conteúdo não pôde ser confirmado no material foram removidas. */
@@ -484,23 +434,90 @@ const QUESTOES = [
 
 </script>
 <script>
+/* Exercícios de enquadramento no formato dos exercícios do material.
+   Enunciados e gabaritos vêm de rev_enquadramento.txt (1 a 12) e 2.2_EXERCICIOS_ENQUADRAMENTO (1, 2, 3, 5, 6 e 7).
+   Não entram: exercícios 13 a 19 de revisão e o exercício 4 do enquadramento (J-1 e J-2 conflitam no material). */
+const CAMPOS_REV = ["Ocupação / divisão","Carga de incêndio","Risco","Área de classificação","Altura de classificação","Tabela do CSCIP","Medidas de segurança exigidas"];
+const CAMPOS_ENQ = ["Ocupação / divisão","Área","Altura","Carga de incêndio","Risco","Tabela do CSCIP"];
+
+const EXERCICIOS = [
+{id:"rev01",sub:"exerc",tipo:"tab",nivel:3,origem:"Revisão 1",enun:"Hotel Central Curitibano: hotel com 76 leitos, 20 pavimentos de 400 m² cada, pé-direito de 3,0 m. Passagem coberta de 2,5 m de largura com laterais abertas, de 25 m², ligando a recepção ao bloco de quartos. População total de 580 pessoas.",
+ campos:CAMPOS_REV,gab:["B-1","500 MJ/m²","Moderado","8.000 m² (400 m² × 20 pavimentos; a passagem coberta não é computada, art. 21, III)","57 m","Tabela 6B (notas 2, 3, 5 e 6)","Acesso de viatura; segurança estrutural; compartimentação horizontal e vertical; controle de materiais de acabamento; saídas de emergência; plano de emergência; iluminação de emergência; detecção de incêndio; alarme de incêndio; sinalização de emergência; extintores; hidrantes e mangotinhos; chuveiros automáticos; controle de fumaça"]},
+
+{id:"rev02",sub:"exerc",tipo:"tab",nivel:1,origem:"Revisão 2",enun:"Loja de Ferragens Reparos & Cia: comércio de artigos de metal, louças e ferragens. Térrea, 1.200 m², pé-direito de 4,5 m. População de 40 pessoas.",
+ campos:CAMPOS_REV,gab:["C-1","300 MJ/m²","Leve","1.200 m²","0 m","Tabela 5","Saídas de emergência; iluminação de emergência; sinalização de emergência; extintores"]},
+
+{id:"rev03",sub:"exerc",tipo:"tab",nivel:3,origem:"Revisão 3",enun:"Magazine Central São José: loja de departamentos com 3 pavimentos de 800 m² e pé-direito de 3,5 m, mais um subsolo de 800 m² usado exclusivamente como estacionamento com exaustão mecânica de fumaça. No último pavimento há um reservatório de água de 50 m². População de 450 pessoas.",
+ campos:CAMPOS_REV,gab:["C-2","800 MJ/m²","Moderado","3.200 m² (800 × 3 pavimentos + 800 m² do subsolo; o reservatório de 50 m² não é computado, art. 21, V)","7 m (o subsolo de estacionamento não entra na altura, art. 19, I; o reservatório no piso superior não entra, art. 19, III)","Tabela 6C (notas 1, 2, 8, 9 e 11)","Acesso de viatura; segurança estrutural; compartimentação horizontal; controle de materiais de acabamento; saídas de emergência; brigada de incêndio; iluminação de emergência; detecção de incêndio; alarme de incêndio; sinalização de emergência; extintores; hidrantes e mangotinhos"]},
+
+{id:"rev04",sub:"exerc",tipo:"tab",nivel:2,origem:"Revisão 4",enun:"PF Estrela: restaurante com 2 pavimentos de 400 m² cada e pé-direito de 3,0 m. População de 250 pessoas.",
+ campos:CAMPOS_REV,gab:["F-8","300 MJ/m²","Leve","800 m² (400 m² × 2 pavimentos)","3,0 m","Tabela 5 (nota 1)","Controle de materiais de acabamento; saídas de emergência; iluminação de emergência; sinalização de emergência; extintores; brigada de incêndio (lotação superior a 100 pessoas)"]},
+
+{id:"rev05",sub:"exerc",tipo:"tab",nivel:2,origem:"Revisão 5",enun:"Direito Office Building: edifício de escritório de advocacia com 4 pavimentos de 200 m² e pé-direito de 3,0 m. Um deles é subsolo com vestiários sem permanência humana (50 m²). População de 60 pessoas.",
+ campos:CAMPOS_REV,gab:["D-1","700 MJ/m²","Moderado","800 m² (200 m² × 4 pavimentos)","9,0 m (o subsolo sem permanência humana não entra na altura, art. 19, II)","Tabela 5","Saídas de emergência; iluminação de emergência; sinalização de emergência; extintores"]},
+
+{id:"rev06",sub:"exerc",tipo:"tab",nivel:2,origem:"Revisão 6",enun:"Agência Banco Million Dollar: agência bancária térrea de 450 m² e pé-direito de 4,0 m. Há um telheiro aberto lateralmente, de 8,0 m², para abrigo de lixo. População de 50 pessoas.",
+ campos:CAMPOS_REV,gab:["D-2","300 MJ/m²","Leve","450 m² (o telheiro de 8,0 m² não é computado, art. 21, I)","0 m","Tabela 5","Saídas de emergência; iluminação de emergência; sinalização de emergência; extintores"]},
+
+{id:"rev07",sub:"exerc",tipo:"tab",nivel:3,origem:"Revisão 7",enun:"Oficina Rei do Eletrodoméstico: assistência técnica de aparelhos eletrodomésticos com 2 pavimentos de 400 m² e pé-direito de 3,5 m. Há um mezanino de 100 m² no térreo. População de 30 pessoas.",
+ campos:CAMPOS_REV,gab:["D-3","600 MJ/m²","Moderado","900 m² (400 m² × 2 pavimentos + 100 m² de mezanino)","3,5 m","Tabela 5","Saídas de emergência; iluminação de emergência; sinalização de emergência; extintores"]},
+
+{id:"rev08",sub:"exerc",tipo:"tab",nivel:2,origem:"Revisão 8",enun:"Laboratório de Análises Clínicas HBM: 3 pavimentos de 500 m² e pé-direito de 3,0 m. População de 90 pessoas.",
+ campos:CAMPOS_REV,gab:["D-4","500 MJ/m²","Moderado","1.500 m² (500 m² × 3 pavimentos)","6,0 m","Tabela 6D (nota 1)","Acesso de viatura; segurança estrutural; compartimentação horizontal; controle de materiais de acabamento; saídas de emergência; iluminação de emergência; alarme de incêndio; sinalização de emergência; extintores; hidrantes e mangotinhos"]},
+
+{id:"rev09",sub:"exerc",tipo:"tab",nivel:2,origem:"Revisão 9",enun:"Japan-Japan Escola de Idiomas: 2 pavimentos de 350 m² e um subsolo de 350 m² com escritório administrativo da escola, pé-direito de 3,0 m. População de 120 pessoas.",
+ campos:CAMPOS_REV,gab:["E-2","300 MJ/m²","Leve","1.050 m² (350 m² × 2 pavimentos + 350 m² do subsolo)","6,0 m (subsolo com permanência humana entra na altura)","Tabela 5","Saídas de emergência; iluminação de emergência; sinalização de emergência; extintores"]},
+
+{id:"rev10",sub:"exerc",tipo:"tab",nivel:3,origem:"Revisão 10",enun:"Escola Estadual do Estado: 3 pavimentos de 600 m² e pé-direito de 3,2 m. Há uma cobertura de quadra poliesportiva aberta lateralmente, de 400 m². População de 500 pessoas.",
+ campos:CAMPOS_REV,gab:["E-1","300 MJ/m²","Leve","1.800 m² (600 m² × 3 pavimentos; a cobertura aberta de 400 m² não é computada, art. 21, IV)","6,4 m (2 × 3,2 m; faixa 6,00 < H ≤ 12,00 m)","Tabela 6E","Acesso de viatura; segurança estrutural; controle de materiais de acabamento; saídas de emergência; iluminação de emergência; alarme de incêndio; sinalização de emergência; extintores; hidrantes e mangotinhos"]},
+
+{id:"rev11",sub:"exerc",tipo:"tab",nivel:3,origem:"Revisão 11",enun:"CEMEI Formiguinha: creche e jardim de infância com 2 pavimentos de 400 m² e pé-direito de 3,0 m. Os sanitários e vestiários das crianças somam 60 m² no primeiro pavimento. População de 110 pessoas.",
+ campos:CAMPOS_REV,gab:["E-5","300 MJ/m²","Leve","740 m² (800 m² − 60 m² de sanitários e vestiários)","3,0 m","Tabela 5 (nota 4)","Controle de materiais de acabamento; saídas de emergência; iluminação de emergência; sinalização de emergência; extintores; brigada de incêndio; detecção de incêndio"]},
+
+{id:"rev12",sub:"exerc",tipo:"tab",nivel:3,origem:"Revisão 12",enun:"Ginásio Campeão: ginásio poliesportivo com arquibancada, 1 pavimento térreo de 3.500 m² e pé-direito de 8,0 m. Vestiários e banheiros ocupam 250 m². População de 2.500 pessoas.",
+ campos:CAMPOS_REV,gab:["F-3","150 MJ/m²","Leve","3.250 m² (3.500 m² − 250 m²)","0 m","Tabela 6F.2 (notas 3, 4, 7 e 9)","Acesso de viatura; segurança estrutural; controle de materiais de acabamento; saídas de emergência; plano de emergência (público superior a 1.000 pessoas); brigada de incêndio; iluminação de emergência; detecção de incêndio (conforme a nota); alarme de incêndio; sinalização de emergência; extintores; hidrantes e mangotinhos"]},
+
+{id:"exenq01",sub:"exerc",tipo:"tab",nivel:2,origem:"Enquadramento 1",enun:"Um prédio residencial de 8 pavimentos, com pé-direito de 3,5 m e 250 m² por pavimento.",
+ campos:CAMPOS_ENQ,gab:["A-2","2.000 m²","24,5 m","300 MJ/m²","Leve (RL)","Tabela 6A (notas 2 e 4)"]},
+
+{id:"exenq02",sub:"exerc",tipo:"tab",nivel:1,origem:"Enquadramento 2",enun:"Uma loja de departamentos com 2.100 m² de área, térrea.",
+ campos:CAMPOS_ENQ,gab:["C-2","2.100 m²","0 m","800 MJ/m²","Moderado (RM)","Tabela 6C (notas 1, 4, 5 e 11)"]},
+
+{id:"exenq03",sub:"exerc",tipo:"tab",nivel:1,origem:"Enquadramento 3",enun:"Uma casa noturna com 500 m², térrea.",
+ campos:CAMPOS_ENQ,gab:["F-6","500 m²","0 m","600 MJ/m²","Moderado (RM)","Tabela 5 (notas 2 e 3)"]},
+
+{id:"exenq05",sub:"exerc",tipo:"tab",nivel:1,origem:"Enquadramento 5",enun:"Um restaurante de 400 m², com dois pavimentos e pé-direito de 3 m.",
+ campos:CAMPOS_ENQ,gab:["F-8","400 m²","3 m","300 MJ/m²","Leve (RL)","Tabela 5"]},
+
+{id:"exenq06",sub:"exerc",tipo:"tab",nivel:2,origem:"Enquadramento 6",enun:"Um prédio de escritórios com 3 pavimentos, pé-direito de 5 m e área total de 1.600 m².",
+ campos:CAMPOS_ENQ,gab:["D-1","1.600 m²","10 m","700 MJ/m²","Moderado (RM)","Tabela 6D (nota 1)"]},
+
+{id:"exenq07",sub:"exerc",tipo:"tab",nivel:2,origem:"Enquadramento 7",enun:"Uma escola infantil com 1.200 m² e 4 pavimentos de 3,8 m de pé-direito cada.",
+ campos:CAMPOS_ENQ,gab:["E-5","1.200 m²","11,4 m","300 MJ/m²","Leve (RL)","Tabela 6E (nota 5)"]}
+];
+QUESTOES.push(...EXERCICIOS);
+ASSUNTOS.push({id:"exerc", nome:"Exercícios de enquadramento (formato do material)", modulo:"2", cor:"#8a7fd6"});
+
+</script>
+<script>
 (() => {
 "use strict";
-const KEY = "scip-estudo-v1";
+const KEY = "scip-questoes-v2";
 const LET = "ABCDE";
-const $ = (s, r = document) => r.querySelector(s);
+const $ = s => document.querySelector(s);
 const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const BY = Object.fromEntries(QUESTOES.map(q => [q.id, q]));
 const SUBS = Object.fromEntries(ASSUNTOS.map(a => [a.id, a]));
+const TIPOS_ROTULO = Object.assign({}, TIPOS, {tab:"Exercício de tabela"});
 
-/* ---------- armazenamento (localStorage, com proteção) ---------- */
+/* ---------- armazenamento local, com proteção ---------- */
 function loadStore(){
   let s = null;
   try { s = JSON.parse(localStorage.getItem(KEY)); } catch (e) { s = null; }
   return Object.assign({ answers:{}, fav:[], session:null }, s && typeof s === "object" ? s : {});
 }
 let store = loadStore();
-function persist(){ try { localStorage.setItem(KEY, JSON.stringify(store)); } catch (e) { /* armazenamento indisponível: segue sem salvar */ } }
+function persist(){ try { localStorage.setItem(KEY, JSON.stringify(store)); } catch (e) { /* sem armazenamento: segue sem salvar */ } }
 
 /* ---------- utilidades ---------- */
 function shuffle(a){ a = a.slice(); for (let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
@@ -515,46 +532,44 @@ function defaultResp(q){
   switch (q.tipo){
     case "mc": case "ac": return null;
     case "vf": return q.itens.map(() => null);
-    case "assoc": case "lac": return q.tipo === "lac" ? q.lacunas.map(() => null) : q.pares.map(() => null);
+    case "assoc": return q.pares.map(() => null);
+    case "lac": return q.lacunas.map(() => null);
     case "prat": return q.etapas.map(() => null);
     case "disc": return { texto: "", marks: null };
+    case "tab": return q.campos.map(() => "");
   }
 }
 function getResp(q){ const s = store.session; if (s.resp[q.id] === undefined) s.resp[q.id] = defaultResp(q); return s.resp[q.id]; }
 
 /* ---------- avaliação ---------- */
 function evaluate(q){
-  const r = getResp(q);
+  const s = store.session, r = getResp(q);
   switch (q.tipo){
     case "mc": case "ac": { const ok = r !== null && perm(q.id, q.alts.length)[r] === q.correta; return { ok, parts:[ok] }; }
     case "vf": { const parts = q.itens.map((it, i) => r[i] === it.v); return { ok: parts.every(Boolean), parts }; }
     case "assoc": { const p = perm(q.id, q.pares.length); const parts = q.pares.map((_, i) => r[i] !== null && p[r[i]] === i); return { ok: parts.every(Boolean), parts }; }
     case "lac": { const parts = q.lacunas.map((L, k) => r[k] !== null && perm(q.id + "#" + k, L.opcoes.length)[r[k]] === L.correta); return { ok: parts.every(Boolean), parts }; }
     case "prat": { const parts = q.etapas.map((E, i) => r[i] !== null && perm(q.id + "#" + i, E.alts.length)[r[i]] === E.correta); return { ok: parts.every(Boolean), parts }; }
-    case "disc": { const m = r.marks || []; const ok = m.length === q.criterios.length && m.every(Boolean); return { ok, parts: m }; }
+    case "disc": { const m = r.marks || []; return { ok: m.length === q.criterios.length && m.every(Boolean), parts: m }; }
+    case "tab": { const m = (s.marks && s.marks[q.id]) || []; const ok = m.length === q.campos.length && m.every(Boolean); return { ok, parts: m }; }
   }
 }
-function complete(q){
-  const r = getResp(q);
-  if (q.tipo === "mc" || q.tipo === "ac") return r !== null;
-  if (q.tipo === "disc") return Array.isArray(r.marks) || r.marks === null && false;
-  return r.every(x => x !== null);
-}
-function answerText(q){
-  const p = (k, n) => perm(k, n);
+function gabaritoHTML(q){
   switch (q.tipo){
-    case "mc": case "ac": return `<p><strong>Resposta correta:</strong> ${esc(LET[p(q.id, q.alts.length).indexOf(q.correta)])}) ${esc(q.alts[q.correta])}</p>`;
+    case "mc": case "ac": return `<p><strong>Resposta correta:</strong> ${esc(LET[perm(q.id, q.alts.length).indexOf(q.correta)])}) ${esc(q.alts[q.correta])}</p>`;
     case "vf": return "<ul>" + q.itens.map(it => `<li>${it.v ? "V" : "F"}: ${esc(it.t)}</li>`).join("") + "</ul>";
     case "assoc": return "<ul>" + q.pares.map(([a, b]) => `<li>${esc(a)} → ${esc(b)}</li>`).join("") + "</ul>";
     case "lac": return "<ul>" + q.lacunas.map((L, k) => `<li>Lacuna ${k + 1}: ${esc(L.opcoes[L.correta])}</li>`).join("") + "</ul>";
     case "prat": return "<ol>" + q.etapas.map(E => `<li>${esc(E.alts[E.correta])}</li>`).join("") + "</ol>";
     case "disc": return `<p><strong>Modelo de resposta:</strong> ${esc(q.modelo)}</p><p><strong>Critérios:</strong></p><ul>${q.criterios.map(c => `<li>${esc(c)}</li>`).join("")}</ul>`;
+    case "tab": return `<table class="gab">${q.campos.map((c, i) => `<tr><td>${esc(c)}</td><td>${esc(q.gab[i])}</td></tr>`).join("")}</table>`;
   }
 }
+function explHTML(q){ return q.expl ? `<div class="expl"><strong>Resolução</strong><p>${esc(q.expl)}</p></div>` : ""; }
 
 /* ---------- sessões ---------- */
 function newSession(kind, ids, title){
-  store.session = { kind, title, ids, idx:0, resp:{}, checked:{}, revealed:{}, perms:{}, done:false, startedAt: Date.now() };
+  store.session = { kind, title, ids, idx:0, resp:{}, checked:{}, revealed:{}, perms:{}, marks:{}, done:false };
   persist();
 }
 function poolFor(st){
@@ -567,14 +582,14 @@ function poolFor(st){
 }
 function startFromSetup(st){
   let ids = poolFor(st);
-  if (!ids.length){ ui.msg = "Nenhuma questão com esses filtros. Ajuste as opções e tente de novo."; render(); return; }
+  if (!ids.length){ ui.msg = "Nenhuma questão com esses filtros."; render(); return; }
   if (st.mode === "sim"){
     ids = shuffle(ids);
     if (st.count !== "all") ids = ids.slice(0, Math.min(+st.count, ids.length));
-    newSession("sim", ids, `Simulado (${ids.length} questões)`);
+    newSession("sim", ids, `Simulado com ${ids.length} questões`);
   } else {
     if (st.shuffle) ids = shuffle(ids);
-    newSession("practice", ids, "Prática");
+    newSession("practice", ids, "Questões");
   }
   ui.view = "quiz"; ui.msg = ""; render();
 }
@@ -587,13 +602,12 @@ function submit(q){
   if (s.checked[q.id]) return;
   const ev = evaluate(q);
   s.checked[q.id] = true;
-  if (s.kind === "practice"){
-    store.answers[q.id] = { ok: ev.ok && !s.revealed[q.id], consulted: !!s.revealed[q.id], ts: Date.now() };
-  }
+  if (s.kind === "practice") store.answers[q.id] = { ok: ev.ok && !s.revealed[q.id], consulted: !!s.revealed[q.id], ts: Date.now() };
   persist(); render();
 }
 function next(){
-  const s = store.session;
+  const s = store.session, q = curQ();
+  if (s.kind === "sim" && q.tipo === "tab" && !s.checked[q.id] && getResp(q).some(v => v.trim() !== "")) s.checked[q.id] = true;
   s.idx++;
   if (s.idx >= s.ids.length) finish();
   persist(); render();
@@ -601,46 +615,33 @@ function next(){
 function finish(){
   const s = store.session;
   if (s.done) return;
-  s.done = true; s.finishedAt = Date.now();
-  if (s.kind === "sim"){
-    for (const id of s.ids){
-      if (!s.checked[id]) continue;
-      const q = BY[id]; const ev = evaluate(q);
-      store.answers[id] = { ok: ev.ok, ts: Date.now(), mode:"sim" };
-    }
-  }
+  s.done = true;
+  if (s.kind === "sim") for (const id of s.ids) if (s.checked[id]) store.answers[id] = { ok: evaluate(BY[id]).ok, ts: Date.now(), mode:"sim" };
   persist();
   ui.view = "result";
 }
 
-/* ---------- estado da interface ---------- */
-const ui = { view:"home", setup:null, msg:"", resetAsk:false };
+/* ---------- interface ---------- */
+const ui = { view:"setup", st: freshSetup("practice"), msg:"", resetAsk:false };
 function freshSetup(mode){
-  return { mode, subs: ASSUNTOS.map(a => a.id), tipos: Object.keys(TIPOS).filter(t => mode !== "sim" || t !== "disc"),
+  return { mode, subs: ASSUNTOS.map(a => a.id), tipos: Object.keys(TIPOS_ROTULO).filter(t => mode !== "sim" || t !== "disc"),
     niveis:[1,2,3], onlyNew:false, onlyFav:false, onlyWrong:false, shuffle:true, count:"20" };
 }
-
-/* ---------- renderização: partes ---------- */
 function pct(a, b){ return b ? Math.round(a / b * 100) : 0; }
-function altHTML(text, cls, attrs, checked, disabled){
-  return `<label class="alt ${cls}"><input type="radio" ${attrs} ${checked ? "checked" : ""} ${disabled ? "disabled" : ""}><span class="let">${"" /*letra*/}</span><span>${esc(text)}</span></label>`;
-}
+
 function optionList(q){
   const s = store.session, r = getResp(q), checked = !!s.checked[q.id];
   const showFb = s.kind === "practice" && (checked || s.revealed[q.id]);
   const p = perm(q.id, q.alts.length);
-  let h = "";
-  p.forEach((orig, d) => {
+  return p.map((orig, d) => {
     let cls = "";
     if (showFb){ if (orig === q.correta) cls = "ok"; else if (r === d) cls = "bad"; }
     else if (r === d) cls = "sel";
-    h += `<label class="alt ${cls}"><input type="radio" name="q-${esc(q.id)}" data-act="pick" data-q="${q.id}" data-v="${d}" ${r === d ? "checked" : ""} ${checked ? "disabled" : ""}><span class="let">${LET[d]}</span><span>${esc(q.alts[orig])}</span></label>`;
-  });
-  return `<div>${h}</div>`;
+    return `<label class="alt ${cls}"><input type="radio" name="q-${esc(q.id)}" data-act="pick" data-q="${q.id}" data-v="${d}" ${r === d ? "checked" : ""} ${checked ? "disabled" : ""}><span class="let">${LET[d]})</span><span>${esc(q.alts[orig])}</span></label>`;
+  }).join("");
 }
 function bodyHTML(q){
-  const s = store.session, r = getResp(q), checked = !!s.checked[q.id];
-  const rev = !!s.revealed[q.id];
+  const s = store.session, r = getResp(q), checked = !!s.checked[q.id], rev = !!s.revealed[q.id];
   const prac = s.kind === "practice";
   const showFb = prac && (checked || rev);
   switch (q.tipo){
@@ -669,254 +670,198 @@ function bodyHTML(q){
         if (idx % 2 === 0){ txt += esc(t); return; }
         const k = +t, L = q.lacunas[k], p = perm(q.id + "#" + k, L.opcoes.length);
         const opts = p.map((oi, d) => `<option value="${d}" ${r[k] === d ? "selected" : ""}>${esc(L.opcoes[oi])}</option>`).join("");
-        const ok = showFb && r[k] !== null && p[r[k]] === L.correta;
-        const cls = showFb ? (ok ? "ok" : "bad") : "";
-        txt += `<select class="${cls}" data-act="lac" data-q="${q.id}" data-k="${k}" ${checked ? "disabled" : ""}><option value="">…</option>${opts}</select>`;
+        txt += `<select data-act="lac" data-q="${q.id}" data-k="${k}" ${checked ? "disabled" : ""}><option value="">…</option>${opts}</select>`;
       });
-      const fbs = showFb ? `<div class="fb ${evaluate(q).ok ? "ok" : "bad"}">${evaluate(q).ok ? "✓ Todas as lacunas corretas." : "✗ Há lacuna incorreta. Gabarito: " + q.lacunas.map(L => esc(L.opcoes[L.correta])).join(" / ")}</div>` : "";
-      return `<p class="enun">${txt}</p>${fbs}`;
+      const ev = showFb ? evaluate(q) : null;
+      const fb = showFb ? `<div class="fb ${ev.ok ? "ok" : "bad"}">${ev.ok ? "✓ Todas as lacunas corretas." : "✗ Há lacuna incorreta."}</div>` : "";
+      return `<p class="enun">${txt}</p>${fb}`;
     }
-    case "prat": {
-      return `<p class="enun">${esc(q.enun)}</p>` + q.etapas.map((E, i) => {
+    case "prat": return `<p class="enun">${esc(q.enun)}</p>` + q.etapas.map((E, i) => {
         const p = perm(q.id + "#" + i, E.alts.length);
-        let opts = "";
-        p.forEach((orig, d) => {
+        const opts = p.map((orig, d) => {
           let cls = "";
           if (showFb){ if (orig === E.correta) cls = "ok"; else if (r[i] === d) cls = "bad"; }
           else if (r[i] === d) cls = "sel";
-          opts += `<label class="alt ${cls}"><input type="radio" name="p-${q.id}-${i}" data-act="step" data-q="${q.id}" data-i="${i}" data-v="${d}" ${r[i] === d ? "checked" : ""} ${checked ? "disabled" : ""}><span class="let">${LET[d]}</span><span>${esc(E.alts[orig])}</span></label>`;
-        });
+          return `<label class="alt ${cls}"><input type="radio" name="p-${q.id}-${i}" data-act="step" data-q="${q.id}" data-i="${i}" data-v="${d}" ${r[i] === d ? "checked" : ""} ${checked ? "disabled" : ""}><span class="let">${LET[d]})</span><span>${esc(E.alts[orig])}</span></label>`;
+        }).join("");
         const fb = showFb ? `<div class="fb ${r[i] !== null && p[r[i]] === E.correta ? "ok" : "bad"}">${esc(E.expl)}</div>` : "";
-        return `<div class="step"><h3>Etapa ${i + 1}</h3><p>${esc(E.enun)}</p>${opts}${fb}</div>`;
+        return `<div class="step"><strong>Etapa ${i + 1}.</strong> ${esc(E.enun)}${opts}${fb}</div>`;
       }).join("");
-    }
     case "disc": {
       const marks = r.marks;
       let h = `<p class="enun">${esc(q.enun)}</p>
-        <textarea data-act="texto" data-q="${q.id}" placeholder="Escreva sua resposta aqui (ela fica salva neste navegador)." ${checked ? "disabled" : ""}>${esc(r.texto)}</textarea>`;
+        <textarea data-act="texto" data-q="${q.id}" placeholder="Escreva sua resposta aqui." ${checked ? "disabled" : ""}>${esc(r.texto)}</textarea>`;
       if (prac && rev){
-        h += `<div class="expl"><strong>Critérios de avaliação</strong><ul>${q.criterios.map(c => `<li>${esc(c)}</li>`).join("")}</ul>
-          <strong>Modelo de resposta</strong><p>${esc(q.modelo)}</p></div>`;
-        if (!checked){
-          h += `<p class="muted" style="margin-top:14px">Marque os critérios que sua resposta atende:</p>` + q.criterios.map((c, i) =>
-            `<label class="alt"><input type="checkbox" data-act="mark" data-q="${q.id}" data-i="${i}" ${marks && marks[i] ? "checked" : ""}><span>${esc(c)}</span></label>`).join("");
-        } else {
-          h += `<p class="fb ${evaluate(q).ok ? "ok" : "bad"}">Autoavaliação: ${evaluate(q).ok ? "atende a todos os critérios." : "não atende a todos os critérios."}</p>`;
-        }
+        h += `<div class="expl"><strong>Critérios</strong><ul>${q.criterios.map(c => `<li>${esc(c)}</li>`).join("")}</ul><strong>Modelo de resposta</strong><p>${esc(q.modelo)}</p></div>`;
+        if (!checked) h += `<p class="muted" style="margin-top:10px">Marque os critérios que sua resposta atende:</p>` + q.criterios.map((c, i) =>
+          `<label class="alt"><input type="checkbox" data-act="mark" data-q="${q.id}" data-i="${i}" ${marks && marks[i] ? "checked" : ""}><span>${esc(c)}</span></label>`).join("");
+      }
+      return h;
+    }
+    case "tab": {
+      const m = s.marks[q.id];
+      const showGab = (prac && rev) || (checked && prac);
+      let h = `<p class="enun">${esc(q.enun)}</p>` + q.campos.map((c, i) =>
+        `<div class="item"><label><strong>${esc(c)}</strong><input type="text" class="campo" data-act="tabtxt" data-q="${q.id}" data-i="${i}" value="${esc(r[i])}" ${checked ? "disabled" : ""}></label></div>`).join("");
+      if (showGab){
+        h += `<p class="muted" style="margin-top:12px">Compare com o gabarito e marque o que você acertou:</p>` + q.campos.map((c, i) =>
+          `<div class="item"><label class="row"><input type="checkbox" data-act="tabmark" data-q="${q.id}" data-i="${i}" ${m && m[i] ? "checked" : ""} ${checked ? "disabled" : ""}><span><strong>${esc(c)}:</strong> ${esc(q.gab[i])}</span></label></div>`).join("");
       }
       return h;
     }
   }
 }
-function explHTML(q){
-  if (!q.expl) return "";
-  return `<div class="expl"><strong>Resolução</strong><p>${esc(q.expl)}</p></div>`;
-}
-
-/* ---------- telas ---------- */
-function viewHome(){
-  const total = QUESTOES.length;
-  const answered = Object.keys(store.answers).filter(id => BY[id]).length;
-  const correct = Object.keys(store.answers).filter(id => BY[id] && store.answers[id].ok).length;
-  const s = store.session;
-  const resume = s && !s.done ? `<button class="btn" data-act="resume">Continuar sessão (${s.idx + 1}/${s.ids.length})</button>` : "";
-  const lastRes = s && s.done ? `<button class="btn" data-act="result">Ver último resultado</button>` : "";
-  return `
-  <section class="hero">
-    <span class="chip">CSCIP · NPT 014 · NPTs</span>
-    <h1>Estude o CSCIP e as NPTs no seu ritmo</h1>
-    <p class="lead">Resumo em PDF, banco de ${total} questões com gabarito e resolução para cada uma, modos de prática e simulado, e acompanhamento do seu desempenho por assunto.</p>
-    <div class="row" style="margin-top:18px">
-      <a class="btn pdf" href="public/resumo-scip.pdf" target="_blank" rel="noopener">📄 Abrir resumo em PDF</a>
-      <button class="btn pri" data-act="setup" data-mode="practice">Praticar</button>
-      <button class="btn" data-act="setup" data-mode="sim">Fazer simulado</button>
-    </div>
-  </section>
-  ${resume || lastRes ? `<div class="row" style="margin-bottom:18px">${resume}${lastRes}</div>` : ""}
-  <div class="grid">
-    <div class="card"><div class="stat">${answered}/${total}</div><p class="muted">questões respondidas</p>
-      <div class="bar"><i style="width:${pct(answered, total)}%"></i></div></div>
-    <div class="card"><div class="stat">${pct(correct, answered)}%</div><p class="muted">de acerto nas respondidas</p></div>
-    <div class="card"><div class="stat">${store.fav.length}</div><p class="muted">questões favoritas</p></div>
-  </div>
-  <h2>Como funciona</h2>
-  <div class="card">
-    <p><strong>Praticar:</strong> escolha assuntos e tipos de questão. Você responde e vê a resolução na hora.</p>
-    <p><strong>Simulado:</strong> questões sorteadas, sem resolução durante a prova. O gabarito aparece ao final. Questões discursivas não entram no simulado.</p>
-    <p><strong>Ocultação:</strong> as respostas e resoluções só aparecem depois que você responde, ou quando você escolhe "Ver resolução".</p>
-    <p class="muted" style="margin:0">Seu progresso fica salvo somente neste navegador. Nada é enviado para servidores.</p>
-  </div>
-  <h2>Assuntos</h2>
-  <div class="grid">${ASSUNTOS.map(a => {
-    const n = QUESTOES.filter(q => q.sub === a.id).length;
-    return `<div class="card" style="border-left:5px solid ${a.cor}"><span class="chip">Módulo ${a.modulo}</span><h3>${esc(a.nome)}</h3><p class="muted" style="margin:0">${n} questões</p></div>`;
-  }).join("")}</div>
-  <div class="warn" style="margin-top:22px"><strong>Limitações do banco.</strong> Algumas partes do material não têm gabarito legível ou completo (por exemplo, exercícios de enquadramento sem resposta no arquivo e parte das tabelas de exercícios). Essas questões não foram incluídas, para não inventar respostas. Itens com dados conflitantes no material original também não foram usados como gabarito.</div>`;
-}
 
 function viewSetup(){
-  const st = ui.setup;
-  const isSim = st.mode === "sim";
-  const cnt = QUESTOES.filter(q => st.subs.includes(q.sub)).length;
+  const st = ui.st, isSim = st.mode === "sim";
   const pool = poolFor(st).length;
-  const tipoBox = Object.keys(TIPOS).filter(t => !(isSim && t === "disc")).map(t =>
-    `<label><input type="checkbox" data-act="sf" data-f="tipos" data-v="${t}" ${st.tipos.includes(t) ? "checked" : ""}>${esc(TIPOS[t])}</label>`).join("");
+  const total = Object.keys(store.answers).filter(id => BY[id]).length;
+  const correct = Object.keys(store.answers).filter(id => BY[id] && store.answers[id].ok).length;
+  const resume = store.session && !store.session.done ? `<p><button class="btn" data-act="resume">Continuar onde parei (${store.session.idx + 1}/${store.session.ids.length})</button></p>` : "";
+  const tipos = Object.keys(TIPOS_ROTULO).filter(t => !(isSim && t === "disc"));
   return `
-  <h1>${isSim ? "Simulado" : "Praticar"}</h1>
-  <p class="lead">${isSim ? "Escolha o tamanho e os assuntos. As respostas só aparecem no final." : "Filtre o que quer estudar. Você verá a resolução depois de cada resposta."}</p>
+  <div class="box">
+    <div class="row" style="justify-content:space-between">
+      <div><button class="btn ${isSim ? "" : "pri"}" data-act="mode" data-mode="practice">Questões</button>
+      <button class="btn ${isSim ? "pri" : ""}" data-act="mode" data-mode="sim">Simulado</button></div>
+    </div>
+    <p class="muted" style="margin-top:10px">${isSim ? "No simulado, as respostas e o gabarito só aparecem no final." : "Você vê a resolução logo depois de cada resposta."}</p>
+  </div>
+  ${resume}
   ${ui.msg ? `<p class="msg">${esc(ui.msg)}</p>` : ""}
-  <div class="card">
-    <div class="fgroup"><h3>Assuntos</h3>${ASSUNTOS.map(a => `<label><input type="checkbox" data-act="sf" data-f="subs" data-v="${a.id}" ${st.subs.includes(a.id) ? "checked" : ""}>${esc(a.nome)}</label>`).join("")}</div>
-    <div class="fgroup"><h3>Tipos de questão</h3>${tipoBox}</div>
-    <div class="fgroup"><h3>Dificuldade</h3>${[1,2,3].map(n => `<label><input type="checkbox" data-act="sf" data-f="niveis" data-v="${n}" ${st.niveis.includes(n) ? "checked" : ""}>${NIVEIS[n]}</label>`).join("")}</div>
-    <div class="fgroup"><h3>Mostrar só</h3>
-      <label><input type="checkbox" data-act="sf" data-f="onlyNew" ${st.onlyNew ? "checked" : ""}>Não respondidas</label>
-      <label><input type="checkbox" data-act="sf" data-f="onlyWrong" ${st.onlyWrong ? "checked" : ""}>Erradas antes</label>
-      <label><input type="checkbox" data-act="sf" data-f="onlyFav" ${st.onlyFav ? "checked" : ""}>Favoritas</label></div>
-    ${isSim ? `<div class="fgroup"><h3>Tamanho do simulado</h3>${["10","20","30","all"].map(c => `<label><input type="radio" name="cnt" data-act="sf" data-f="count" data-v="${c}" ${st.count === c ? "checked" : ""}>${c === "all" ? "Todas disponíveis" : c + " questões"}</label>`).join("")}</div>`
-      : `<div class="fgroup"><label><input type="checkbox" data-act="sf" data-f="shuffle" ${st.shuffle ? "checked" : ""}>Embaralhar a ordem das questões</label></div>`}
-    <p class="muted">Questões disponíveis com estes filtros: <strong>${pool}</strong> de ${cnt}.${isSim ? " Discursivas não entram no simulado." : ""}</p>
-    <div class="row"><button class="btn pri" data-act="start" ${pool ? "" : "disabled"}>Começar</button><button class="btn ghost" data-act="home" data-go="home">Voltar</button></div>
-  </div>`;
+  <div class="box grp">
+    <h2 style="margin-top:0">Assuntos</h2>
+    ${ASSUNTOS.map(a => `<label><input type="checkbox" data-act="sf" data-f="subs" data-v="${a.id}" ${st.subs.includes(a.id) ? "checked" : ""}>${esc(a.nome)}</label>`).join("")}
+  </div>
+  <div class="box grp inline">
+    <h2 style="margin-top:0">Tipos</h2>
+    ${tipos.map(t => `<label><input type="checkbox" data-act="sf" data-f="tipos" data-v="${t}" ${st.tipos.includes(t) ? "checked" : ""}>${esc(TIPOS_ROTULO[t])}</label>`).join("")}
+    <h2>Dificuldade</h2>
+    ${[1,2,3].map(n => `<label><input type="checkbox" data-act="sf" data-f="niveis" data-v="${n}" ${st.niveis.includes(n) ? "checked" : ""}>${NIVEIS[n]}</label>`).join("")}
+  </div>
+  <div class="box grp">
+    <h2 style="margin-top:0">Mostrar só</h2>
+    <label><input type="checkbox" data-act="sf" data-f="onlyNew" ${st.onlyNew ? "checked" : ""}>Não respondidas</label>
+    <label><input type="checkbox" data-act="sf" data-f="onlyWrong" ${st.onlyWrong ? "checked" : ""}>Erradas antes</label>
+    <label><input type="checkbox" data-act="sf" data-f="onlyFav" ${st.onlyFav ? "checked" : ""}>Favoritas</label>
+    ${isSim
+      ? `<h2>Tamanho do simulado</h2>${["10","20","30","all"].map(c => `<label><input type="radio" name="cnt" data-act="sf" data-f="count" data-v="${c}" ${st.count === c ? "checked" : ""}>${c === "all" ? "Todas disponíveis" : c + " questões"}</label>`).join("")}`
+      : `<label style="margin-top:8px"><input type="checkbox" data-act="sf" data-f="shuffle" ${st.shuffle ? "checked" : ""}>Embaralhar a ordem</label>`}
+  </div>
+  <div class="row">
+    <button class="btn pri" data-act="start" ${pool ? "" : "disabled"}>Começar (${pool} questões)</button>
+  </div>
+  <p class="muted" style="margin-top:22px">Respondidas: ${total} de ${QUESTOES.length}${total ? ` · acerto ${pct(correct, total)}%` : ""}.
+    ${ui.resetAsk
+      ? `Tem certeza? <button class="btn link danger" data-act="resetOk">Sim, apagar</button> <button class="btn link" data-act="resetNo">Cancelar</button>`
+      : `<button class="btn link" data-act="resetAsk">Apagar meu progresso</button>`}</p>`;
 }
 
 function viewQuiz(){
   const s = store.session;
-  if (s.idx >= s.ids.length){ finish(); return viewResult(); }
-  const q = curQ();
-  const n = s.ids.length, cur = s.idx + 1;
+  const q = curQ(), n = s.ids.length, cur = s.idx + 1;
   const prac = s.kind === "practice";
   const checked = !!s.checked[q.id], rev = !!s.revealed[q.id];
   const fav = store.fav.includes(q.id);
-  const sub = SUBS[q.sub];
   const isLast = s.idx === n - 1;
-  let act = "";
+  let acts = "";
   if (!checked){
-    const canSubmit = q.tipo === "disc" ? (rev && Array.isArray(getResp(q).marks)) : complete(q);
-    act += `<button class="btn pri" data-act="submit" data-q="${q.id}" ${canSubmit ? "" : "disabled"}>${q.tipo === "disc" ? "Registrar autoavaliação" : "Responder"}</button>`;
-    if (prac && !rev && q.tipo !== "disc") act += `<button class="btn ghost" data-act="reveal" data-q="${q.id}">Ver resolução</button>`;
-    if (prac && !rev && q.tipo === "disc") act += `<button class="btn ghost" data-act="reveal" data-q="${q.id}">Ver critérios e modelo</button>`;
+    if (q.tipo === "disc"){
+      const canSubmit = rev && Array.isArray(getResp(q).marks);
+      acts += `<button class="btn pri" data-act="submit" data-q="${q.id}" ${canSubmit ? "" : "disabled"}>Registrar autoavaliação</button>`;
+      if (prac && !rev) acts += `<button class="btn" data-act="reveal" data-q="${q.id}">Ver critérios e modelo</button>`;
+    } else if (q.tipo === "tab"){
+      if (prac && !rev) acts += `<button class="btn" data-act="reveal" data-q="${q.id}">Ver gabarito</button>`;
+      if (prac && rev) acts += `<button class="btn pri" data-act="submit" data-q="${q.id}">Registrar conferência</button>`;
+    } else {
+      acts += `<button class="btn pri" data-act="submit" data-q="${q.id}" ${complete(q) ? "" : "disabled"}>Responder</button>`;
+      if (prac && !rev) acts += `<button class="btn" data-act="reveal" data-q="${q.id}">Ver resolução</button>`;
+    }
   }
-  if (checked || (prac && rev && q.tipo !== "disc")) { /* sem ações extras */ }
-  act += `<button class="btn ${checked ? "pri" : "ghost"}" data-act="next">${isLast ? "Finalizar" : (checked ? "Próxima" : "Pular")}</button>`;
-  act += `<button class="btn ghost" data-act="finish">Encerrar e ver resultado</button>`;
-
-  const feedback = prac && (checked || rev) && q.tipo !== "disc" && !checked ? "" : "";
-  const showExpl = prac && (checked || rev) && q.tipo !== "disc";
+  acts += `<button class="btn" data-act="next">${isLast ? "Finalizar" : (checked ? "Próxima" : "Pular")}</button>`;
+  acts += `<button class="btn link" data-act="finish">Encerrar agora</button>`;
+  const showExpl = prac && (checked || rev) && q.tipo !== "disc" && q.tipo !== "tab";
+  const showTabExpl = prac && rev && q.tipo === "tab";
+  let status = "";
+  if (checked && prac){
+    const ok = store.answers[q.id] && store.answers[q.id].ok;
+    status = `<p class="fb ${ok ? "ok" : "bad"}">${ok ? "Acertou." : (rev ? "Resolução consultada: não conta como acerto." : "Errou.")}</p>`;
+  } else if (checked){
+    status = `<p class="muted">Resposta registrada.</p>`;
+  }
   return `
-  <div class="qhead">
-    <div style="flex:1;min-width:220px">
-      <span class="chip">${esc(s.kind === "sim" ? "Simulado" : "Prática")}</span>
-      <span class="chip">${esc(sub.nome)}</span>
-      <span class="chip">${esc(TIPOS[q.tipo])}</span>
-      <span class="chip">${esc(NIVEIS[q.nivel])}</span>
-    </div>
-    <button class="btn ghost" data-act="fav" data-q="${q.id}" aria-pressed="${fav}">${fav ? "★ Favorita" : "☆ Favoritar"}</button>
-  </div>
-  <div class="pbar"><div class="bar"><i style="width:${pct(s.idx, n)}%"></i></div><span class="muted">${cur}/${n}</span></div>
-  <div class="card" style="margin-top:16px">
+  <p class="muted"><span class="tag">${esc(SUBS[q.sub].nome)}</span><span class="tag">${esc(TIPOS_ROTULO[q.tipo])}</span><span class="tag">${esc(NIVEIS[q.nivel])}</span>${q.origem ? `<span class="tag">${esc(q.origem)}</span>` : ""}</p>
+  <div class="row" style="justify-content:space-between"><span class="muted">${s.kind === "sim" ? "Simulado" : "Questões"} · ${cur} de ${n}</span>
+    <button class="btn link" data-act="fav" data-q="${q.id}">${fav ? "★ Favorita" : "☆ Favoritar"}</button></div>
+  <div class="bar"><i style="width:${pct(s.idx, n)}%"></i></div>
+  <div class="box">
     ${bodyHTML(q)}
     ${showExpl ? explHTML(q) : ""}
-    ${checked && !prac ? `<p class="fb">Resposta registrada. A resolução aparece no final do simulado.</p>` : ""}
-    ${checked && prac ? `<p class="fb ${store.answers[q.id] && store.answers[q.id].ok ? "ok" : "bad"}">${store.answers[q.id] && store.answers[q.id].ok ? "Acertou." : (rev ? "Resolução consultada: não conta como acerto." : "Errou.")}</p>` : ""}
-    <div class="actions"><div class="row">${act}</div></div>
-  </div>
-  ${q.tipo === "disc" && !rev && prac ? `<p class="muted" style="margin-top:12px">Discursiva: escreva sua resposta, depois veja os critérios e marque os que atendeu.</p>` : ""}
-  `;
+    ${showTabExpl ? `<p class="muted" style="margin-top:12px">Gabarito completo: veja a tabela acima. Você conferiu ${store.session.marks[q.id] ? store.session.marks[q.id].filter(Boolean).length : 0} de ${q.campos.length} campos.</p>` : ""}
+    ${status}
+    <div class="actions">${acts}</div>
+  </div>`;
+}
+function complete(q){
+  const r = getResp(q);
+  if (q.tipo === "mc" || q.tipo === "ac") return r !== null;
+  return r.every(x => x !== null);
 }
 
 function viewResult(){
   const s = store.session;
   const checkedIds = s.ids.filter(id => s.checked[id]);
-  const scored = checkedIds.filter(id => BY[id].tipo !== "disc" || true);
-  const oks = scored.filter(id => evaluate(BY[id]).ok);
-  const wrong = scored.filter(id => !evaluate(BY[id]).ok);
-  const unanswered = s.ids.length - checkedIds.length;
-  const score = pct(oks.length, scored.length);
+  const oks = checkedIds.filter(id => evaluate(BY[id]).ok);
+  const wrong = checkedIds.filter(id => !evaluate(BY[id]).ok);
   const bySub = ASSUNTOS.map(a => {
     const ids = s.ids.filter(id => BY[id].sub === a.id); if (!ids.length) return "";
-    const c = ids.filter(id => s.checked[id]); const ok = c.filter(id => evaluate(BY[id]).ok);
+    const c = ids.filter(id => s.checked[id]), ok = c.filter(id => evaluate(BY[id]).ok);
     return `<tr><td>${esc(a.nome)}</td><td>${ok.length}/${c.length}</td><td>${pct(ok.length, c.length)}%</td></tr>`;
   }).join("");
   const rows = s.ids.map((id, i) => {
     const q = BY[id];
-    const st = !s.checked[id] ? `<span class="st-no">Não respondida</span>` : evaluate(q).ok ? `<span class="st-ok">Certa</span>` : `<span class="st-bad">Errada</span>`;
-    const en = (q.enun || q.afirm).replace(/\{\d\}/g, "___");
-    return `<details><summary>${i + 1}. ${esc(en.slice(0, 110))}${en.length > 110 ? "…" : ""} — ${st}</summary>
-      <div style="margin-top:8px">${answerText(q)}${explHTML(q)}</div></details>`;
+    const st = !s.checked[id] ? `<span class="st-no">não respondida</span>` : evaluate(q).ok ? `<span class="st-ok">certa</span>` : `<span class="st-bad">errada</span>`;
+    const txt = (q.enun || q.afirm).replace(/\{\d\}/g, "___");
+    let extra = "";
+    if (q.tipo === "tab" && s.kind === "sim"){
+      const m = s.marks[id] || [];
+      extra = `<p class="muted">Sua resposta: ${q.campos.map((c, k) => `<br>${esc(c)}: ${esc((getResp(q)[k] || "—"))}`).join("")}</p>
+        <p class="muted">Marque o que você acertou:</p>` + q.campos.map((c, k) =>
+          `<label class="row"><input type="checkbox" data-act="tabmark" data-q="${id}" data-i="${k}" ${m[k] ? "checked" : ""}><span>${esc(c)}</span></label>`).join("");
+    }
+    return `<details><summary>${i + 1}. ${esc(txt.slice(0, 120))}${txt.length > 120 ? "…" : ""} — ${st}</summary>
+      <div style="margin-top:8px">${gabaritoHTML(q)}${explHTML(q)}${extra}</div></details>`;
   }).join("");
+  const scored = checkedIds.length;
   return `
-  <h1>Resultado</h1>
-  <p class="lead">${esc(s.title)}</p>
-  <div class="grid" style="margin:18px 0">
-    <div class="card"><div class="stat">${score}%</div><p class="muted">de acerto (${oks.length} de ${scored.length} respondidas)</p></div>
-    <div class="card"><div class="stat">${oks.length}</div><p class="muted">acertos</p></div>
-    <div class="card"><div class="stat">${wrong.length}</div><p class="muted">erros</p></div>
-    <div class="card"><div class="stat">${unanswered}</div><p class="muted">não respondidas</p></div>
-  </div>
-  <h2>Por assunto</h2>
-  <div class="card"><table><thead><tr><th>Assunto</th><th>Acertos</th><th>%</th></tr></thead><tbody>${bySub}</tbody></table></div>
+  <h2 style="margin-top:0">Resultado: ${pct(oks.length, scored)}% de acerto</h2>
+  <p class="muted">${esc(s.title)} · ${oks.length} certas, ${wrong.length} erradas, ${s.ids.length - scored} não respondidas.</p>
+  ${s.kind === "sim" ? `<p class="muted">Confira cada exercício de tabela com o gabarito, marcando os campos que você acertou. Os campos não marcados contam como erro.</p>` : ""}
+  <div class="box"><table><thead><tr><th>Assunto</th><th>Certas</th><th>%</th></tr></thead><tbody>${bySub}</tbody></table></div>
   <h2>Questões</h2>
   ${rows}
-  <div class="row" style="margin-top:22px">
+  <div class="row" style="margin-top:18px">
     ${wrong.length ? `<button class="btn pri" data-act="revisar" data-ids="${esc(wrong.join(","))}">Revisar as ${wrong.length} erradas</button>` : ""}
-    <button class="btn" data-act="retry">Refazer com as mesmas questões</button>
-    <button class="btn ghost" data-act="home" data-go="home">Início</button>
+    <button class="btn" data-act="retry">Refazer estas questões</button>
+    <button class="btn" data-act="home">Voltar ao início</button>
   </div>`;
 }
 
-function viewStats(){
-  const answeredIds = QUESTOES.filter(q => store.answers[q.id]);
-  const okN = answeredIds.filter(q => store.answers[q.id].ok).length;
-  const row = (label, qs) => {
-    const a = qs.filter(q => store.answers[q.id]); const c = a.filter(q => store.answers[q.id].ok);
-    return `<tr><td>${esc(label)}</td><td>${a.length}/${qs.length}</td><td style="min-width:140px"><div class="bar"><i style="width:${pct(c.length, a.length)}%"></i></div></td><td>${pct(c.length, a.length)}%</td></tr>`;
-  };
-  return `
-  <h1>Progresso</h1>
-  <p class="lead">Acertos por assunto e por tipo de questão. Considera a última resposta de cada questão.</p>
-  <div class="grid" style="margin:18px 0">
-    <div class="card"><div class="stat">${okN}</div><p class="muted">acertos de ${answeredIds.length} respondidas</p></div>
-    <div class="card"><div class="stat">${pct(okN, answeredIds.length)}%</div><p class="muted">aproveitamento geral</p></div>
-    <div class="card"><div class="stat">${store.fav.length}</div><p class="muted">favoritas</p></div>
-  </div>
-  <h2>Por assunto</h2>
-  <div class="card"><table><thead><tr><th>Assunto</th><th>Respondidas</th><th>Acerto</th><th>%</th></tr></thead><tbody>
-    ${ASSUNTOS.map(a => row(a.nome, QUESTOES.filter(q => q.sub === a.id))).join("")}</tbody></table></div>
-  <h2>Por tipo</h2>
-  <div class="card"><table><thead><tr><th>Tipo</th><th>Respondidas</th><th>Acerto</th><th>%</th></tr></thead><tbody>
-    ${Object.keys(TIPOS).map(t => row(TIPOS[t], QUESTOES.filter(q => q.tipo === t))).join("")}</tbody></table></div>
-  <h2>Gerenciar</h2>
-  <div class="card">
-    <p class="muted">Apagar limpa respostas, favoritas e a sessão em andamento, somente neste navegador.</p>
-    ${ui.resetAsk
-      ? `<div class="row"><strong>Tem certeza?</strong><button class="btn danger" data-act="resetOk">Sim, apagar tudo</button><button class="btn ghost" data-act="resetNo">Cancelar</button></div>`
-      : `<button class="btn danger" data-act="resetAsk">Apagar meu progresso</button>`}
-  </div>`;
-}
-
-/* ---------- ciclo de renderização ---------- */
 function render(){
-  const v = ui.view;
   let html;
-  if (v === "setup") html = viewSetup();
-  else if (v === "quiz" && store.session && !store.session.done) html = viewQuiz();
-  else if (v === "result" && store.session) html = viewResult();
-  else if (v === "stats") html = viewStats();
-  else { ui.view = "home"; html = viewHome(); }
+  if (ui.view === "quiz" && store.session && !store.session.done) html = viewQuiz();
+  else if (ui.view === "result" && store.session) html = viewResult();
+  else { ui.view = "setup"; html = viewSetup(); }
   $("#app").innerHTML = html;
-  document.querySelectorAll(".nav[data-go]").forEach(b => b.classList.toggle("on", b.dataset.go === ui.view));
 }
 
 /* ---------- eventos ---------- */
 function act(a, el){
   switch (a){
-    case "home": ui.view = "home"; ui.msg = ""; render(); break;
-    case "stats": ui.view = "stats"; ui.resetAsk = false; render(); break;
-    case "setup": ui.setup = freshSetup(el.dataset.mode); ui.view = "setup"; ui.msg = ""; render(); break;
+    case "mode": ui.st = freshSetup(el.dataset.mode); ui.msg = ""; render(); break;
     case "sf": {
-      const st = ui.setup, f = el.dataset.f, v = el.dataset.v;
-      if (f === "onlyNew" || f === "onlyFav" || f === "onlyWrong" || f === "shuffle") st[f] = el.checked;
+      const st = ui.st, f = el.dataset.f, v = el.dataset.v;
+      if (["onlyNew","onlyFav","onlyWrong","shuffle"].includes(f)) st[f] = el.checked;
       else if (f === "count") st.count = v;
       else {
         const val = f === "niveis" ? +v : v, arr = st[f], i = arr.indexOf(val);
@@ -925,23 +870,33 @@ function act(a, el){
       }
       render(); break;
     }
-    case "start": startFromSetup(ui.setup); break;
+    case "start": startFromSetup(ui.st); break;
     case "resume": ui.view = "quiz"; render(); break;
-    case "result": ui.view = "result"; render(); break;
-    case "pick": { const q = BY[el.dataset.q]; setResp(q, +el.dataset.v); render(); break; }
+    case "home": ui.view = "setup"; render(); break;
+    case "pick": setResp(BY[el.dataset.q], +el.dataset.v); render(); break;
     case "step": { const q = BY[el.dataset.q], i = +el.dataset.i, r = getResp(q).slice(); r[i] = +el.dataset.v; setResp(q, r); render(); break; }
     case "vf": { const q = BY[el.dataset.q], i = +el.dataset.i, r = getResp(q).slice(); r[i] = el.dataset.v === "1"; setResp(q, r); render(); break; }
     case "assoc": case "lac": {
       const q = BY[el.dataset.q], i = +(el.dataset.i ?? el.dataset.k), r = getResp(q).slice();
       r[i] = el.value === "" ? null : +el.value; setResp(q, r); render(); break;
     }
-    case "texto": { const q = BY[el.dataset.q]; getResp(q).texto = el.value; persist(); break; }
+    case "texto": getResp(BY[el.dataset.q]).texto = el.value; persist(); break;
+    case "tabtxt": { const q = BY[el.dataset.q], r = getResp(q).slice(); r[+el.dataset.i] = el.value; setResp(q, r); break; }
     case "mark": {
       const q = BY[el.dataset.q], r = getResp(q);
       const marks = r.marks ? r.marks.slice() : q.criterios.map(() => false);
       marks[+el.dataset.i] = el.checked; r.marks = marks; persist(); render(); break;
     }
-    case "reveal": { store.session.revealed[el.dataset.q] = true; persist(); render(); break; }
+    case "tabmark": {
+      const s = store.session, q = BY[el.dataset.q];
+      const m = (s.marks[q.id] || q.campos.map(() => false)).slice();
+      m[+el.dataset.i] = el.checked; s.marks[q.id] = m;
+      if (s.kind === "sim" || !s.checked[q.id]) {
+        if (s.kind === "sim") store.answers[q.id] = { ok: evaluate(q).ok, ts: Date.now(), mode:"sim" };
+      }
+      persist(); render(); break;
+    }
+    case "reveal": store.session.revealed[el.dataset.q] = true; if (BY[el.dataset.q].tipo === "tab") store.session.marks[el.dataset.q] = store.session.marks[el.dataset.q] || BY[el.dataset.q].campos.map(() => false); persist(); render(); break;
     case "submit": submit(BY[el.dataset.q]); break;
     case "next": next(); break;
     case "finish": finish(); render(); break;
@@ -951,32 +906,26 @@ function act(a, el){
       persist(); render(); break;
     }
     case "revisar": startFromIds("practice", el.dataset.ids.split(",").filter(Boolean), "Revisão das erradas"); break;
-    case "retry": { const s = store.session; startFromIds(s.kind, s.ids.slice(), s.kind === "sim" ? "Simulado refeito" : "Prática refeita"); break; }
+    case "retry": { const s = store.session; startFromIds(s.kind, s.ids.slice(), s.title); break; }
     case "resetAsk": ui.resetAsk = true; render(); break;
     case "resetNo": ui.resetAsk = false; render(); break;
-    case "resetOk": {
-      store = { answers:{}, fav:[], session:null };
-      persist(); ui.resetAsk = false; ui.view = "home"; render(); break;
-    }
+    case "resetOk": store = { answers:{}, fav:[], session:null }; persist(); ui.resetAsk = false; ui.view = "setup"; render(); break;
   }
 }
 document.addEventListener("click", e => {
   const el = e.target.closest("[data-act]");
-  if (!el || el.tagName === "INPUT" || el.tagName === "SELECT" || el.tagName === "TEXTAREA") return;
-  if (el.tagName === "A") return;
+  if (!el || ["INPUT","SELECT","TEXTAREA"].includes(el.tagName)) return;
   act(el.dataset.act, el);
 });
 document.addEventListener("change", e => {
   const el = e.target.closest("[data-act]");
-  if (!el || el.tagName === "TEXTAREA") return;
+  if (!el || el.tagName === "TEXTAREA" || (el.tagName === "INPUT" && el.type === "text")) return;
   act(el.dataset.act, el);
 });
 document.addEventListener("input", e => {
-  const el = e.target.closest('[data-act="texto"]');
-  if (el) act("texto", el);
+  const el = e.target.closest('[data-act="texto"], [data-act="tabtxt"]');
+  if (el) act(el.dataset.act, el);
 });
-
-/* Inicialização: se a sessão anterior já terminou, a tela inicial mostra o botão de resultado. */
 render();
 })();
 </script>

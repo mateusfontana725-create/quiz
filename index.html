@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Questões para a VA – SCIP</title>
-<meta name="description" content="Questões de V ou F e questões abertas no formato da VA: altura, Portaria 476/2025 e classificação geral da edificação.">
+<title>Questões de SCI – CFP BM 2026</title>
+<meta name="description" content="Questões objetivas e de V ou F sobre o Sistema de Controle de Incidentes (SCI).">
 <style>
 :root{--bg:#fff;--txt:#1c1c1c;--mut:#666;--line:#d9d9d9;--soft:#f5f5f5;--ok:#1b7f3b;--bad:#b3261e;--acc:#1c1c1c;--r:8px}
 @media (prefers-color-scheme: dark){
@@ -64,519 +64,184 @@ th,td{text-align:left;padding:6px;border-bottom:1px solid var(--line);vertical-a
 <body>
 <div class="wrap">
 <header>
-  <h1>Questões para a VA – SCIP</h1>
-  <a class="btn" href="public/resumo-scip.pdf" target="_blank" rel="noopener">Resumo em PDF</a>
+  <h1>Questões de SCI</h1>
 </header>
 <main id="app" aria-live="polite"></main>
 </div>
 <script>
-/* Banco no formato da VA: V ou F sobre todo o conteúdo + questões abertas.
-   Fontes: slides do curso (legislação, CSCIP, NPTs), texto oficial da Portaria CG 476/2025 e da NPT 028 (Tabela 5). */
+/* Banco de questões de SCI (CFP BM 2026): objetivas (a–d) e V ou F. Fonte: slides do curso "Sistema de Controle de Incidentes". */
 const ASSUNTOS = [
-  {id:"leg",   nome:"Legislação: Lei Kiss, Lei 19.449 e Decreto 11.868"},
-  {id:"port",  nome:"Portaria 476/2025 e licenciamento"},
-  {id:"cscip", nome:"CSCIP: aplicação, idade e área"},
-  {id:"alt",   nome:"Altura da edificação"},
-  {id:"ocup",  nome:"Ocupação, carga de incêndio, risco e Tabela 5"},
-  {id:"npt",   nome:"Iluminação, sinalização, extintores e alarme"},
-  {id:"brig",  nome:"Brigada de incêndio (NPT 017)"},
-  {id:"hidr",  nome:"Hidrantes e mangotinhos (NPT 022)"},
-  {id:"glp",   nome:"GLP (NPT 028)"},
-  {id:"geral", nome:"Classificação geral da edificação"}
+  {id:"orig",  nome:"Origem, linha do tempo e legislação"},
+  {id:"conc",  nome:"Conceitos, princípios e características"},
+  {id:"staff", nome:"Comando, staff e títulos"},
+  {id:"area",  nome:"Instalações, áreas e símbolos"},
+  {id:"recu",  nome:"Recursos e formulários"},
+  {id:"sicoe", nome:"SICOE, Defesa Civil e hora de ouro"},
+  {id:"oper",  nome:"Operação: PAI, implantação e transferência"}
 ];
 const NIVEIS = {1:"Fácil", 2:"Intermediário", 3:"Difícil"};
-const TIPOS = {vf:"V ou F", tab:"Questão aberta"};
+const TIPOS = {vf:"V ou F", mc:"Múltipla escolha"};
 
 const V = (t, e) => ({t, v:true, e});
 const F = (t, e) => ({t, v:false, e});
 const VF = (id, sub, nivel, itens, expl) => ({id, sub, tipo:"vf", nivel, enun:"Julgue cada item como verdadeiro (V) ou falso (F).", itens, expl: expl || ""});
+const MC = (id, sub, nivel, enun, alts, correta, expl) => ({id, sub, tipo:"mc", nivel, enun, alts, correta, expl: expl || ""});
 
 const QUESTOES = [
-/* ===================== LEGISLAÇÃO ===================== */
-VF("vleg01","leg",1,[
-  V("A Lei Federal 13.425/2017 (Lei Kiss) estabelece diretrizes gerais sobre prevenção e combate a incêndio e a desastres em estabelecimentos, edificações e áreas de reunião de público.","Verdadeiro. É o objeto do art. 1º da Lei Kiss."),
-  V("Pela Lei Kiss, cabe ao Corpo de Bombeiros Militar planejar, analisar, avaliar, vistoriar, aprovar e fiscalizar as medidas de prevenção e combate a incêndio.","Verdadeiro. Art. 3º."),
-  F("Pela Lei Kiss, o município pode emitir o alvará sem a liberação do Corpo de Bombeiros quando a área for pequena.","Falso. O município deve exigir a liberação do Corpo de Bombeiros para liberar o alvará (art. 4º)."),
-  V("A fiscalização prevista na Lei Kiss inclui advertência, multa, interdição e embargo, na forma da legislação estadual.","Verdadeiro. Art. 3º, § 1º."),
-  F("A Lei Kiss determina que os cursos de graduação em Direito incluam conteúdo de prevenção e combate a incêndio.","Falso. São os cursos de Engenharia e Arquitetura (art. 8º).")
+/* ===== ORIGEM E LEGISLAÇÃO ===== */
+MC("o01","orig",1,"Em que contexto surgiu o SCI nos Estados Unidos?",["Crise financeira de 1929","Incêndios devastadores na Califórnia (1970–71)","Terremoto de São Francisco","Enchentes no Mississippi"],1,"Os incêndios devastadores na Califórnia (1970–71) levaram à criação do FIRESCOPE e da 1ª versão do SCI, em 1973."),
+MC("o02","orig",1,"Qual programa criado na Califórnia deu origem à 1ª versão do SCI, em 1973?",["NIMS","FEMA","FIRESCOPE","HSPD-5"],2,"O FIRESCOPE (California Organized for Potential Emergencies) foi criado na Califórnia e produziu a 1ª versão do SCI."),
+MC("o03","orig",2,"Após os atentados de 11/09/2001, qual documento consolidou o SCI como padrão nos EUA?",["NIMS","HSPD-5","Decreto Estadual nº 6.416/2002","Lei Kiss"],1,"A HSPD-5 (2003) consolidou o SCI. A primeira edição do NIMS é de 2004."),
+MC("o04","orig",1,"Qual acordo deu início ao SCI no Brasil?",["Acordo de cooperação técnica do Ibama com o USFS (1990)","Acordo do CBMPR com a FEMA (2005)","Acordo da SENASP com a Petrobras (2002)","Acordo do CBMDF com o Ibama (1979)"],0,"Em 1990, o USFS apoiou o Ibama por meio de um acordo de cooperação técnica."),
+MC("o05","orig",2,"Os bombeiros brasileiros treinaram, a partir de 1991, em qual modalidade de brigada?",["Smokejumpers","Hotshot Crew","Rescue Squad","Golden Team"],1,"Bombeiros militares e servidores do Ibama treinaram em brigadas Hotshot Crew, incorporando conceitos do SCI."),
+MC("o06","orig",2,"Como o Paraná denomina o SCI?",["SCO","SICOE","ICS","IMS"],1,"No Paraná, o SCI é chamado de SICOE (Sistema Integrado de Comando e Operações em Emergência, pelo Decreto 6.416/2002)."),
+MC("o07","orig",1,"Como o setor de petróleo e gás costuma chamar o SCI?",["SICOE","SCO","ICS ou IMS","SINDEC"],2,"O setor de petróleo e gás mantém a sigla ICS ou usa IMS (Incident Management System)."),
+MC("o08","orig",2,"Qual nome a Defesa Civil Nacional passou a usar para o SCI no início dos anos 2000?",["SICOE","SCO","SINDEC","IMS"],1,"A Defesa Civil Nacional renomeou o SCI como Sistema de Comando em Operações (SCO)."),
+VF("o09","orig",2,[
+  V("O Decreto Estadual nº 1.343/1999 aprovou o regulamento do Sistema Estadual de Defesa Civil.","Verdadeiro. O Dec. 1.343/1999 aprova o regulamento do SEDEC."),
+  F("O Decreto Estadual nº 6.416/2002 criou o Sistema Estadual de Defesa Civil.","Falso. O Dec. 6.416/2002 institui o SICOE; o SEDEC vem do Dec. 1.343/1999."),
+  V("O Decreto Estadual nº 6.416, de 11/10/2002, institui o SICOE.","Verdadeiro."),
+  F("O Decreto Estadual nº 9.557/2013 tornou o SCI obrigatório em emergências ambientais.","Falso. Quem torna o SCI obrigatório são os decretos federais 10.950/2022 e 12.173/2024; o 9.557/2013 reconfigura o modelo no Paraná.")
 ]),
-VF("vleg02","leg",1,[
-  F("A Lei Kiss é uma lei estadual do Paraná.","Falso. É a Lei Federal 13.425, de 30 de março de 2017."),
-  V("O poder público municipal e o Corpo de Bombeiros devem manter na internet informações sobre os alvarás emitidos.","Verdadeiro. Art. 10."),
-  V("A Lei Kiss prevê licenciamento simplificado para atividades de baixo risco.","Verdadeiro. Está no resumo da Lei Kiss nos slides."),
-  F("A Lei Kiss limita o Corpo de Bombeiros à vistoria da primeira liberação, sem vistorias periódicas.","Falso. O art. 5º prevê fiscalizações e vistorias periódicas.")
+MC("o10","orig",2,"Quais decretos federais estabeleceram o SCI como ferramenta obrigatória de gestão?",["6.416/2002 e 9.557/2013","10.950/2022 e 12.173/2024","1.343/1999 e 6.416/2002","13.425/2017 e 9.557/2013"],1,"Os decretos federais 10.950/2022 e 12.173/2024 tornaram o SCI obrigatório."),
+MC("o11","orig",1,"Qual é a base doutrinária do SICOE?",["Corpo de Bombeiros Militar","Estado-Maior da Escola Superior de Guerra","FEMA","SENASP"],1,"A base doutrinária do SICOE vem do Estado-Maior da ESG."),
+MC("o12","orig",2,"O que foi o \"Paraná em Flagelo\"?",["Incêndio urbano dos anos 2000","Maior incêndio florestal registrado no Paraná, na década de 1960, no qual já se aplicava metodologia semelhante ao ICS","Enchente de 2011","Terremoto no litoral"],1,"Na década de 1960, durante o maior incêndio florestal registrado, já se aplicava no Paraná uma metodologia semelhante ao ICS."),
+MC("o13","orig",2,"Qual lei ou decreto aprova o regulamento do Sistema Estadual de Defesa Civil no Paraná?",["Decreto 9.557/2013","Decreto 1.343/1999","Decreto 6.416/2002","Decreto 10.950/2022"],1,"O Decreto Estadual 1.343/1999 aprova o regulamento do SEDEC."),
+
+/* ===== CONCEITOS, PRINCÍPIOS E CARACTERÍSTICAS ===== */
+MC("c01","conc",1,"Segundo a ABNT (2005), o que é um incidente?",["Qualquer evento de rotina","Evento cuja ocorrência resulta em dano à saúde de pessoas, à propriedade ou ao meio ambiente","Somente incêndios","Somente acidentes de trânsito"],1,"Incidente é o evento cuja ocorrência resulta em dano à saúde, à propriedade ou ao meio ambiente (ABNT, 2005)."),
+MC("c02","conc",1,"Quais são as três finalidades centrais do SCI?",["Lucro, controle e prazo","Segurança, objetivos táticos e eficiência no uso dos recursos","Velocidade, custo e mídia","Hierarquia, disciplina e sigilo"],1,"O SCI garante segurança das equipes, alcance de objetivos táticos e uso eficiente dos recursos."),
+MC("c03","conc",2,"Na hierarquia do gerenciamento por objetivos, qual é a ordem correta?",["Táticas, estratégias e objetivos","Objetivos, estratégias e táticas","Estratégias, objetivos e táticas","Táticas, objetivos e estratégias"],1,"A hierarquia é: objetivos → estratégias → táticas."),
+MC("c04","conc",1,"Quantas características de gerenciamento de incidentes compõem o NIMS/SCI?",["10","12","14","16"],2,"São 14 características do NIMS, agrupadas em 6 categorias."),
+MC("c05","conc",2,"As 14 características do NIMS/SCI estão agrupadas em quantas categorias?",["3","4","6","8"],2,"As 14 características são organizadas em 6 categorias."),
+VF("c06","conc",2,[
+  V("A terminologia comum padroniza nomes de funções, cargos, instalações e recursos.","Verdadeiro. É a característica 1."),
+  F("Na organização modular, a estrutura é definida pelo cargo do responsável, e não pela função.","Falso. Na organização modular, a forma segue a função."),
+  V("Quando um supervisor passa a ter mais de 7 subordinados, criam-se equipes, divisões, grupos ou seções.","Verdadeiro. Acima de 7 subordinados, reorganiza-se a estrutura."),
+  F("A amplitude de controle ideal no SCI é de 7 subordinados por supervisor.","Falso. O ideal é 5; o máximo é 7.")
 ]),
-VF("vleg03","leg",1,[
-  V("A Lei Estadual 19.449/2018 regula o poder de polícia administrativa do CBMPR em prevenção e combate a incêndio.","Verdadeiro."),
-  F("O poder de polícia permite ao agente público extinguir o direito do particular que descumpre a norma.","Falso. O poder de polícia limita e restringe, mas não aniquila nem extingue um direito."),
-  V("No ciclo do poder de polícia, o consentimento corresponde aos documentos CVCB e CLCB.","Verdadeiro. Ordem = lei; consentimento = CVCB/CLCB; fiscalização; sanção."),
-  V("A Lei 19.449 nasceu, entre outros motivos, de uma ação civil pública do MP em Colombo e da necessidade de alinhamento com a Lei Kiss.","Verdadeiro. Slide 'Início Lei nº 19.449'."),
-  F("A Lei 19.449 foi criada por iniciativa da Prefeitura de Curitiba, sem relação com a Lei Kiss.","Falso. Surgiu de ação civil pública do MP em Colombo, com o Estado demandando proposta do Bombeiro, e da necessidade de alinhamento com a Lei Kiss.")
-]),
-VF("vleg04","leg",2,[
-  V("Pela Lei 19.449, as medidas de prevenção levam em conta ocupação, altura, capacidade de público, área, carga de incêndio e riscos especiais.","Verdadeiro."),
-  V("O CLCB é renovado anualmente, sob responsabilidade do contribuinte, com taxas e multas quitadas.","Verdadeiro."),
-  F("Edificações existentes devem cumprir exatamente as mesmas exigências das novas, sem tratamento diferenciado.","Falso. A lei prevê tratamento diferenciado para edificações existentes."),
-  V("A lei garante tramitação simplificada e prevê dispensa de licenciamento.","Verdadeiro."),
-  F("Na vistoria para o CVCB, o CBM não pode realizar testes nem exigir documentos.","Falso. Na vistoria, o CBM pode realizar testes e exigir documentos.")
-]),
-VF("vleg05","leg",2,[
-  V("A Lei 19.449 define 3 infrações administrativas.","Verdadeiro."),
-  V("As sanções administrativas da Lei 19.449 são advertência escrita, multa e cassação de documento.","Verdadeiro. Art. 16."),
-  F("O valor da multa vai de 1 a 500 UPF/PR.","Falso. Vai de 10 UPF/PR a 50.000 UPF/PR."),
-  V("Depois da multa, há 20 dias para escolher entre saneamento, TCAC ou recurso.","Verdadeiro. As opções aparecem como 10% saneamento, 10% TCAC ou recurso."),
-  F("Na medida acautelatória, o autuado também pode optar por firmar TCAC.","Falso. A medida acautelatória não pode optar por TCAC: as opções são saneamento ou recurso.")
-]),
-VF("vleg06","leg",1,[
-  V("Pela regra atual, a notificação é feita no momento da fiscalização, e não mais pelo correio.","Verdadeiro."),
-  F("No processo atual ainda existe homologação do chefe.","Falso. Não existe mais homologação do chefe."),
-  V("O recurso pode passar por 3 instâncias: SPCID, SAT e CRBM.","Verdadeiro. SPCID (PEL ou CIA) > SAT (BBM ou CIBM) > CRBM."),
-  V("A Lei 19.449 entrou em vigor em 1º de janeiro de 2019 e foi atualizada em 18 de abril de 2026.","Verdadeiro. Informação do material novo."),
-  V("As medidas acautelatórias são evacuação e interdição total ou parcial, ligadas ao risco iminente à vida.","Verdadeiro. Art. 20.")
-]),
-VF("vleg07","leg",2,[
-  V("O Decreto Estadual 11.868/2018 regulamenta a Lei 19.449.","Verdadeiro."),
-  F("Após a fiscalização, o prazo para escolher a providência de regularização é de 60 dias úteis.","Falso. São 20 dias úteis. Os 60 dias são o prazo de regularização da advertência."),
-  F("A multa vence em 20 dias corridos a contar da notificação.","Falso. São 20 dias úteis."),
-  V("A multa é classificada de levíssima a gravíssima, com pontuação conforme cada medida constatada.","Verdadeiro."),
-  F("A advertência escrita é sempre acompanhada de multa.","Falso. A advertência escrita é sem multa.")
-]),
-VF("vleg08","leg",2,[
-  V("A advertência não se aplica quando há risco iminente à vida ou em eventos.","Verdadeiro."),
-  V("Na advertência, o prazo de regularização é de 60 dias, sem verificação do CBMPR.","Verdadeiro."),
-  V("Se nova irregularidade for constatada antes de 2 anos da advertência, a fiscalização aplica multa.","Verdadeiro. Após 2 anos cabe nova advertência."),
-  F("Para desinterditar, basta sanar o risco iminente, sem pagar taxa.","Falso. É preciso sanar o risco iminente e pagar a taxa de vistoria."),
-  V("A evacuação é aplicada quando o risco iminente é apenas a capacidade de público extrapolada.","Verdadeiro.")
-]),
-VF("vleg09","leg",2,[
-  F("Os recursos de 2ª e 3ª instância são julgados por um único oficial.","Falso. São julgados por colegiado de três bombeiros militares."),
-  V("Para eventos, o protocolo (PTPID) é feito 5 dias antes e a vistoria, um dia antes.","Verdadeiro."),
-  F("Em 2026, a fiscalização educativa aplica multa zero mesmo quando há risco iminente à vida.","Falso. A multa zero vale desde que não haja risco iminente à vida."),
-  V("As decisões de recurso têm parte expositiva, conclusiva e dispositivo.","Verdadeiro."),
-  V("O decreto prevê consulta pública na alteração de normas (Corpo Técnico de Normatização).","Verdadeiro. Art. 3º.")
+MC("c07","conc",2,"Qual é a amplitude de controle no SCI?",["De 2 a 5 subordinados","Mínimo 3, ideal 5 e máximo 7 subordinados por supervisor","De 5 a 10 subordinados","De 1 a 3 subordinados"],1,"A amplitude de controle no SCI é de 3 (mínimo), 5 (ideal) e 7 (máximo)."),
+MC("c08","conc",2,"Quem é responsável por monitorar a amplitude de controle?",["Chefe de Logística","Comandante do Incidente","Oficial de Ligação","Oficial de Informação Pública"],1,"Monitorar a amplitude de controle é uma das principais responsabilidades do Comandante do Incidente."),
+MC("c09","conc",2,"Na cadeia de comando, cada pessoa responde e informa a quantas pessoas?",["Somente a uma pessoa","De uma a sete pessoas","De duas a três pessoas","No máximo cinco pessoas"],0,"Pela unidade de comando, cada pessoa responde a um único supervisor."),
+MC("c10","conc",3,"Qual princípio de responsabilização exige check-in e check-out de todo o pessoal, independentemente do órgão?",["Plano de Ação do Incidente","Check-in/Check-out","Amplitude de controle","Unidade de comando"],1,"Check-in e check-out são o primeiro princípio de accountability."),
+MC("c11","conc",2,"Quais são as duas formas de comunicação no SCI?",["Verbal e escrita","Formal e informal","Rádio e telefone","Interna e externa"],1,"A comunicação formal serve para receber tarefas, pedir recursos e relatar progresso. A informal troca informações sem pedido de tarefa."),
+MC("c12","conc",2,"Qual destas ocorrências é típica de aplicação do SCI?",["Furto de veículo isolado","Rompimento de barragens","Trânsito leve sem vítimas","Vazamento doméstico de gás de cozinha"],1,"Rompimento de barragens, desastres naturais e incidentes com produtos perigosos são exemplos de aplicação do SCI."),
+MC("c13","conc",2,"Qual é a principal razão para o SCI servir a todos os tipos de incidentes?",["Porque substitui as leis locais","Porque integra várias instituições e assegura o uso e o gerenciamento corretos dos recursos","Porque dispensa treinamento","Porque é aplicado apenas em grandes cidades"],1,"O SCI integra instituições e assegura o gerenciamento correto dos recursos."),
+
+/* ===== COMANDO, STAFF E TÍTULOS ===== */
+MC("s01","staff",1,"Quantas funções compõem o Staff de Comando?",["2","3","4","5"],1,"O Staff de Comando tem 3 funções: Segurança, Informação Pública e Ligação."),
+MC("s02","staff",2,"Qual é o título dado aos integrantes do Staff de Comando?",["Chefes","Oficiais","Líderes","Encarregados"],1,"Os integrantes do Staff de Comando são Oficiais."),
+MC("s03","staff",2,"Qual Oficial é o único porta-voz do incidente?",["Oficial de Segurança","Oficial de Ligação","Oficial de Informação Pública","Chefe de Logística"],2,"O OIP é o único porta-voz. Toda informação é aprovada pelo CI."),
+MC("s04","staff",2,"Quem integra as instituições que atuam no incidente ou podem ser convocadas?",["Oficial de Segurança","Oficial de Informação Pública","Oficial de Ligação","Chefe de Planejamento"],2,"O Oficial de Ligação integra as instituições."),
+MC("s05","staff",1,"Quantas seções compõem o Staff Geral?",["3","4","5","6"],1,"O Staff Geral tem 4 seções: Planejamento, Operações, Logística e Administração/Finanças."),
+MC("s06","staff",2,"Qual seção é responsável por elaborar o PAI?",["Operações","Logística","Administração/Finanças","Planejamento"],3,"O Planejamento elabora o PAI e mantém o controle dos recursos."),
+MC("s07","staff",2,"Quais são as unidades da Logística?",["Recursos, Situação e Documentação","Comunicações, Médica, Alimentação, Materiais, Instalações e Apoio Terrestre","Tempo, Provedoria e Custos","Setores e divisões"],1,"As unidades da Logística são: Comunicações, Médica, Alimentação, Materiais, Instalações e Apoio Terrestre."),
+MC("s08","staff",2,"Quais são as unidades da Administração/Finanças?",["Recursos, Situação e Documentação","Comunicações e Médica","Setores e divisões","Tempo, Provedoria e Custos"],3,"As unidades são Tempo, Provedoria e Custos."),
+MC("s09","staff",2,"Em incidentes pequenos, quem pode acumular todas as funções?",["Oficial de Ligação","Comandante do Incidente","Chefe de Operações","Encarregado da Base"],1,"Em incidentes pequenos, o CI pode acumular todas as funções."),
+MC("s10","staff",2,"Quem assume o comando quando o incidente começa?",["Quem tiver o maior cargo, sempre","O primeiro a chegar com capacidade de resposta, mesmo sem usar a terminologia","O Oficial de Segurança","O Chefe de Logística"],1,"O primeiro a chegar com capacidade de resposta age como CI."),
+MC("s11","staff",1,"Qual é a única função do SCI sempre ativa, em qualquer resposta?",["Comando","Oficial de Segurança","Planejamento","Logística"],0,"O Comandante do Incidente é a única função sempre ativa."),
+MC("s12","staff",2,"Qual título é dado a quem está à frente de acampamento, base, PC, ACV ou área de espera?",["Coordenador","Supervisor","Líder","Encarregado"],3,"O título de Encarregado é usado para ACV, Área de Espera, Base, Acampamento e PC."),
+MC("s13","staff",2,"Qual é o título dado ao responsável por uma divisão ou grupo?",["Supervisor","Chefe","Oficial","Comandante"],0,"Supervisor é o título de quem responde por divisão ou grupo."),
+VF("s14","staff",2,[
+  V("O Oficial de Segurança pode agir com autonomia em risco iminente e deve informar o CI.","Verdadeiro. O OS pode corrigir condições inseguras e informa o CI."),
+  F("O Chefe de Operações é um Oficial do Staff de Comando.","Falso. O Chefe de Operações é do Staff Geral, e o título é Chefe."),
+  V("Em incidentes pequenos, o CI pode acumular todas as funções.","Verdadeiro."),
+  F("A Seção de Logística registra gastos e mantém a documentação para indenizações.","Falso. Essa é a função da Administração/Finanças.")
 ]),
 
-/* ===================== PORTARIA 476 ===================== */
-VF("vport01","port",1,[
-  V("A Portaria 476/2025 classifica separadamente a empresa (atividade) e a edificação.","Verdadeiro."),
-  F("O risco baixo, médio ou alto da Portaria 476 é o mesmo que o risco leve, moderado ou elevado da carga de incêndio.","Falso. O material alerta: não confundir com carga de incêndio."),
-  V("A classificação considera características da edificação, população, quantidade de GLP, de líquidos inflamáveis e de produtos perigosos.","Verdadeiro."),
-  V("A NPA 001 trata da classificação de risco no licenciamento.","Verdadeiro.")
-]),
-VF("vport02","port",2,[
-  V("Empresa que funciona exclusivamente em ambiente virtual é de baixo risco.","Verdadeiro. Art. 3º, IV."),
-  V("Food truck é atividade ambulante e, por isso, de baixo risco.","Verdadeiro. Art. 3º, V."),
-  F("Pelo art. 3º, VII, a empresa de baixo risco pode ocupar até 100 m² da edificação.","Falso. Até 50 m², em edificação de até 200 m², exclusivamente térrea."),
-  F("Pelo art. 3º, VII, a lotação máxima é de 50 pessoas.","Falso. Até 20 pessoas."),
-  V("Pelo art. 3º, VII, a empresa pode ter no máximo 39 kg de GLP (três P-13).","Verdadeiro.")
-]),
-VF("vport03","port",2,[
-  V("Uma empresa com CNAE de baixo risco que ocupa 120 m² não se enquadra no art. 3º, VII.","Verdadeiro. Passa de 50 m²."),
-  F("Toda empresa de baixo risco fica dispensada do licenciamento e também das medidas de segurança.","Falso. A dispensa das medidas não vale para quem é baixo risco pelo art. 3º, VII."),
-  V("Para ser de médio risco, a empresa pode ter lotação de até 100 pessoas.","Verdadeiro. Art. 4º."),
-  V("Empresas de médio e de alto risco passam por licenciamento simplificado.","Verdadeiro. Art. 9º."),
-  V("Pelo art. 3º, VII, a empresa precisa ter saída direta para a área externa, sem aberturas para estabelecimentos vizinhos.","Verdadeiro.")
-]),
-VF("vport04","port",2,[
-  V("Torre de transmissão ou antena que não é local de trabalho permanente é edificação de baixo risco.","Verdadeiro. Art. 6º, IV."),
-  F("Edificação de médio risco pode ter até 2.000 m² e até 5 pavimentos.","Falso. Até 1.000 m² e até 3 pavimentos (art. 7º, I e II)."),
-  F("Uma pré-escola (E-5) de 120 m² é edificação de médio risco.","Falso. E-5 está entre as divisões que não podem ser médio risco: é alto risco."),
-  V("Um restaurante (F-8) com lotação de 150 pessoas não pode ser edificação de médio risco.","Verdadeiro. F-8 com mais de 100 pessoas fica fora do médio (art. 7º, III, b)."),
-  V("Edificação de médio risco pode ter uma central de GLP de até 190 kg, sem recipientes menores que P-45.","Verdadeiro. Art. 7º, V, a.")
-]),
-VF("vport05","port",2,[
-  V("Edificação de alto risco precisa de vistoria prévia para o licenciamento.","Verdadeiro. Art. 12."),
-  V("Edificação de médio risco é licenciada por termo (simplificado), e o responsável pode optar por vistoria.","Verdadeiro. Art. 11."),
-  F("Edificação de baixo risco passa por licenciamento simplificado.","Falso. É dispensada de licenciamento (art. 10)."),
-  V("No licenciamento simplificado, o responsável assina termo declarando a conformidade das medidas, paga a taxa e o sistema emite o licenciamento.","Verdadeiro."),
-  V("Se após a 3ª vistoria em um ano ainda houver pendência, o processo é encerrado sem aprovação.","Verdadeiro.")
-]),
-VF("vport06","port",3,[
-  V("No 1º ano, a empresa pode se licenciar sem vínculo com a edificação; a partir do 2º ano, precisa da edificação regularizada.","Verdadeiro."),
-  F("O risco da empresa pode ser maior que o risco da edificação onde ela funciona.","Falso. O risco precisa ser compatível."),
-  V("Edificação com 4 pavimentos e 900 m² é de alto risco.","Verdadeiro. Passa do limite de 3 pavimentos."),
-  V("Para ser de médio risco, a edificação pode ter até 1.000 L de líquidos inflamáveis ou combustíveis.","Verdadeiro. Art. 7º, IV."),
-  F("Edificação de médio risco pode usar 5 botijões P-13 em área externa.","Falso. O limite é de 3 P-13 no térreo, em área externa ventilada.")
+/* ===== INSTALAÇÕES, ÁREAS E SÍMBOLOS ===== */
+MC("a01","area",1,"Qual é o símbolo do PC?",["Círculo amarelo com \"PC\"","Retângulo laranja com \"PC\"","Triângulo verde com \"PC\"","Círculo azul com \"PC\""],1,"O PC é sinalizado com um retângulo laranja, com as letras PC em preto."),
+MC("a02","area",1,"Um círculo amarelo de 90 cm com a letra \"E\" identifica:",["Área de Espera","ACV","Base","Helibase"],0,"O E é a Área de Espera."),
+MC("a03","area",1,"Quantas Bases pode haver por incidente?",["Uma","Duas","Três","Uma por seção"],0,"Há apenas uma Base por incidente."),
+MC("a04","area",2,"O que é uma base?",["Local de pouso de helicópteros","Instalação de onde se coordenam as funções logísticas do incidente","Área de triagem de vítimas","Abrigo de vítimas"],1,"A Base coordena e administra as funções logísticas."),
+MC("a05","area",2,"O que é um heliponto?",["Estacionamento e manutenção de helicópteros","Local de pouso, decolagem e carga/descarga de pessoas, equipamentos e materiais","Área de triagem","Área médica"],1,"O heliponto é usado para pouso, decolagem e carga e descarga."),
+MC("a06","area",2,"Qual instalação é o local de estacionamento, abastecimento e manutenção de helicópteros?",["Pouso e decolagem","Reunião de equipes","Triagem de vítimas","Helibase"],3,"A Helibase é o estacionamento, o abastecimento e a manutenção de helicópteros."),
+MC("a07","area",2,"Quantas divisões de atendimento pré-hospitalar atuam dentro da ACV?",["2","3","4","5"],2,"Há 4 divisões: transporte, triagem, estabilização e monitoramento, e manejo de mortos."),
+MC("a08","area",2,"Quais são as divisões de atendimento dentro da ACV?",["Transporte, triagem, estabilização e monitoramento, e manejo de mortos","Resgate, combate, apoio e comando","Planejamento, operações e logística","Recepção, alta, internação e óbito"],0,"São as 4 divisões da ACV."),
+MC("a09","area",2,"Como deve ser a Área de Espera quanto às rotas?",["Rotas iguais de entrada e saída","Rotas diferentes de entrada e saída","Apenas uma entrada","Nenhuma rota"],1,"A Área de Espera deve ter rotas diferentes de entrada e saída."),
+MC("a10","area",2,"Qual característica NÃO se espera do PC?",["Visão integral da cena","Localização na zona de risco","Comunicação adequada","Capacidade de expansão"],1,"O PC deve ficar em local seguro, fora da zona de risco."),
+VF("a11","area",2,[
+  V("A ACV deve estar em área segura, ampliável e próxima ao incidente.","Verdadeiro."),
+  F("O PC deve ser instalado na zona de risco, para acompanhar a cena de perto.","Falso. O PC deve ficar em local seguro, fora da zona de risco."),
+  V("Pode haver mais de um Acampamento no incidente, cada um com um encarregado.","Verdadeiro."),
+  F("Helibase e heliponto são a mesma instalação.","Falso. A helibase é para estacionamento e manutenção; o heliponto, para pouso e carga.")
 ]),
 
-/* ===================== CSCIP ===================== */
-VF("vcscip01","cscip",1,[
-  V("Edificação exclusiva para residência unifamiliar está fora das exigências do CSCIP e da Lei 19.449.","Verdadeiro."),
-  F("A atividade agrossilvipastoril, inclusive silos e armazéns, está fora do CSCIP.","Falso. Silos e armazéns continuam no CSCIP."),
-  V("Residência usada só como endereço de contato, sem atendimento nem estoque, está fora do CSCIP.","Verdadeiro."),
-  V("O CSCIP se aplica a construção, ampliação de área e altura, mudança de ocupação, reforma e regularização.","Verdadeiro. Art. 5º."),
-  V("Residência unifamiliar no segundo pavimento com acesso independente (ex.: sobreloja) está fora do CSCIP.","Verdadeiro.")
+/* ===== RECURSOS E FORMULÁRIOS ===== */
+MC("r01","recu",1,"A classe de um recurso define:",["Sua capacidade de carga","A natureza da missão ou função","O número de pessoas","A cor do veículo"],1,"Classe é a natureza da missão ou função (salvamento, transporte, combate a incêndio)."),
+MC("r02","recu",2,"O tipo de um recurso define:",["Natureza da missão","Nome do recurso","Capacidade operacional, de carga e número de pessoas","Cor da placa"],2,"Tipo define a capacidade operacional, a capacidade de carga e o número de pessoas."),
+MC("r03","recu",2,"Um equipamento e seu complemento de pessoal, com líder responsável pela missão, é classificado como:",["Recurso único","Força-tarefa","Equipe de intervenção","Instalação"],0,"É um recurso único (R.U.), como 1 AA ou 1 ABTR."),
+MC("r04","recu",2,"Pela classificação, 2 AA + 1 ABTR formam:",["Recurso único","Equipe de intervenção","Força-tarefa","Instalação"],2,"Força-tarefa é a combinação de recursos de classes e tipos diferentes, com um só líder."),
+MC("r05","recu",2,"Qual é a diferença entre equipe de intervenção e força-tarefa?",["Equipe tem classes diferentes; força-tarefa, a mesma classe e tipo","Equipe tem mesma classe e tipo; força-tarefa combina classes e tipos diferentes","Não há diferença","Força-tarefa exige dois líderes"],1,"Equipe de intervenção: recursos únicos da mesma classe e tipo. Força-tarefa: recursos de classes e tipos diferentes."),
+MC("r06","recu",2,"Um recurso danificado ou em manutenção é classificado como:",["Disponível","Designado","Indisponível","Desmobilizado"],2,"Os estados são: disponível, designado e indisponível."),
+MC("r07","recu",2,"Quem pode solicitar recursos no incidente?",["O CI e os chefes de Planejamento, Operações e Logística","Qualquer bombeiro","Somente o Chefe de Logística","Apenas o Oficial de Ligação"],0,"Podem solicitar o CI e os chefes de Planejamento, Operações e Logística."),
+MC("r08","recu",2,"Pedir um helicóptero de fora do incidente é:",["Solicitação","Requisição","Designação","Desmobilização"],1,"Solicitação é para recursos internos; requisição é para recursos de fora do incidente."),
+VF("r09","recu",2,[
+  V("O CI pode recusar recursos enviados sem solicitação ou sem aplicação no incidente.","Verdadeiro. É o direito de recusa."),
+  F("Um recurso designado está disponível para ser mobilizado a qualquer momento.","Falso. Designado é o recurso em uso; disponível é o que está pronto para ser mobilizado."),
+  V("A desmobilização de recursos é feita por ordem do CI.","Verdadeiro."),
+  F("Um recurso único é formado por dois ou mais recursos da mesma classe e tipo.","Falso. Essa definição é de equipe de intervenção.")
 ]),
-VF("vcscip02","cscip",1,[
-  V("Proteger a vida dos ocupantes é objetivo do CSCIP.","Verdadeiro. Objetivo I."),
-  V("Dar condições de acesso para as operações do Corpo de Bombeiros é objetivo do CSCIP.","Verdadeiro. Objetivo IV."),
-  F("Proporcionar a continuidade dos serviços não é objetivo do CSCIP.","Falso. É o objetivo V."),
-  V("Os objetivos são atingidos com a instalação e a manutenção das medidas de segurança (art. 26).","Verdadeiro.")
-]),
-VF("vcscip03","cscip",2,[
-  F("Uma edificação construída em 2015 é 'existente tipo 1'.","Falso. 2015 está na faixa de 8/1/2012 a 31/12/2018: existente tipo 2."),
-  V("Edificação nova é a construída a partir de 1º de janeiro de 2019.","Verdadeiro."),
-  V("A existente tipo 1 vai de 1976 até 7/1/2012 e tem como referência a CPI/CB de 2001.","Verdadeiro."),
-  V("Pela NPT 002, comprova-se a data de construção, a área construída e de risco e a ocupação da época.","Verdadeiro."),
-  F("Imagens aéreas não podem ser usadas para comprovar a existência da edificação.","Falso. São documentos complementares, assim como a CTPI.")
-]),
-VF("vcscip04","cscip",1,[
-  V("Área construída é o somatório de todas as áreas ocupadas e cobertas de uma edificação.","Verdadeiro."),
-  V("Para classificar, usa-se área construída mais área de risco, descontando o que se enquadra no art. 21.","Verdadeiro."),
-  F("Uma central de GLP externa nunca entra no cálculo da área.","Falso. A central é área de risco e entra no cálculo (exemplo do clube: 800 + 20 = 820 m²)."),
-  F("Piscinas, banheiros e vestiários são computados na área.","Falso. Não são computados."),
-  V("Telheiro com laterais abertas e área menor que 10 m² não é computado.","Verdadeiro.")
-]),
-VF("vcscip05","cscip",2,[
-  V("Passagem coberta com até 3 m de largura, para circulação de pessoas, não é computada.","Verdadeiro."),
-  F("Escadas enclausuradas são computadas na área.","Falso. Não são computadas."),
-  V("Reservatórios de água não são computados.","Verdadeiro."),
-  V("Clube com bloco de 800 m², central de GLP de 20 m², reservatório de 30 m², piscina de 60 m² e vestiários de 60 m² tem 820 m² de área.","Verdadeiro. 800 + 20 (área de risco)."),
-  F("Platibandas e beirais de telhado com até 5 m de projeção não são computados.","Falso. O limite é de até 3 m de projeção.")
+MC("f01","recu",1,"Qual é o briefing do incidente?",["SCI-211","SCI-219","SCI-201","SCI-221"],2,"O SCI-201 é o briefing do incidente."),
+MC("f02","recu",1,"Qual formulário é a lista de registro (check-in)?",["SCI-201","SCI-211","SCI-219","SCI-214"],1,"O SCI-211 é a lista de registro (check-in)."),
+MC("f03","recu",2,"O SCI-219 (T-Card) é preenchido:",["Um por incidente","Um por recurso, pessoa ou equipamento","Um por seção","Um por dia"],1,"O T-Card é individual para cada recurso."),
+MC("f04","recu",2,"Qual é a cor do T-Card usado para funções e recursos humanos?",["Amarelo","Cinza","Laranja","Branco"],3,"T-Card branco: funções (recursos humanos). T-Card amarelo: equipamentos e viaturas."),
+MC("f05","recu",2,"Qual é a cor do T-Card usado para equipamentos e viaturas?",["Branco","Amarelo","Laranja","Cinza"],1,"T-Card amarelo: equipamentos e viaturas."),
+MC("f06","recu",2,"Quantas designações cabem no verso do SCI-219?",["1","2","3","5"],2,"O verso permite até 3 designações."),
+MC("f07","recu",2,"Em qual formulário fica o croqui da cena?",["SCI-201","SCI-211","SCI-219","SCI-215"],0,"O croqui da cena fica na primeira página do SCI-201 e pode virar o mapa de situação."),
+MC("f08","recu",2,"Qual formulário traz o contato telefone/rádio do efetivo empregado?",["SCI-201","SCI-219","SCI-211","SCI-209"],2,"O SCI-211 traz o contato (telefone ou rádio) do efetivo."),
+VF("f09","recu",2,[
+  V("O SCI-201 é preenchido em todo incidente.","Verdadeiro."),
+  F("O SCI-219 é um único formulário que lista todos os recursos do incidente.","Falso. Há um SCI-219 para cada recurso."),
+  V("O SCI-211 mostra os recursos a caminho, disponíveis, indisponíveis e designados.","Verdadeiro."),
+  F("A cor amarela no T-Card indica funções e pessoas.","Falso. O amarelo indica equipamentos e viaturas.")
 ]),
 
-/* ===================== ALTURA ===================== */
-VF("valt01","alt",1,[
-  V("Altura para medidas de segurança é medida do piso do pavimento mais baixo ocupado ao piso do último pavimento ocupado.","Verdadeiro. Orientação Técnica 002/2025."),
-  F("A altura é medida do nível do terreno até o topo da cobertura.","Falso. É piso a piso: do mais baixo ocupado ao último ocupado."),
-  V("Subsolo usado como estacionamento de veículos não entra na altura.","Verdadeiro. Art. 19."),
-  V("O pavimento superior de unidade duplex não entra na altura.","Verdadeiro. Art. 19."),
-  V("Mezanino com menos de 1/3 da área do pavimento não conta como pavimento.","Verdadeiro.")
-]),
-VF("valt02","alt",2,[
-  V("Uma edificação térrea tem altura 0,0 m para medidas, mesmo com pé-direito de 6,2 m.","Verdadeiro. Exemplo da edificação 1."),
-  V("Subsolo com depósito (ocupado) entra na altura.","Verdadeiro. Exemplo da universidade: altura de 44,0 m."),
-  V("Pé-direito é a altura livre de um andar, medida do piso à parte inferior do teto.","Verdadeiro. NPT 003."),
-  F("Uma edificação de 21,7 m é Tipo V (23 < H ≤ 30 m).","Falso. É Tipo IV (12 < H ≤ 23 m)."),
-  F("Área técnica em subsolo entra no cálculo da altura.","Falso. Áreas técnicas e áreas frias em subsolo não entram.")
-]),
-VF("valt03","alt",2,[
-  V("Pela Tabela 2 do CSCIP, edificação acima de 30 m é Tipo VI (alta).","Verdadeiro."),
-  F("Edificação baixa (Tipo II) tem H ≤ 12,00 m.","Falso. Tipo II: H ≤ 6,00 m. De 6 a 12 m é Tipo III."),
-  F("Um prédio de 12 pavimentos com o 12º piso a 37,5 m e a cobertura a 40,7 m tem altura de 40,7 m.","Falso. Mede-se até o piso do último pavimento: 37,5 m."),
-  V("Pavimento superior com metade da área do térreo conta como pavimento no cálculo da altura.","Verdadeiro. Tem mais de 1/3 da área (exemplo da loja de calçados: 3,5 m)."),
-  V("Máquinas ou equipamentos industriais em níveis superiores não entram na altura.","Verdadeiro.")
+/* ===== SICOE, DEFESA CIVIL E HORA DE OURO ===== */
+MC("p01","sicoe",1,"Quais são as 4 fases da Defesa Civil, na ordem?",["Resposta, prevenção, preparação e reconstrução","Preparação, prevenção, resposta e reconstrução","Prevenção, preparação, resposta e reconstrução","Prevenção, resposta, preparação e reconstrução"],2,"Prevenção, preparação, resposta e reconstrução."),
+MC("p02","sicoe",1,"Em qual fase da Defesa Civil se mobiliza o SINDEC a partir da COMDEC?",["Prevenção","Preparação","Resposta","Reconstrução"],2,"Na resposta, a COMDEC aciona o SINDEC e a escalada vai para o estado e a União."),
+MC("p03","sicoe",2,"Pela hora de ouro, levar a vítima ao pronto-socorro em até 1 hora garante, segundo o material, até:",["30% de sobrevivência","40% de sobrevivência","60% de sobrevivência","90% de sobrevivência"],2,"A hora de ouro garante até 60% de chance de sobrevivência."),
+MC("p04","sicoe",2,"No SICOE, o Nível III corresponde a:",["Equipe interna com recursos próprios","Rotina operacional","Acionamento de equipe externa","Desastre com Comando Unificado de múltiplos órgãos do SINDEC"],3,"Nível I: equipe interna. Nível II: equipe externa. Nível III: desastre, com Comando Unificado."),
+MC("p05","sicoe",2,"Qual é a 1ª prioridade do SICOE?",["Proteger propriedades","Preservar vidas","Estabilizar o evento","Preservar o meio ambiente"],1,"As prioridades são: vidas, estabilizar o evento, sistemas essenciais e meio ambiente, e propriedades."),
+MC("p06","sicoe",2,"Quantas fases operacionais o SICOE tem, executadas de forma simultânea?",["5","6","7","8"],2,"São 7 fases operacionais simultâneas."),
+MC("p07","sicoe",2,"Qual é a amplitude de controle no SICOE?",["30 subordinados diretos por supervisor","7 subordinados","5 subordinados","3 subordinados"],0,"No SICOE, o limite é de 30 subordinados diretos por supervisor."),
+MC("p08","sicoe",2,"Quantas etapas tem o acionamento do SICOE pelos POPs?",["2","3","4","5"],1,"São 3 etapas: resposta imediata, plano de ação e desmobilização."),
+VF("p09","sicoe",2,[
+  V("O SICOE é escalável: os procedimentos básicos são os mesmos nos níveis I, II e III.","Verdadeiro."),
+  F("O limite de subordinados diretos por supervisor no SICOE é de 7.","Falso. É de 30."),
+  V("A hora de ouro se refere ao atendimento a trauma, com a vítima levada ao pronto-socorro em até 1 hora.","Verdadeiro."),
+  F("Em um desastre de Nível II, o SICOE não precisa ser acionado.","Falso. O Nível II exige o acionamento do SICOE.")
 ]),
 
-/* ===================== OCUPAÇÃO, RISCO, TABELA 5 ===================== */
-VF("vocup01","ocup",1,[
-  V("Ocupação é a atividade ou uso principal exercido na edificação.","Verdadeiro."),
-  F("Grupo D é depósito e grupo J é serviço profissional.","Falso. D é serviço profissional e J é depósito."),
-  V("Escritório de arquitetura é D-1, biblioteca é F-1, hotel é B-1 e residencial multifamiliar é A-2.","Verdadeiro. Exercício do material."),
-  V("E-5 é pré-escola e F-6 é casa de shows.","Verdadeiro."),
-  F("A classificação por ocupação usa a Tabela 3 do CSCIP.","Falso. Usa a Tabela 1 (art. 25, I). A Tabela 3 é a do risco.")
-]),
-VF("vocup02","ocup",1,[
-  V("O risco da edificação é definido pela carga de incêndio, na Tabela 3 do CSCIP.","Verdadeiro."),
-  V("Risco leve: até 300 MJ/m²; moderado: acima de 300 até 1.200; elevado: acima de 1.200 MJ/m².","Verdadeiro."),
-  F("Para classificar o risco, é obrigatório calcular a carga de incêndio da edificação.","Falso. A NPT 014 traz as cargas tabeladas por ocupação."),
-  V("Uma biblioteca com 2.000 MJ/m² é risco elevado.","Verdadeiro."),
-  F("Um hotel com 500 MJ/m² é risco leve.","Falso. É moderado.")
-]),
-VF("vocup03","ocup",2,[
-  V("A Tabela 5 vale para risco leve com área até 1.500 m² e altura até 9,0 m.","Verdadeiro."),
-  V("Para risco moderado ou elevado, a Tabela 5 vale com área até 1.000 m² e altura até 6,0 m.","Verdadeiro."),
-  V("Se a edificação não se enquadra na Tabela 5, consulta-se a Tabela 6 correspondente à ocupação.","Verdadeiro."),
-  F("Na Tabela 5, primeiro escolhe-se a coluna da ocupação e só depois se verifica risco, área e altura.","Falso. 1º a tabela (risco, área e altura), 2º a coluna da ocupação, 3º as linhas das medidas."),
-  V("Restaurante F-8, risco leve, 500 m² e 5 m exige controle de materiais de acabamento, saídas, iluminação, sinalização e extintores.","Verdadeiro. Exemplo dos slides.")
-]),
-VF("vocup04","ocup",2,[
-  V("Na Tabela 5, a nota 1 exige brigada para lotação superior a 100 pessoas.","Verdadeiro."),
-  F("A nota 3 da Tabela 5 exige brigada para lotação superior a 200 pessoas.","Falso. Nota 3: acima de 400 pessoas. Nota 1: acima de 100."),
-  V("A nota 4 se aplica apenas às divisões E-5 e E-6.","Verdadeiro."),
-  F("Um laboratório D-4, risco moderado, com 1.500 m² e 6 m, se enquadra na Tabela 5.","Falso. Passa de 1.000 m²: vai para a Tabela 6D.")
-]),
-
-/* ===================== NPTs 018, 020, 021, 019 ===================== */
-VF("vnpt01","npt",1,[
-  V("A iluminação de emergência deve funcionar por no mínimo 1 hora, com perda máxima de 10% da luminosidade inicial.","Verdadeiro. NPT 018, item 5.4.2."),
-  F("O nível mínimo é de 5 lux em locais planos e 3 lux em locais com desnível.","Falso. É o contrário: 3 lux em locais planos e 5 lux em escadas e desníveis."),
-  V("No sistema centralizado com baterias, a comutação não pode passar de 2 segundos.","Verdadeiro."),
-  F("A vida útil das baterias do sistema centralizado deve ser de 2 anos.","Falso. São 4 anos, comprovados pelo fabricante."),
-  V("Grupo motogerador em local confinado fica em compartimento resistente ao fogo por 2 h, com acesso por PCF P-90.","Verdadeiro.")
-]),
-VF("vnpt02","npt",1,[
-  V("A sinalização de emergência é instalada a 1,80 m do piso acabado à base da sinalização.","Verdadeiro."),
-  V("Sinalizações de proibição e alerta ficam a no máximo 15 m entre si.","Verdadeiro."),
-  V("A NPT 020 se aplica a todas as edificações, exceto residências unifamiliares.","Verdadeiro."),
-  F("A sinalização de obstáculos (desnível, rebaixo de teto) é facultativa.","Falso. É obrigatória. Facultativa é a indicação continuada de rotas."),
-  V("Na porta de saída, a sinalização fica no máximo a 0,10 m da verga.","Verdadeiro.")
-]),
-VF("vnpt03","npt",2,[
-  F("O extintor portátil de água tem capacidade mínima 10-A.","Falso. Portátil de água: 2-A. O 10-A é o de água sobre rodas."),
-  V("Cada pavimento precisa de no mínimo 2 unidades extintoras: uma classe A e outra B:C, ou duas de pó ABC.","Verdadeiro."),
-  V("Em edificações, mezaninos e pavimentos de até 100 m², basta um extintor de pó ABC.","Verdadeiro."),
-  F("O extintor pode ser instalado na escada, desde que sinalizado.","Falso. Não se instala extintor em escadas."),
-  V("A manutenção de 3º nível (ensaio hidrostático) é a cada 5 anos.","Verdadeiro.")
-]),
-VF("vnpt04","npt",2,[
-  V("Os acionadores manuais de alarme ficam entre 0,90 m e 1,35 m de altura, na cor vermelha.","Verdadeiro."),
-  F("Os acionadores manuais podem ficar a até 50 m uns dos outros.","Falso. No máximo 30 m."),
-  V("Em residencial de até 30 m, o alarme pode ser trocado por interfone com central na portaria e fonte autônoma de no mínimo 60 minutos.","Verdadeiro. Item 5.21."),
-  V("Detectores são obrigatórios em entreforros e entrepisos.","Verdadeiro."),
-  F("Os acionadores manuais devem ser da cor amarela.","Falso. Cor vermelha.")
-]),
-
-/* ===================== BRIGADA ===================== */
-VF("vbrig01","brig",1,[
-  V("Dimensiona-se 1 brigadista orgânico para cada 200 pessoas, arredondando para cima.","Verdadeiro. NPT 017, item 6."),
-  V("5 brigadistas orgânicos equivalem a 1 brigadista profissional.","Verdadeiro."),
-  V("Em F-6 e F-7 com mais de 400 pessoas, o mínimo é de 5 brigadistas orgânicos.","Verdadeiro."),
-  F("Para 1.260 pessoas, são necessários 6 brigadistas orgânicos.","Falso. 1.260 / 200 = 6,3 → 7."),
-  V("Na opção por empresa, soma-se 30% à população: 180 pessoas viram 234 e exigem 2 orgânicos.","Verdadeiro. 234 / 200 = 1,17 → 2. O slide escreve 243, mas a conta e o 1,17 batem com 234.")
-]),
-VF("vbrig02","brig",2,[
-  F("O formador de brigadistas orgânicos precisa de carga horária mínima de 120 horas.","Falso. São 360 horas."),
-  F("Bombeiro da ativa pode dar aula em curso de brigadista.","Falso."),
-  F("O técnico de segurança do trabalho é obrigado a se registrar no CREA para atuar como formador.","Falso. Não tem essa obrigação."),
-  V("A ocupação secundária F-3, F-6, F-7 ou F-11 com mais de 400 pessoas também exige brigada (item 5.1.1).","Verdadeiro."),
-  V("Brigadista profissional exerce, em caráter habitual, função exclusiva de prevenção e combate a incêndio.","Verdadeiro.")
-]),
-
-/* ===================== HIDRANTES ===================== */
-VF("vhidr01","hidr",1,[
-  V("O tipo do sistema de hidrantes é definido pela ocupação, na Tabela 2 da NPT 022.","Verdadeiro."),
-  V("O volume mínimo da reserva de incêndio é dado pela Tabela 4, conforme o tipo do sistema e a área.","Verdadeiro."),
-  V("Pela Tabela 1 dos slides, a pressão mínima é de 10 mca em todos os tipos.","Verdadeiro."),
-  F("O sistema Tipo 3 tem vazão mínima de 150 l/min.","Falso. Tipo 3 = 200 l/min. 150 l/min é o Tipo 2."),
-  F("O sistema Tipo 5 tem expedição simples e vazão de 300 l/min.","Falso. Tipo 5: expedição dupla e 600 l/min. 300 l/min é o Tipo 4.")
-]),
-VF("vhidr02","hidr",2,[
-  V("Hotel (B-1) usa sistema Tipo 3.","Verdadeiro. B-1 e B-2 → Tipo 3."),
-  V("Comércio C-2 com carga acima de 1.000 MJ/m² usa sistema Tipo 4.","Verdadeiro."),
-  F("Residencial multifamiliar (A-2) usa sistema Tipo 5.","Falso. A-2 e A-3 → Tipo 1 ou 2."),
-  V("Sistema Tipo 3 em edificação de 6.700 m² exige reserva de 25 m³.","Verdadeiro. Faixa de 5.000 a 10.000 m²."),
-  F("Sistema Tipo 1 com até 2.500 m² exige reserva de 12 m³.","Falso. Tipo 1 até 2.500 m²: 5 m³. Os 12 m³ são do Tipo 3.")
-]),
-VF("vhidr03","hidr",2,[
-  F("O sistema Tipo 1 usa mangueira de 40 mm e abrigo obrigatório.","Falso. O Tipo 1 (mangotinho) usa esguicho e mangueira semirrígida de 25 mm, com abrigo opcional."),
-  V("Qualquer ponto da área deve ser alcançado por um esguicho com jato mínimo de 10 m.","Verdadeiro."),
-  V("Áreas industriais com carga de incêndio de até 100 MJ/m² são isentas de hidrantes (Anexo E).","Verdadeiro."),
-  F("Nos tipos 1 e 2, a escolha entre um e outro é proibida: deve-se usar sempre o Tipo 2.","Falso. A escolha é de quem dimensiona."),
-  V("Quando a edificação tiver hidrantes, eles devem atender também a central de GLP, exceto se ela estiver isolada a 15 m.","Verdadeiro. NPT 028.")
-]),
-
-/* ===================== GLP ===================== */
-VF("vglp01","glp",1,[
-  V("O GLP é mais pesado que o ar e se acumula rente ao chão.","Verdadeiro."),
-  V("Recipiente transportável vai até 0,5 m³ (até P-190); acima disso é estacionário.","Verdadeiro."),
-  V("Central de GLP com até 270 kg exige 1 extintor 20-B:C.","Verdadeiro. NPT 028, Tabela 5."),
-  V("Central com 271 kg a 1.800 kg exige 2 extintores 20-B:C.","Verdadeiro."),
-  F("Central com mais de 1.800 kg exige apenas 2 extintores 20-B:C.","Falso. Exige 2 de 20-B:C mais 1 de 80-B:C.")
-]),
-VF("vglp02","glp",2,[
-  V("Os extintores da central de GLP devem ser protegidos contra intempéries.","Verdadeiro."),
-  V("É proibido instalar recipientes de GLP em porão, garagem subterrânea ou forro.","Verdadeiro."),
-  F("Central com capacidade total entre 2 e 3,5 m³ tem afastamento de 3 m.","Falso. De 2 a 3,5 m³: 1,5 m. Os 3 m valem de 3,5 a 5,5 m³."),
-  V("Central de até 190 kg pode ficar encostada na divisa ou na edificação, com abertura frontal inteiramente ventilada.","Verdadeiro."),
-  F("Central de GLP em laje de cobertura pode ficar a qualquer altura.","Falso. Limite de 15 m do térreo à instalação, só com recipientes abastecidos no local.")
-]),
-VF("vglp03","glp",2,[
-  V("A Tabela 3 da NPT 028 trata de extintores para área de armazenamento (revenda), e não para central.","Verdadeiro. Para central, vale a Tabela 5."),
-  V("O nicho de GLP comporta até 2 P-45 ou 1 P-190.","Verdadeiro."),
-  V("Em edificação existente sem os recuos, podem ficar até 2 P-13 no interior, sem reserva.","Verdadeiro. Item 5.5."),
-  F("A central de GLP com 6 recipientes P-45 (270 kg) exige 2 extintores 20-B:C.","Falso. 270 kg está na faixa 'até 270 kg': 1 extintor 20-B:C."),
-  V("O plugue-fusível do recipiente é acionado entre 70 °C e 77 °C.","Verdadeiro.")
-]),
-VF("vnpt05","npt",2,[
-  V("A fonte de alimentação do alarme tem autonomia de 24 h em supervisão e 15 min em regime de alarme.","Verdadeiro. Fontes principal e secundária."),
-  F("A fonte do alarme precisa de autonomia de 24 h em regime de alarme.","Falso. São 24 h em supervisão e 15 min em regime de alarme."),
-  V("Os avisadores sonoros e visuais são instalados entre 2,20 m e 3,50 m de altura.","Verdadeiro."),
-  V("Se a edificação tem detector, o sistema precisa ter também os demais componentes do alarme.","Verdadeiro."),
-  F("Na substituição do alarme por interfone, a central pode ficar sem vigilância humana.","Falso. A central fica na portaria, com vigilância humana 24 horas.")
-]),
-VF("vhidr04","hidr",2,[
-  V("A tubulação aparente de hidrantes é vermelha, com diâmetro de pelo menos 2½ polegadas (DN65).","Verdadeiro."),
-  V("O hidrante de recalque fica entre 0,6 m e 1,5 m de altura e entre 0,5 m e 5 m da guia, com tampa vermelha.","Verdadeiro."),
-  V("A cada 5 anos, deve ser apresentada na vistoria a ART com o relatório das condições do sistema.","Verdadeiro."),
-  F("As mangueiras de hidrantes internos podem somar até 60 m.","Falso. Interno: até 30 m; externo: até 60 m."),
-  F("A tubulação de hidrantes pode passar por dutos de ventilação.","Falso. Não pode passar por dutos.")
+/* ===== OPERAÇÃO: PAI, IMPLANTAÇÃO E TRANSFERÊNCIA ===== */
+MC("g01","oper",2,"O período reativo dura, em média, cerca de:",["4 horas","4 dias","4 semanas","40 minutos"],0,"O período reativo dura cerca de 4 horas, com PAI mental ou verbal."),
+MC("g02","oper",2,"No período proativo, o PAI é:",["Mental","Escrito e formalizado, com múltiplos períodos operacionais","Dispensado","Restrito ao primeiro período"],1,"No período proativo, o PAI é escrito e pode durar de horas a semanas."),
+MC("g03","oper",2,"Qual é a 1ª fase de implantação do SCI?",["Estabelecer objetivos","Chegada ao local","Preparar a transferência de comando","Estabelecer perímetro de segurança"],1,"A primeira fase é a chegada ao local."),
+MC("g04","oper",2,"Quantos itens são informados na transferência de comando?",["5","7","9","11"],2,"São 9 itens, do estado do incidente à provável evolução."),
+MC("g05","oper",2,"A transferência de comando deve ser feita:",["Por rádio","Por escrito","Cara a cara","Por e-mail"],2,"A transferência é feita cara a cara."),
+MC("g06","oper",2,"A chegada de uma pessoa mais qualificada ao incidente:",["Implica troca automática de comando","Não implica troca de comando","Exige desmobilização","Exige novo PAI"],1,"A chegada de pessoa mais qualificada não implica troca de comando."),
+MC("g07","oper",2,"A Tarjeta de Campo é portada por:",["Comandante do Incidente","Chefes de equipe","Oficiais de Ligação","Encarregados"],1,"Os chefes de equipe portam a Tarjeta de Campo."),
+MC("g08","oper",2,"A desmobilização de recursos só pode ocorrer:",["Quando o recurso solicitar","Por ordem do CI","Quando termina o turno","Quando o Chefe de Logística decidir"],1,"A desmobilização é feita por ordem do Comandante do Incidente."),
+MC("g09","oper",2,"O PAI comunica:",["Somente custos","Estratégia, atribuições e objetivos","Somente mapas","Somente a carga de incêndio"],1,"O PAI comunica estratégia, atribuições e objetivos."),
+VF("g10","oper",2,[
+  V("O PAI deve ser atualizado a cada período operacional.","Verdadeiro."),
+  F("O período reativo exige PAI escrito e formalizado.","Falso. No período reativo, o PAI é mental ou verbal."),
+  V("Cabe ao Comandante do Incidente autorizar a divulgação de informações à imprensa.","Verdadeiro. Toda informação é aprovada pelo CI."),
+  F("A Seção de Planejamento é responsável por autorizar a divulgação à imprensa.","Falso. Quem autoriza é o CI; o OIP é o porta-voz.")
 ])
 ];
 
 </script>
 <script>
-/* Questões abertas no formato da VA. O aluno preenche, compara com o gabarito e marca o que acertou. */
-const CAMPOS_ALT = ["Altura para medidas de segurança","Classificação quanto à altura (Tabela 2 do CSCIP)"];
-const CAMPOS_PORT = ["Empresa ou edificação?","Risco (baixo, médio ou alto)","Procedimento de licenciamento","Exige medidas de segurança?"];
-const CAMPOS_GERAL = ["Qual a ocupação da edificação?","Qual a carga de incêndio?","Qual o risco de incêndio?","Qual a altura da edificação?","Qual a área da edificação?","Quais as medidas de segurança previstas?","Hidrante: tipo, reserva técnica, vazão e pressão mínima","Brigada: quantidade de brigadistas orgânicos ou profissionais","Central de GLP: quantidade e tipo de extintores"];
-const CAMPOS_HIDR = ["Tipo de sistema","Reserva técnica (volume mínimo)","Vazão mínima","Pressão mínima"];
-const CAMPOS_BRIG = ["Cálculo","Brigadistas orgânicos","Alternativa com brigadistas profissionais"];
-const CAMPOS_GLP = ["Quantidade total de GLP","Extintores exigidos para a central"];
-
-const ALT = (id, nivel, origem, enun, gab, expl) => ({id, sub:"alt", tipo:"tab", nivel, origem, enun:"Defina a altura da edificação. " + enun, campos:CAMPOS_ALT, gab, expl});
-const PORT = (id, nivel, origem, enun, gab, expl) => ({id, sub:"port", tipo:"tab", nivel, origem, enun:"Classifique conforme a Portaria do Comando-Geral nº 476/2025. " + enun, campos:CAMPOS_PORT, gab, expl});
-const GERAL = (id, nivel, origem, enun, gab, expl) => ({id, sub:"geral", tipo:"tab", nivel, origem, enun, campos:CAMPOS_GERAL, gab, expl});
-
-const ABERTAS = [
-/* ===================== ALTURA ===================== */
-ALT("alt01",1,"Prática de altura – Edificação 1","Loja de departamentos com 750 m², térrea, com pé-direito de 6,2 m.",
- ["0,0 m","Tipo I – edificação térrea (um pavimento)"],
- "Só há um pavimento: o piso mais baixo ocupado e o piso do último pavimento são o mesmo. O pé-direito não entra na conta."),
-ALT("alt02",2,"Prática de altura – Edificação 2","Loja de departamentos com 2 pavimentos e 1 subsolo, 600 m² por pavimento. Níveis dos pisos: subsolo (estacionamento) −2,8 m; térreo (loja) 0,0; 2º pavimento (loja) 4,2 m; cobertura 8,4 m.",
- ["4,2 m","Tipo II – edificação baixa (H ≤ 6,00 m)"],
- "O subsolo de estacionamento não entra (art. 19). Mede-se do piso do térreo (0,0) ao piso do 2º pavimento (4,2)."),
-ALT("alt03",2,"Prática de altura – Edificação 3","Loja de calçados com 300 m² no total: um pavimento térreo comercial e um pavimento superior de loja e depósito com metade da área do térreo. Níveis: térreo 0,0; pavimento superior 3,5 m; cobertura 6,5 m.",
- ["3,5 m","Tipo II – edificação baixa (H ≤ 6,00 m)"],
- "O pavimento superior tem metade da área do térreo, mais de 1/3, então conta como pavimento. Altura de 0,0 a 3,5 m."),
-ALT("alt04",2,"Prática de altura – Edificação 4","Prédio de escritórios com 12 pavimentos e 300 m² por pavimento. Níveis: térreo 0,0; 2º pavimento 5,5 m; 3º pavimento 8,7 m; do 3º ao 12º os pavimentos tipo têm 3,2 m de pé-direito; a cobertura fica a 40,7 m.",
- ["37,5 m","Tipo VI – edificação alta (acima de 30 m)"],
- "Piso do 12º pavimento: 5,5 + 10 × 3,2 = 37,5 m. A medida vai até o piso do último pavimento, não até a cobertura (40,7 m)."),
-ALT("alt05",3,"Prática de altura – Edificação 5","Prédio de universidade com 10 pavimentos acima do terreno e 3 subsolos, 200 m² por pavimento e pé-direito de 4 m. Subsolos: 1º (−4,0 m) estacionamento; 2º (−8,0 m) estacionamento e depósito; 3º (−12,0 m) estacionamento. O térreo está em 0,0 e o 10º pavimento em 36,0 m.",
- ["44,0 m","Tipo VI – edificação alta (acima de 30 m)"],
- "O 2º subsolo tem depósito, então é ocupado e entra na altura. O 3º subsolo, só de estacionamento, não entra. De −8,0 a 36,0 = 44,0 m."),
-ALT("alt06",3,"Prática de altura – Edificação 6","Prédio de apartamentos com 230 m² por pavimento e unidades duplex nos dois últimos andares. Níveis dos pisos: térreo −1,0 m; 1º pav. 3,5; 2º pav. 7,0; 3º pav. 10,5; 4º pav. (duplex 7 e 8) 14,0; 5º pav. (2º andar dos duplex 7 e 8) 17,5; 6º pav. (duplex 9 e 10) 20,7; 7º pav. (2º andar dos duplex 9 e 10) 24,2; cobertura 27,4.",
- ["21,7 m","Tipo IV – edificação de média altura (12 < H ≤ 23 m)"],
- "O pavimento superior do duplex não entra (art. 19). O último pavimento considerado é o 6º (20,7 m). De −1,0 a 20,7 = 21,7 m."),
-ALT("alt07",1,"Revisão – Hotel Central Curitibano","Hotel com 20 pavimentos de 400 m² e pé-direito de 3,0 m por pavimento.",
- ["57 m","Tipo VI – edificação alta (acima de 30 m)"],
- "Do piso do térreo ao piso do 20º pavimento há 19 intervalos: 19 × 3,0 = 57 m."),
-ALT("alt08",2,"Revisão – Magazine Central São José","Loja de departamentos com 3 pavimentos de 800 m², pé-direito de 3,5 m, e um subsolo usado só como estacionamento com exaustão mecânica de fumaça. No último pavimento há um reservatório de água de 50 m².",
- ["7 m","Tipo III – edificação de baixa-média altura (6 < H ≤ 12 m)"],
- "O subsolo de estacionamento não entra (art. 19, I) e o reservatório no piso superior também não (art. 19, III). Dois intervalos de 3,5 m = 7 m."),
-ALT("alt09",1,"Enquadramento 1","Prédio residencial de 8 pavimentos com pé-direito de 3,5 m.",
- ["24,5 m","Tipo V – edificação mediamente alta (23 < H ≤ 30 m)"],
- "7 intervalos × 3,5 m = 24,5 m, conforme o gabarito do material."),
-ALT("alt10",1,"Enquadramento 7","Escola infantil com 4 pavimentos de 3,8 m de pé-direito cada.",
- ["11,4 m","Tipo III – edificação de baixa-média altura (6 < H ≤ 12 m)"],
- "3 intervalos × 3,8 m = 11,4 m, conforme o gabarito do material."),
-
-/* ===================== PORTARIA 476/2025 ===================== */
-PORT("port01",2,"Exercício de regularização A","Uma empresa de contabilidade (CNAE 6920-6/01, de baixo risco) ocupa 120 m² de um prédio comercial de 200 m². Usa apenas computadores e não armazena produtos inflamáveis.",
- ["Empresa","Médio risco","Licenciamento simplificado (por termo)","Sim"],
- "Não cumpre o art. 3º, VII, b: ocupa mais de 50 m². Por isso não é baixo risco, mesmo com CNAE de baixo risco (anotação do material). Sem atividade do Anexo B, até 100 pessoas e sem produtos perigosos, é médio risco (art. 4º). Empresa de médio risco → licenciamento simplificado (art. 9º), com medidas."),
-PORT("port02",1,"Exercício de regularização B","Uma edificação projetada para uma pré-escola (ocupação E-5) de 120 m², com 3 salas de aula e central de GLP com capacidade máxima de 45 kg.",
- ["Edificação","Alto risco","Licenciamento por vistoria prévia","Sim"],
- "A divisão E-5 não pode ser médio risco (art. 7º, III, a). Logo, é alto risco (art. 8º). Edificação de alto risco → vistoria prévia (art. 12). O material anota: 'Ocupação E-5 é alto risco'."),
-PORT("port03",2,"Exercício de regularização C","Uma dentista abriu CNPJ (CNAE 8630-5/04) para atender em consultórios conveniados. Não tem endereço fixo próprio de atendimento.",
- ["Empresa","Baixo risco","Dispensa de licenciamento","Não"],
- "A atividade não é exercida em estabelecimento próprio: o endereço da empresa é só fiscal ou de contato (art. 3º, II e III). Empresa de baixo risco → dispensa de licenciamento e de medidas (art. 8º). Resolução feita a partir do texto da Portaria: o material não traz o gabarito deste item."),
-PORT("port04",2,"Exercício de regularização D","Uma edificação comercial de escritórios com 5 andares e 500 m² de área total, com central de GLP de capacidade máxima de 190 kg.",
- ["Edificação","Alto risco","Licenciamento por vistoria prévia","Sim"],
- "Passa do limite de 3 pavimentos do art. 7º, II. Por isso é alto risco (art. 8º) → vistoria prévia (art. 12). A central de 190 kg, sozinha, não impediria o médio risco."),
-PORT("port05",3,"Exercício de regularização E","Uma empresa ocupa 50 m² de uma edificação térrea de 50 m², com saída direta para a área externa, sem aberturas para estabelecimentos vizinhos e lotação máxima de 10 pessoas. O CNAE é 2072-0/00, classificado como de alto risco.",
- ["Empresa","Alto risco","Licenciamento simplificado","Sim"],
- "Área, saída e lotação cabem no art. 3º, VII, mas o CNAE é de alto risco (anotação do material). Assim, não é baixo nem médio risco (art. 4º, I), e sim alto (art. 5º). Para empresas, médio e alto risco passam por licenciamento simplificado (art. 9º)."),
-PORT("port06",1,"Exercício de regularização F","Uma edificação usada para abrigar uma torre de antena, sem permanência de pessoas, salvo durante a manutenção.",
- ["Edificação","Baixo risco","Dispensa de licenciamento","Não"],
- "Torre de transmissão ou estação de antena que não é local de trabalho permanente nem habitável → baixo risco (art. 6º, IV). Dispensa de licenciamento e de medidas (art. 10)."),
-PORT("port07",3,"Caso novo","Um escritório de advocacia com CNAE de baixo risco (Anexo A) ocupa 40 m² de uma edificação térrea de 150 m². Tem saída direta para a rua, lotação de 5 pessoas e não usa GLP nem inflamáveis.",
- ["Empresa","Baixo risco","Dispensa de licenciamento","Sim"],
- "Cumpre todas as alíneas do art. 3º, VII → baixo risco, dispensado de licenciamento. Atenção: quem é baixo risco pelo art. 3º, VII continua obrigado às medidas de segurança (art. 8º, parágrafo único)."),
-PORT("port08",2,"Caso novo","Uma edificação de escritórios (D-1) com 2 pavimentos e 800 m² no total, sem GLP e sem líquidos inflamáveis.",
- ["Edificação","Médio risco","Licenciamento simplificado (por termo), com opção de vistoria","Sim"],
- "Até 1.000 m², até 3 pavimentos, D-1 não está entre as divisões excluídas, sem GLP nem inflamáveis → médio risco (art. 7º). Licenciamento simplificado, podendo optar por vistoria (art. 11)."),
-PORT("port09",1,"Caso novo","Uma casa noturna (F-6), térrea, com 300 m² e lotação de 80 pessoas.",
- ["Edificação","Alto risco","Licenciamento por vistoria prévia","Sim"],
- "F-6 está entre as divisões que não podem ser médio risco (art. 7º, III, a) → alto risco → vistoria prévia (art. 12)."),
-PORT("port10",2,"Caso novo","Um restaurante (F-8), térreo, com 400 m² e lotação de 150 pessoas.",
- ["Edificação","Alto risco","Licenciamento por vistoria prévia","Sim"],
- "F-8 com lotação acima de 100 pessoas não pode ser médio risco (art. 7º, III, b) → alto risco → vistoria prévia."),
-PORT("port11",2,"Caso novo","Uma loja de roupas (C-1) com 2 pavimentos e 900 m², com central de GLP de 4 recipientes P-45 (180 kg). Sem líquidos inflamáveis.",
- ["Edificação","Médio risco","Licenciamento simplificado (por termo), com opção de vistoria","Sim"],
- "Até 1.000 m², até 3 pavimentos, C-1 não excluída e central de até 190 kg sem recipientes menores que P-45 (art. 7º, V, a) → médio risco (art. 11)."),
-PORT("port12",2,"Caso novo","Uma loja de conveniência (C-1), térrea, com 600 m², que usa 5 botijões P-13 em área externa ventilada.",
- ["Edificação","Alto risco","Licenciamento por vistoria prévia","Sim"],
- "O médio risco admite no máximo 3 P-13 no térreo, em área externa ventilada (art. 7º, V, b). Com 5 P-13, a edificação é alto risco → vistoria."),
-PORT("port13",2,"Caso novo","Uma loja de roupas com CNAE de baixo risco (Anexo A) ocupa 80 m² de uma edificação térrea de 150 m², com saída direta para a rua e lotação de 15 pessoas.",
- ["Empresa","Médio risco","Licenciamento simplificado (por termo)","Sim"],
- "Ocupa mais de 50 m², então não é baixo risco pelo art. 3º, VII. Não está no Anexo B, tem até 100 pessoas e não usa produtos perigosos → médio risco (art. 4º) → simplificado (art. 9º)."),
-PORT("port14",1,"Caso novo","Uma loja que vende somente pela internet, com atividade exercida exclusivamente em ambiente virtual.",
- ["Empresa","Baixo risco","Dispensa de licenciamento","Não"],
- "Atividade exclusivamente virtual → baixo risco (art. 3º, IV). Dispensa de licenciamento e de medidas."),
-PORT("port15",1,"Caso novo","Um prédio de escritórios (D-1) com 4 pavimentos e 900 m² no total.",
- ["Edificação","Alto risco","Licenciamento por vistoria prévia","Sim"],
- "Passa do limite de 3 pavimentos (art. 7º, II), mesmo com menos de 1.000 m² → alto risco → vistoria prévia."),
-PORT("port16",2,"Caso novo","Uma edificação comercial (C-1), térrea, com 1.200 m² e sem GLP.",
- ["Edificação","Alto risco","Licenciamento por vistoria prévia","Sim"],
- "Passa do limite de 1.000 m² (art. 7º, I) → alto risco → vistoria prévia."),
-PORT("port17",1,"Caso novo","Um food truck que vende lanches em eventos.",
- ["Empresa","Baixo risco","Dispensa de licenciamento","Não"],
- "Atividade econômica ambulante individual → baixo risco (art. 3º, V). Dispensa de licenciamento e de medidas."),
-
-/* ===================== CLASSIFICAÇÃO GERAL (formato da VA) ===================== */
-GERAL("ger01",3,"Revisão 1 + central de GLP","Hotel Central Curitibano: hotel com 76 leitos, 20 pavimentos de 400 m² e pé-direito de 3,0 m. Uma passagem coberta de 2,5 m de largura, com laterais abertas e 25 m², liga a recepção ao bloco de quartos. População total de 580 pessoas. Central de GLP com 4 recipientes P-190.",
- ["B-1 (hotel)","500 MJ/m²","Moderado","57 m","8.000 m² (400 × 20; a passagem coberta de 2,5 m não é computada, art. 21)","Tabela 6B (notas 2, 3, 5 e 6): acesso de viatura; segurança estrutural; compartimentação horizontal e vertical; controle de materiais de acabamento; saídas de emergência; plano de emergência; iluminação de emergência; detecção; alarme; sinalização; extintores; hidrantes e mangotinhos; chuveiros automáticos; controle de fumaça","Tipo 3 (B-1); reserva de 25 m³ (área de 5.000 a 10.000 m²); vazão 200 l/min; pressão 10 mca","Não exigida: a brigada não aparece entre as medidas do gabarito para este caso","4 × 190 = 760 kg → 2 extintores 20-B:C"],
- "Ocupação, carga, risco, área, altura e medidas seguem o gabarito de revisão do material. Hidrante: Tabela 2 (B-1 → Tipo 3), Tabela 4 (8.000 m² → 25 m³) e Tabela 1 (200 l/min; 10 mca). GLP: NPT 028, Tabela 5 (271 a 1.800 kg → 2 × 20-B:C)."),
-GERAL("ger02",1,"Revisão 2 + central de GLP","Loja de Ferragens Reparos & Cia: comércio de artigos de metal, louças e ferragens, térrea, 1.200 m², pé-direito de 4,5 m, população de 40 pessoas. Central de GLP com 2 recipientes P-45.",
- ["C-1","300 MJ/m²","Leve","0 m (térrea)","1.200 m²","Tabela 5: saídas de emergência; iluminação de emergência; sinalização de emergência; extintores","Não é exigido (Tabela 5)","Não exigida","2 × 45 = 90 kg → 1 extintor 20-B:C"],
- "Risco leve, até 1.500 m² e até 9 m → Tabela 5, coluna C. GLP até 270 kg → 1 extintor 20-B:C."),
-GERAL("ger03",3,"Revisão 3 + central de GLP","Magazine Central São José: loja de departamentos com 3 pavimentos de 800 m² e pé-direito de 3,5 m, mais um subsolo de 800 m² só de estacionamento, com exaustão mecânica de fumaça. No último pavimento há um reservatório de água de 50 m². População de 450 pessoas. Central de GLP com 3 recipientes P-190.",
- ["C-2 (loja de departamentos)","800 MJ/m²","Moderado","7 m (subsolo de estacionamento e reservatório não entram, art. 19)","3.200 m² (800 × 3 + 800 do subsolo; reservatório não computado)","Tabela 6C (notas 1, 2, 8, 9 e 11): acesso de viatura; segurança estrutural; compartimentação horizontal; controle de materiais de acabamento; saídas de emergência; brigada; iluminação de emergência; detecção; alarme; sinalização; extintores; hidrantes e mangotinhos","Tipo 3 (C-2 até 1.000 MJ/m²); reserva de 18 m³ (2.500 a 5.000 m²); vazão 200 l/min; pressão 10 mca","450 / 200 = 2,25 → 3 brigadistas orgânicos, ou 1 brigadista profissional","3 × 190 = 570 kg → 2 extintores 20-B:C"],
- "O subsolo entra na área, mas não na altura. Brigada: 1 orgânico para cada 200 pessoas, arredondando para cima; 5 orgânicos equivalem a 1 profissional."),
-GERAL("ger04",2,"Revisão 4 + central de GLP","PF Estrela: restaurante com 2 pavimentos de 400 m² e pé-direito de 3,0 m. População de 250 pessoas. Central de GLP com 4 recipientes P-45.",
- ["F-8 (restaurante)","300 MJ/m²","Leve","3,0 m","800 m² (400 × 2)","Tabela 5 (nota 1): controle de materiais de acabamento; saídas de emergência; iluminação de emergência; sinalização de emergência; extintores; brigada de incêndio (lotação acima de 100 pessoas)","Não é exigido (Tabela 5)","250 / 200 = 1,25 → 2 brigadistas orgânicos, ou 1 brigadista profissional","4 × 45 = 180 kg → 1 extintor 20-B:C"],
- "A nota 1 da Tabela 5 exige brigada acima de 100 pessoas."),
-GERAL("ger05",1,"Revisão 6 + central de GLP","Agência Banco Million Dollar: agência bancária térrea de 450 m² e pé-direito de 4,0 m. Há um telheiro aberto lateralmente, de 8,0 m², para lixo. População de 50 pessoas. Central de GLP com 1 recipiente P-45.",
- ["D-2 (agência bancária)","300 MJ/m²","Leve","0 m (térrea)","450 m² (o telheiro de 8 m² não é computado)","Tabela 5: saídas de emergência; iluminação de emergência; sinalização de emergência; extintores","Não é exigido (Tabela 5)","Não exigida","45 kg → 1 extintor 20-B:C"],
- "Telheiro com laterais abertas e menos de 10 m² não entra na área (art. 21)."),
-GERAL("ger06",3,"Revisão 8 + central de GLP","Laboratório de Análises Clínicas HBM: 3 pavimentos de 500 m² e pé-direito de 3,0 m. População de 90 pessoas. Central de GLP com 2 recipientes P-45.",
- ["D-4 (laboratório de análises clínicas)","500 MJ/m²","Moderado","6,0 m","1.500 m² (500 × 3)","Tabela 6D (nota 1): acesso de viatura; segurança estrutural; compartimentação horizontal; controle de materiais de acabamento; saídas de emergência; iluminação de emergência; alarme; sinalização; extintores; hidrantes e mangotinhos","Tipo 3 (D-4 acima de 300 MJ/m²); reserva de 12 m³ (até 2.500 m²); vazão 200 l/min; pressão 10 mca","Não exigida","2 × 45 = 90 kg → 1 extintor 20-B:C"],
- "Risco moderado com mais de 1.000 m² → não cabe na Tabela 5 → Tabela 6D."),
-GERAL("ger07",2,"Revisão 9 + central de GLP","Japan-Japan Escola de Idiomas: 2 pavimentos de 350 m² e um subsolo de 350 m² com escritório administrativo da escola, pé-direito de 3,0 m. População de 120 pessoas. Central de GLP com 2 recipientes P-45.",
- ["E-2 (escola de idiomas)","300 MJ/m²","Leve","6,0 m (o subsolo tem permanência humana e entra na altura)","1.050 m² (350 × 2 + 350 do subsolo)","Tabela 5: saídas de emergência; iluminação de emergência; sinalização de emergência; extintores","Não é exigido (Tabela 5)","Não exigida","2 × 45 = 90 kg → 1 extintor 20-B:C"],
- "Subsolo ocupado (escritório) entra na altura: de −3,0 a 3,0 = 6,0 m."),
-GERAL("ger08",3,"Revisão 10 + central de GLP","Escola Estadual do Estado: escola de ensino fundamental e médio com 3 pavimentos de 600 m² e pé-direito de 3,2 m. Há uma cobertura de quadra poliesportiva aberta lateralmente, de 400 m². População de 500 pessoas. Central de GLP com 10 recipientes P-190.",
- ["E-1 (escola)","300 MJ/m²","Leve","6,4 m (2 × 3,2)","1.800 m² (600 × 3; cobertura aberta da quadra não computada)","Tabela 6E: acesso de viatura; segurança estrutural; controle de materiais de acabamento; saídas de emergência; iluminação de emergência; alarme; sinalização; extintores; hidrantes e mangotinhos","Tipo 1 ou Tipo 2 (E-1, escolha de quem dimensiona); reserva de 5 m³ (Tipo 1) ou 8 m³ (Tipo 2), área até 2.500 m²; vazão 100 l/min (Tipo 1) ou 150 l/min (Tipo 2); pressão 10 mca","Não exigida: a brigada não aparece entre as medidas do gabarito para este caso","10 × 190 = 1.900 kg → 2 extintores 20-B:C + 1 extintor 80-B:C"],
- "Risco leve, mas com mais de 1.500 m² → Tabela 6E. GLP acima de 1.800 kg → 2 × 20-B:C + 1 × 80-B:C."),
-GERAL("ger09",2,"Revisão 11 + central de GLP","CEMEI Formiguinha: creche e jardim de infância com 2 pavimentos de 400 m² e pé-direito de 3,0 m. Sanitários e vestiários das crianças somam 60 m² no primeiro pavimento. População de 110 pessoas. Central de GLP com 1 recipiente P-45.",
- ["E-5 (creche, pré-escola)","300 MJ/m²","Leve","3,0 m","740 m² (800 − 60 de sanitários e vestiários)","Tabela 5 (nota 4): controle de materiais de acabamento; saídas de emergência; iluminação de emergência; sinalização de emergência; extintores; brigada de incêndio; detecção de incêndio","Não é exigido (Tabela 5)","110 / 200 = 0,55 → 1 brigadista orgânico, ou 1 brigadista profissional","45 kg → 1 extintor 20-B:C"],
- "A nota 4 vale só para E-5 e E-6 e torna obrigatórias a brigada e a detecção."),
-
-/* ===================== HIDRANTE ===================== */
-{id:"hid01",sub:"hidr",tipo:"tab",nivel:2,origem:"Exercício de hidrantes 1",enun:"Indústria de fabricação de calçados de couro com 6.700 m² de área total, dois pavimentos iguais de 3,5 m de pé-direito. Há exigência de hidrantes. Informe o sistema.",
- campos:CAMPOS_HIDR,gab:["Tipo 3","25 m³ (área de 5.000 a 10.000 m²)","200 l/min","10 mca"],
- expl:"Gabarito do exercício do material. Componentes: abrigo, mangueiras tipo 2 a 5, chave de hidrante e esguicho; esguicho e mangueira DN 40, expedição simples."},
-{id:"hid02",sub:"hidr",tipo:"tab",nivel:2,origem:"Exercício de hidrantes 2",enun:"Edificação residencial com 5.500 m² de área total, 10 pavimentos de 3,2 m de pé-direito. Há exigência de hidrantes. Informe o sistema.",
- campos:CAMPOS_HIDR,gab:["Tipo 1 ou Tipo 2 (escolha de quem dimensiona)","12 m³ (Tipo 1) ou 18 m³ (Tipo 2), área de 5.000 a 10.000 m²","100 l/min (Tipo 1) ou 150 l/min (Tipo 2)","10 mca"],
- expl:"A-2 → Tipo 1 ou 2. O gabarito do material indica 12 ou 18 m³ e cita 100 l/min (vazão do Tipo 1); pela Tabela 1, o Tipo 2 tem 150 l/min."},
-{id:"hid03",sub:"hidr",tipo:"tab",nivel:3,origem:"Caso novo",enun:"Depósito J-3 com carga de incêndio de 900 MJ/m² e 12.000 m² de área. Considere que o hidrante é exigido. Informe o sistema.",
- campos:CAMPOS_HIDR,gab:["Tipo 4 (J-3 acima de 800 MJ/m²)","64 m³ (área de 10.000 a 20.000 m²)","300 l/min","10 mca"],
- expl:"Tabela 2: J-3 acima de 800 MJ/m² → Tipo 4. Tabela 4: Tipo 4 com 10.000 a 20.000 m² → 64 m³. Tabela 1: 300 l/min e 10 mca."},
-{id:"hid04",sub:"hidr",tipo:"tab",nivel:3,origem:"Caso novo",enun:"Comércio C-2 com carga de incêndio de 1.200 MJ/m² e 4.000 m² de área. Considere que o hidrante é exigido. Informe o sistema.",
- campos:CAMPOS_HIDR,gab:["Tipo 4 (C-2 acima de 1.000 MJ/m²)","32 m³ (área de 2.500 a 5.000 m²)","300 l/min","10 mca"],
- expl:"Tabela 2: C-2 acima de 1.000 MJ/m² → Tipo 4. Tabela 4: Tipo 4 com 2.500 a 5.000 m² → 32 m³."},
-
-/* ===================== BRIGADA ===================== */
-{id:"bri01",sub:"brig",tipo:"tab",nivel:1,origem:"Slide de dimensionamento",enun:"Edificação com 1.260 pessoas, em que a brigada é exigida. Dimensione a brigada para toda a edificação.",
- campos:CAMPOS_BRIG,gab:["1.260 / 200 = 6,3 → arredonda para 7","7 brigadistas orgânicos","1 profissional + 2 orgânicos, ou 2 profissionais"],
- expl:"5 orgânicos = 1 profissional. Para 7 orgânicos: 1 profissional + 2 orgânicos, ou 2 profissionais."},
-{id:"bri02",sub:"brig",tipo:"tab",nivel:2,origem:"Exercício de brigada (aeroporto)",enun:"Área comum de um aeroporto (F-4, 8.000 m², Tabela 6F.2 exige brigada em edificação térrea) com 520 pessoas.",
- campos:CAMPOS_BRIG,gab:["520 / 200 = 2,6 → 3","3 brigadistas orgânicos","1 brigadista profissional"],
- expl:"Resolução do exercício do material."},
-{id:"bri03",sub:"brig",tipo:"tab",nivel:3,origem:"Slide de dimensionamento",enun:"Casa de shows (F-6) com 404 pessoas, em que a brigada é exigida.",
- campos:CAMPOS_BRIG,gab:["404 / 200 = 2,02 → 3; mas F-6 e F-7 com mais de 400 pessoas têm mínimo de 5","5 brigadistas orgânicos","1 brigadista profissional"],
- expl:"Em F-6 e F-7 com mais de 400 pessoas, vale o mínimo de 5 orgânicos, mesmo que o cálculo dê menos."},
-{id:"bri04",sub:"brig",tipo:"tab",nivel:2,origem:"Slide de dimensionamento",enun:"Casa de shows (F-6) com 1.204 pessoas, em que a brigada é exigida.",
- campos:CAMPOS_BRIG,gab:["1.204 / 200 = 6,02 → 7 (acima do mínimo de 5)","7 brigadistas orgânicos","1 profissional + 2 orgânicos, ou 2 profissionais"],
- expl:"O cálculo dá mais que o mínimo de 5, então vale o cálculo."},
-{id:"bri05",sub:"brig",tipo:"tab",nivel:3,origem:"Slide de dimensionamento",enun:"Uma empresa com 180 pessoas dimensiona a brigada pela 2ª opção (brigada para cada empresa, item 6.1.1).",
- campos:CAMPOS_BRIG,gab:["180 + 30% = 234; 234 / 200 = 1,17 → 2","2 brigadistas orgânicos","1 brigadista profissional"],
- expl:"Na 2ª opção, soma-se 30% à população da empresa antes de dividir por 200. O slide escreve 243, mas 180 + 30% = 234, e o 1,17 do slide confirma 234."},
-
-/* ===================== GLP ===================== */
-{id:"glp01",sub:"glp",tipo:"tab",nivel:1,origem:"NPT 028 – Tabela 5",enun:"Central de GLP com 5 recipientes P-45.",
- campos:CAMPOS_GLP,gab:["5 × 45 = 225 kg","1 extintor 20-B:C"],expl:"Até 270 kg → 1 extintor 20-B:C, protegido contra intempéries."},
-{id:"glp02",sub:"glp",tipo:"tab",nivel:2,origem:"NPT 028 – Tabela 5",enun:"Central de GLP com 6 recipientes P-45.",
- campos:CAMPOS_GLP,gab:["6 × 45 = 270 kg","1 extintor 20-B:C"],expl:"270 kg ainda está na faixa 'até 270 kg'."},
-{id:"glp03",sub:"glp",tipo:"tab",nivel:2,origem:"NPT 028 – Tabela 5",enun:"Central de GLP com 2 recipientes P-190.",
- campos:CAMPOS_GLP,gab:["2 × 190 = 380 kg","2 extintores 20-B:C"],expl:"De 271 a 1.800 kg → 2 extintores 20-B:C."},
-{id:"glp04",sub:"glp",tipo:"tab",nivel:3,origem:"NPT 028 – Tabela 5",enun:"Central de GLP com 10 recipientes P-190.",
- campos:CAMPOS_GLP,gab:["10 × 190 = 1.900 kg","2 extintores 20-B:C + 1 extintor 80-B:C"],expl:"Acima de 1.800 kg → 2 × 20-B:C + 1 × 80-B:C."}
-];
-QUESTOES.push(...ABERTAS);
-
-</script>
-<script>
 (() => {
 "use strict";
-const KEY = "scip-questoes-va-v3";
+const KEY = "sci-questoes-v1";
 const LET = "ABCDE";
 const $ = s => document.querySelector(s);
 const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const BY = Object.fromEntries(QUESTOES.map(q => [q.id, q]));
 const SUBS = Object.fromEntries(ASSUNTOS.map(a => [a.id, a]));
-const TIPOS_ROTULO = Object.assign({tab:"Questão aberta"}, TIPOS);
+const TIPOS_ROTULO = TIPOS;
 
 /* ---------- armazenamento local, com proteção ---------- */
 function loadStore(){
@@ -651,9 +316,8 @@ function poolFor(st){
 function startFromSetup(st){
   if (st.mode === "sim" && st.count === "prova"){
     const pick = (f, n) => shuffle(QUESTOES.filter(f).map(q => q.id)).slice(0, n);
-    const ids = [...pick(q => q.tipo === "vf", 8), ...pick(q => q.sub === "alt" && q.tipo === "tab", 1),
-      ...pick(q => q.sub === "port" && q.tipo === "tab", 1), ...pick(q => q.sub === "geral", 1)];
-    newSession("sim", ids, "Prova modelo: 8 blocos de V ou F, altura, Portaria 476 e classificação geral");
+    const ids = [...pick(q => q.tipo === "vf", 8), ...pick(q => q.tipo === "mc", 12)];
+    newSession("sim", ids, "Prova modelo: 8 itens de V ou F e 12 questões de múltipla escolha");
     ui.view = "quiz"; ui.msg = ""; render(); return;
   }
   let ids = poolFor(st);
@@ -825,7 +489,7 @@ function viewSetup(){
       : `<label style="margin-top:8px"><input type="checkbox" data-act="sf" data-f="shuffle" ${st.shuffle ? "checked" : ""}>Embaralhar a ordem</label>`}
   </div>
   <div class="row">
-    <button class="btn pri" data-act="start" ${pool || (isSim && st.count === "prova") ? "" : "disabled"}>${isSim && st.count === "prova" ? "Começar prova modelo (11 questões)" : `Começar (${pool} questões)`}</button>
+    <button class="btn pri" data-act="start" ${pool || (isSim && st.count === "prova") ? "" : "disabled"}>${isSim && st.count === "prova" ? "Começar prova modelo (20 questões)" : `Começar (${pool} questões)`}</button>
   </div>
   <p class="muted" style="margin-top:22px">Respondidas: ${total} de ${QUESTOES.length}${total ? ` · acerto ${pct(correct, total)}%` : ""}.
     ${ui.resetAsk

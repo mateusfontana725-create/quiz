@@ -512,7 +512,7 @@ function viewResult(){
   <div class="row" style="margin-top:18px">
     ${wrong.length ? `<button class="btn pri" data-act="revisar" data-ids="${esc(wrong.join(","))}">Revisar as ${wrong.length} erradas</button>` : ""}
     <button class="btn" data-act="retry">Refazer estas questões</button>
-    <button class="btn" data-act="home">Voltar ao início</button>
+    <button class="btn" data-act="home">Começar de novo</button>
   </div>`;
 }
 
@@ -541,7 +541,7 @@ function act(a, el){
     }
     case "start": startFromSetup(ui.st); break;
     case "resume": ui.view = "quiz"; render(); break;
-    case "home": ui.view = "setup"; render(); break;
+    case "home": startFromSetup(freshSetup("practice")); break;
     case "pick": setResp(BY[el.dataset.q], +el.dataset.v); render(); break;
     case "step": { const q = BY[el.dataset.q], i = +el.dataset.i, r = getResp(q).slice(); r[i] = +el.dataset.v; setResp(q, r); render(); break; }
     case "vf": { const q = BY[el.dataset.q], i = +el.dataset.i, r = getResp(q).slice(); r[i] = el.dataset.v === "1"; setResp(q, r); render(); break; }

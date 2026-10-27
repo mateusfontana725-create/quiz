@@ -69,168 +69,92 @@ th,td{text-align:left;padding:6px;border-bottom:1px solid var(--line);vertical-a
 <main id="app" aria-live="polite"></main>
 </div>
 <script>
-/* Banco de questões de SCI (CFP BM 2026): objetivas (a–d) e V ou F. Fonte: slides do curso "Sistema de Controle de Incidentes". */
-const ASSUNTOS = [
-  {id:"orig",  nome:"Origem, linha do tempo e legislação"},
-  {id:"conc",  nome:"Conceitos, princípios e características"},
-  {id:"staff", nome:"Comando, staff e títulos"},
-  {id:"area",  nome:"Instalações, áreas e símbolos"},
-  {id:"recu",  nome:"Recursos e formulários"},
-  {id:"sicoe", nome:"SICOE, Defesa Civil e hora de ouro"},
-  {id:"oper",  nome:"Operação: PAI, implantação e transferência"}
-];
+/* Banco de questões de SCI (CFP BM 2026): objetivas (A a D) e V ou F, uma afirmação por questão. Fonte: slides do curso. */
+const ASSUNTOS = [{"id": "orig", "nome": "Origem, linha do tempo e legislação"}, {"id": "conc", "nome": "Conceitos, princípios e características"}, {"id": "staff", "nome": "Comando, staff e títulos"}, {"id": "area", "nome": "Instalações, áreas e símbolos"}, {"id": "recu", "nome": "Recursos e formulários"}, {"id": "sicoe", "nome": "SICOE, Defesa Civil e hora de ouro"}, {"id": "oper", "nome": "Operação: PAI, implantação e transferência"}];
 const NIVEIS = {1:"Fácil", 2:"Intermediário", 3:"Difícil"};
 const TIPOS = {vf:"V ou F", mc:"Múltipla escolha"};
-
-const V = (t, e) => ({t, v:true, e});
-const F = (t, e) => ({t, v:false, e});
-const VF = (id, sub, nivel, itens, expl) => ({id, sub, tipo:"vf", nivel, enun:"Julgue cada item como verdadeiro (V) ou falso (F).", itens, expl: expl || ""});
-const MC = (id, sub, nivel, enun, alts, correta, expl) => ({id, sub, tipo:"mc", nivel, enun, alts, correta, expl: expl || ""});
-
 const QUESTOES = [
-/* ===== ORIGEM E LEGISLAÇÃO ===== */
-MC("o01","orig",1,"Em que contexto surgiu o SCI nos Estados Unidos?",["Crise financeira de 1929","Incêndios devastadores na Califórnia (1970–71)","Terremoto de São Francisco","Enchentes no Mississippi"],1,"Os incêndios devastadores na Califórnia (1970–71) levaram à criação do FIRESCOPE e da 1ª versão do SCI, em 1973."),
-MC("o02","orig",1,"Qual programa criado na Califórnia deu origem à 1ª versão do SCI, em 1973?",["NIMS","FEMA","FIRESCOPE","HSPD-5"],2,"O FIRESCOPE (California Organized for Potential Emergencies) foi criado na Califórnia e produziu a 1ª versão do SCI."),
-MC("o03","orig",2,"Após os atentados de 11/09/2001, qual documento consolidou o SCI como padrão nos EUA?",["NIMS","HSPD-5","Decreto Estadual nº 6.416/2002","Lei Kiss"],1,"A HSPD-5 (2003) consolidou o SCI. A primeira edição do NIMS é de 2004."),
-MC("o04","orig",1,"Qual acordo deu início ao SCI no Brasil?",["Acordo de cooperação técnica do Ibama com o USFS (1990)","Acordo do CBMPR com a FEMA (2005)","Acordo da SENASP com a Petrobras (2002)","Acordo do CBMDF com o Ibama (1979)"],0,"Em 1990, o USFS apoiou o Ibama por meio de um acordo de cooperação técnica."),
-MC("o05","orig",2,"Os bombeiros brasileiros treinaram, a partir de 1991, em qual modalidade de brigada?",["Smokejumpers","Hotshot Crew","Rescue Squad","Golden Team"],1,"Bombeiros militares e servidores do Ibama treinaram em brigadas Hotshot Crew, incorporando conceitos do SCI."),
-MC("o06","orig",2,"Como o Paraná denomina o SCI?",["SCO","SICOE","ICS","IMS"],1,"No Paraná, o SCI é chamado de SICOE (Sistema Integrado de Comando e Operações em Emergência, pelo Decreto 6.416/2002)."),
-MC("o07","orig",1,"Como o setor de petróleo e gás costuma chamar o SCI?",["SICOE","SCO","ICS ou IMS","SINDEC"],2,"O setor de petróleo e gás mantém a sigla ICS ou usa IMS (Incident Management System)."),
-MC("o08","orig",2,"Qual nome a Defesa Civil Nacional passou a usar para o SCI no início dos anos 2000?",["SICOE","SCO","SINDEC","IMS"],1,"A Defesa Civil Nacional renomeou o SCI como Sistema de Comando em Operações (SCO)."),
-VF("o09","orig",2,[
-  V("O Decreto Estadual nº 1.343/1999 aprovou o regulamento do Sistema Estadual de Defesa Civil.","Verdadeiro. O Dec. 1.343/1999 aprova o regulamento do SEDEC."),
-  F("O Decreto Estadual nº 6.416/2002 criou o Sistema Estadual de Defesa Civil.","Falso. O Dec. 6.416/2002 institui o SICOE; o SEDEC vem do Dec. 1.343/1999."),
-  V("O Decreto Estadual nº 6.416, de 11/10/2002, institui o SICOE.","Verdadeiro."),
-  F("O Decreto Estadual nº 9.557/2013 tornou o SCI obrigatório em emergências ambientais.","Falso. Quem torna o SCI obrigatório são os decretos federais 10.950/2022 e 12.173/2024; o 9.557/2013 reconfigura o modelo no Paraná.")
-]),
-MC("o10","orig",2,"Quais decretos federais estabeleceram o SCI como ferramenta obrigatória de gestão?",["6.416/2002 e 9.557/2013","10.950/2022 e 12.173/2024","1.343/1999 e 6.416/2002","13.425/2017 e 9.557/2013"],1,"Os decretos federais 10.950/2022 e 12.173/2024 tornaram o SCI obrigatório."),
-MC("o11","orig",1,"Qual é a base doutrinária do SICOE?",["Corpo de Bombeiros Militar","Estado-Maior da Escola Superior de Guerra","FEMA","SENASP"],1,"A base doutrinária do SICOE vem do Estado-Maior da ESG."),
-MC("o12","orig",2,"O que foi o \"Paraná em Flagelo\"?",["Incêndio urbano dos anos 2000","Maior incêndio florestal registrado no Paraná, na década de 1960, no qual já se aplicava metodologia semelhante ao ICS","Enchente de 2011","Terremoto no litoral"],1,"Na década de 1960, durante o maior incêndio florestal registrado, já se aplicava no Paraná uma metodologia semelhante ao ICS."),
-MC("o13","orig",2,"Qual lei ou decreto aprova o regulamento do Sistema Estadual de Defesa Civil no Paraná?",["Decreto 9.557/2013","Decreto 1.343/1999","Decreto 6.416/2002","Decreto 10.950/2022"],1,"O Decreto Estadual 1.343/1999 aprova o regulamento do SEDEC."),
-
-/* ===== CONCEITOS, PRINCÍPIOS E CARACTERÍSTICAS ===== */
-MC("c01","conc",1,"Segundo a ABNT (2005), o que é um incidente?",["Qualquer evento de rotina","Evento cuja ocorrência resulta em dano à saúde de pessoas, à propriedade ou ao meio ambiente","Somente incêndios","Somente acidentes de trânsito"],1,"Incidente é o evento cuja ocorrência resulta em dano à saúde, à propriedade ou ao meio ambiente (ABNT, 2005)."),
-MC("c02","conc",1,"Quais são as três finalidades centrais do SCI?",["Lucro, controle e prazo","Segurança, objetivos táticos e eficiência no uso dos recursos","Velocidade, custo e mídia","Hierarquia, disciplina e sigilo"],1,"O SCI garante segurança das equipes, alcance de objetivos táticos e uso eficiente dos recursos."),
-MC("c03","conc",2,"Na hierarquia do gerenciamento por objetivos, qual é a ordem correta?",["Táticas, estratégias e objetivos","Objetivos, estratégias e táticas","Estratégias, objetivos e táticas","Táticas, objetivos e estratégias"],1,"A hierarquia é: objetivos → estratégias → táticas."),
-MC("c04","conc",1,"Quantas características de gerenciamento de incidentes compõem o NIMS/SCI?",["10","12","14","16"],2,"São 14 características do NIMS, agrupadas em 6 categorias."),
-MC("c05","conc",2,"As 14 características do NIMS/SCI estão agrupadas em quantas categorias?",["3","4","6","8"],2,"As 14 características são organizadas em 6 categorias."),
-VF("c06","conc",2,[
-  V("A terminologia comum padroniza nomes de funções, cargos, instalações e recursos.","Verdadeiro. É a característica 1."),
-  F("Na organização modular, a estrutura é definida pelo cargo do responsável, e não pela função.","Falso. Na organização modular, a forma segue a função."),
-  V("Quando um supervisor passa a ter mais de 7 subordinados, criam-se equipes, divisões, grupos ou seções.","Verdadeiro. Acima de 7 subordinados, reorganiza-se a estrutura."),
-  F("A amplitude de controle ideal no SCI é de 7 subordinados por supervisor.","Falso. O ideal é 5; o máximo é 7.")
-]),
-MC("c07","conc",2,"Qual é a amplitude de controle no SCI?",["De 2 a 5 subordinados","Mínimo 3, ideal 5 e máximo 7 subordinados por supervisor","De 5 a 10 subordinados","De 1 a 3 subordinados"],1,"A amplitude de controle no SCI é de 3 (mínimo), 5 (ideal) e 7 (máximo)."),
-MC("c08","conc",2,"Quem é responsável por monitorar a amplitude de controle?",["Chefe de Logística","Comandante do Incidente","Oficial de Ligação","Oficial de Informação Pública"],1,"Monitorar a amplitude de controle é uma das principais responsabilidades do Comandante do Incidente."),
-MC("c09","conc",2,"Na cadeia de comando, cada pessoa responde e informa a quantas pessoas?",["Somente a uma pessoa","De uma a sete pessoas","De duas a três pessoas","No máximo cinco pessoas"],0,"Pela unidade de comando, cada pessoa responde a um único supervisor."),
-MC("c10","conc",3,"Qual princípio de responsabilização exige check-in e check-out de todo o pessoal, independentemente do órgão?",["Plano de Ação do Incidente","Check-in/Check-out","Amplitude de controle","Unidade de comando"],1,"Check-in e check-out são o primeiro princípio de accountability."),
-MC("c11","conc",2,"Quais são as duas formas de comunicação no SCI?",["Verbal e escrita","Formal e informal","Rádio e telefone","Interna e externa"],1,"A comunicação formal serve para receber tarefas, pedir recursos e relatar progresso. A informal troca informações sem pedido de tarefa."),
-MC("c12","conc",2,"Qual destas ocorrências é típica de aplicação do SCI?",["Furto de veículo isolado","Rompimento de barragens","Trânsito leve sem vítimas","Vazamento doméstico de gás de cozinha"],1,"Rompimento de barragens, desastres naturais e incidentes com produtos perigosos são exemplos de aplicação do SCI."),
-MC("c13","conc",2,"Qual é a principal razão para o SCI servir a todos os tipos de incidentes?",["Porque substitui as leis locais","Porque integra várias instituições e assegura o uso e o gerenciamento corretos dos recursos","Porque dispensa treinamento","Porque é aplicado apenas em grandes cidades"],1,"O SCI integra instituições e assegura o gerenciamento correto dos recursos."),
-
-/* ===== COMANDO, STAFF E TÍTULOS ===== */
-MC("s01","staff",1,"Quantas funções compõem o Staff de Comando?",["2","3","4","5"],1,"O Staff de Comando tem 3 funções: Segurança, Informação Pública e Ligação."),
-MC("s02","staff",2,"Qual é o título dado aos integrantes do Staff de Comando?",["Chefes","Oficiais","Líderes","Encarregados"],1,"Os integrantes do Staff de Comando são Oficiais."),
-MC("s03","staff",2,"Qual Oficial é o único porta-voz do incidente?",["Oficial de Segurança","Oficial de Ligação","Oficial de Informação Pública","Chefe de Logística"],2,"O OIP é o único porta-voz. Toda informação é aprovada pelo CI."),
-MC("s04","staff",2,"Quem integra as instituições que atuam no incidente ou podem ser convocadas?",["Oficial de Segurança","Oficial de Informação Pública","Oficial de Ligação","Chefe de Planejamento"],2,"O Oficial de Ligação integra as instituições."),
-MC("s05","staff",1,"Quantas seções compõem o Staff Geral?",["3","4","5","6"],1,"O Staff Geral tem 4 seções: Planejamento, Operações, Logística e Administração/Finanças."),
-MC("s06","staff",2,"Qual seção é responsável por elaborar o PAI?",["Operações","Logística","Administração/Finanças","Planejamento"],3,"O Planejamento elabora o PAI e mantém o controle dos recursos."),
-MC("s07","staff",2,"Quais são as unidades da Logística?",["Recursos, Situação e Documentação","Comunicações, Médica, Alimentação, Materiais, Instalações e Apoio Terrestre","Tempo, Provedoria e Custos","Setores e divisões"],1,"As unidades da Logística são: Comunicações, Médica, Alimentação, Materiais, Instalações e Apoio Terrestre."),
-MC("s08","staff",2,"Quais são as unidades da Administração/Finanças?",["Recursos, Situação e Documentação","Comunicações e Médica","Setores e divisões","Tempo, Provedoria e Custos"],3,"As unidades são Tempo, Provedoria e Custos."),
-MC("s09","staff",2,"Em incidentes pequenos, quem pode acumular todas as funções?",["Oficial de Ligação","Comandante do Incidente","Chefe de Operações","Encarregado da Base"],1,"Em incidentes pequenos, o CI pode acumular todas as funções."),
-MC("s10","staff",2,"Quem assume o comando quando o incidente começa?",["Quem tiver o maior cargo, sempre","O primeiro a chegar com capacidade de resposta, mesmo sem usar a terminologia","O Oficial de Segurança","O Chefe de Logística"],1,"O primeiro a chegar com capacidade de resposta age como CI."),
-MC("s11","staff",1,"Qual é a única função do SCI sempre ativa, em qualquer resposta?",["Comando","Oficial de Segurança","Planejamento","Logística"],0,"O Comandante do Incidente é a única função sempre ativa."),
-MC("s12","staff",2,"Qual título é dado a quem está à frente de acampamento, base, PC, ACV ou área de espera?",["Coordenador","Supervisor","Líder","Encarregado"],3,"O título de Encarregado é usado para ACV, Área de Espera, Base, Acampamento e PC."),
-MC("s13","staff",2,"Qual é o título dado ao responsável por uma divisão ou grupo?",["Supervisor","Chefe","Oficial","Comandante"],0,"Supervisor é o título de quem responde por divisão ou grupo."),
-VF("s14","staff",2,[
-  V("O Oficial de Segurança pode agir com autonomia em risco iminente e deve informar o CI.","Verdadeiro. O OS pode corrigir condições inseguras e informa o CI."),
-  F("O Chefe de Operações é um Oficial do Staff de Comando.","Falso. O Chefe de Operações é do Staff Geral, e o título é Chefe."),
-  V("Em incidentes pequenos, o CI pode acumular todas as funções.","Verdadeiro."),
-  F("A Seção de Logística registra gastos e mantém a documentação para indenizações.","Falso. Essa é a função da Administração/Finanças.")
-]),
-
-/* ===== INSTALAÇÕES, ÁREAS E SÍMBOLOS ===== */
-MC("a01","area",1,"Qual é o símbolo do PC?",["Círculo amarelo com \"PC\"","Retângulo laranja com \"PC\"","Triângulo verde com \"PC\"","Círculo azul com \"PC\""],1,"O PC é sinalizado com um retângulo laranja, com as letras PC em preto."),
-MC("a02","area",1,"Um círculo amarelo de 90 cm com a letra \"E\" identifica:",["Área de Espera","ACV","Base","Helibase"],0,"O E é a Área de Espera."),
-MC("a03","area",1,"Quantas Bases pode haver por incidente?",["Uma","Duas","Três","Uma por seção"],0,"Há apenas uma Base por incidente."),
-MC("a04","area",2,"O que é uma base?",["Local de pouso de helicópteros","Instalação de onde se coordenam as funções logísticas do incidente","Área de triagem de vítimas","Abrigo de vítimas"],1,"A Base coordena e administra as funções logísticas."),
-MC("a05","area",2,"O que é um heliponto?",["Estacionamento e manutenção de helicópteros","Local de pouso, decolagem e carga/descarga de pessoas, equipamentos e materiais","Área de triagem","Área médica"],1,"O heliponto é usado para pouso, decolagem e carga e descarga."),
-MC("a06","area",2,"Qual instalação é o local de estacionamento, abastecimento e manutenção de helicópteros?",["Pouso e decolagem","Reunião de equipes","Triagem de vítimas","Helibase"],3,"A Helibase é o estacionamento, o abastecimento e a manutenção de helicópteros."),
-MC("a07","area",2,"Quantas divisões de atendimento pré-hospitalar atuam dentro da ACV?",["2","3","4","5"],2,"Há 4 divisões: transporte, triagem, estabilização e monitoramento, e manejo de mortos."),
-MC("a08","area",2,"Quais são as divisões de atendimento dentro da ACV?",["Transporte, triagem, estabilização e monitoramento, e manejo de mortos","Resgate, combate, apoio e comando","Planejamento, operações e logística","Recepção, alta, internação e óbito"],0,"São as 4 divisões da ACV."),
-MC("a09","area",2,"Como deve ser a Área de Espera quanto às rotas?",["Rotas iguais de entrada e saída","Rotas diferentes de entrada e saída","Apenas uma entrada","Nenhuma rota"],1,"A Área de Espera deve ter rotas diferentes de entrada e saída."),
-MC("a10","area",2,"Qual característica NÃO se espera do PC?",["Visão integral da cena","Localização na zona de risco","Comunicação adequada","Capacidade de expansão"],1,"O PC deve ficar em local seguro, fora da zona de risco."),
-VF("a11","area",2,[
-  V("A ACV deve estar em área segura, ampliável e próxima ao incidente.","Verdadeiro."),
-  F("O PC deve ser instalado na zona de risco, para acompanhar a cena de perto.","Falso. O PC deve ficar em local seguro, fora da zona de risco."),
-  V("Pode haver mais de um Acampamento no incidente, cada um com um encarregado.","Verdadeiro."),
-  F("Helibase e heliponto são a mesma instalação.","Falso. A helibase é para estacionamento e manutenção; o heliponto, para pouso e carga.")
-]),
-
-/* ===== RECURSOS E FORMULÁRIOS ===== */
-MC("r01","recu",1,"A classe de um recurso define:",["Sua capacidade de carga","A natureza da missão ou função","O número de pessoas","A cor do veículo"],1,"Classe é a natureza da missão ou função (salvamento, transporte, combate a incêndio)."),
-MC("r02","recu",2,"O tipo de um recurso define:",["Natureza da missão","Nome do recurso","Capacidade operacional, de carga e número de pessoas","Cor da placa"],2,"Tipo define a capacidade operacional, a capacidade de carga e o número de pessoas."),
-MC("r03","recu",2,"Um equipamento e seu complemento de pessoal, com líder responsável pela missão, é classificado como:",["Recurso único","Força-tarefa","Equipe de intervenção","Instalação"],0,"É um recurso único (R.U.), como 1 AA ou 1 ABTR."),
-MC("r04","recu",2,"Pela classificação, 2 AA + 1 ABTR formam:",["Recurso único","Equipe de intervenção","Força-tarefa","Instalação"],2,"Força-tarefa é a combinação de recursos de classes e tipos diferentes, com um só líder."),
-MC("r05","recu",2,"Qual é a diferença entre equipe de intervenção e força-tarefa?",["Equipe tem classes diferentes; força-tarefa, a mesma classe e tipo","Equipe tem mesma classe e tipo; força-tarefa combina classes e tipos diferentes","Não há diferença","Força-tarefa exige dois líderes"],1,"Equipe de intervenção: recursos únicos da mesma classe e tipo. Força-tarefa: recursos de classes e tipos diferentes."),
-MC("r06","recu",2,"Um recurso danificado ou em manutenção é classificado como:",["Disponível","Designado","Indisponível","Desmobilizado"],2,"Os estados são: disponível, designado e indisponível."),
-MC("r07","recu",2,"Quem pode solicitar recursos no incidente?",["O CI e os chefes de Planejamento, Operações e Logística","Qualquer bombeiro","Somente o Chefe de Logística","Apenas o Oficial de Ligação"],0,"Podem solicitar o CI e os chefes de Planejamento, Operações e Logística."),
-MC("r08","recu",2,"Pedir um helicóptero de fora do incidente é:",["Solicitação","Requisição","Designação","Desmobilização"],1,"Solicitação é para recursos internos; requisição é para recursos de fora do incidente."),
-VF("r09","recu",2,[
-  V("O CI pode recusar recursos enviados sem solicitação ou sem aplicação no incidente.","Verdadeiro. É o direito de recusa."),
-  F("Um recurso designado está disponível para ser mobilizado a qualquer momento.","Falso. Designado é o recurso em uso; disponível é o que está pronto para ser mobilizado."),
-  V("A desmobilização de recursos é feita por ordem do CI.","Verdadeiro."),
-  F("Um recurso único é formado por dois ou mais recursos da mesma classe e tipo.","Falso. Essa definição é de equipe de intervenção.")
-]),
-MC("f01","recu",1,"Qual é o briefing do incidente?",["SCI-211","SCI-219","SCI-201","SCI-221"],2,"O SCI-201 é o briefing do incidente."),
-MC("f02","recu",1,"Qual formulário é a lista de registro (check-in)?",["SCI-201","SCI-211","SCI-219","SCI-214"],1,"O SCI-211 é a lista de registro (check-in)."),
-MC("f03","recu",2,"O SCI-219 (T-Card) é preenchido:",["Um por incidente","Um por recurso, pessoa ou equipamento","Um por seção","Um por dia"],1,"O T-Card é individual para cada recurso."),
-MC("f04","recu",2,"Qual é a cor do T-Card usado para funções e recursos humanos?",["Amarelo","Cinza","Laranja","Branco"],3,"T-Card branco: funções (recursos humanos). T-Card amarelo: equipamentos e viaturas."),
-MC("f05","recu",2,"Qual é a cor do T-Card usado para equipamentos e viaturas?",["Branco","Amarelo","Laranja","Cinza"],1,"T-Card amarelo: equipamentos e viaturas."),
-MC("f06","recu",2,"Quantas designações cabem no verso do SCI-219?",["1","2","3","5"],2,"O verso permite até 3 designações."),
-MC("f07","recu",2,"Em qual formulário fica o croqui da cena?",["SCI-201","SCI-211","SCI-219","SCI-215"],0,"O croqui da cena fica na primeira página do SCI-201 e pode virar o mapa de situação."),
-MC("f08","recu",2,"Qual formulário traz o contato telefone/rádio do efetivo empregado?",["SCI-201","SCI-219","SCI-211","SCI-209"],2,"O SCI-211 traz o contato (telefone ou rádio) do efetivo."),
-VF("f09","recu",2,[
-  V("O SCI-201 é preenchido em todo incidente.","Verdadeiro."),
-  F("O SCI-219 é um único formulário que lista todos os recursos do incidente.","Falso. Há um SCI-219 para cada recurso."),
-  V("O SCI-211 mostra os recursos a caminho, disponíveis, indisponíveis e designados.","Verdadeiro."),
-  F("A cor amarela no T-Card indica funções e pessoas.","Falso. O amarelo indica equipamentos e viaturas.")
-]),
-
-/* ===== SICOE, DEFESA CIVIL E HORA DE OURO ===== */
-MC("p01","sicoe",1,"Quais são as 4 fases da Defesa Civil, na ordem?",["Resposta, prevenção, preparação e reconstrução","Preparação, prevenção, resposta e reconstrução","Prevenção, preparação, resposta e reconstrução","Prevenção, resposta, preparação e reconstrução"],2,"Prevenção, preparação, resposta e reconstrução."),
-MC("p02","sicoe",1,"Em qual fase da Defesa Civil se mobiliza o SINDEC a partir da COMDEC?",["Prevenção","Preparação","Resposta","Reconstrução"],2,"Na resposta, a COMDEC aciona o SINDEC e a escalada vai para o estado e a União."),
-MC("p03","sicoe",2,"Pela hora de ouro, levar a vítima ao pronto-socorro em até 1 hora garante, segundo o material, até:",["30% de sobrevivência","40% de sobrevivência","60% de sobrevivência","90% de sobrevivência"],2,"A hora de ouro garante até 60% de chance de sobrevivência."),
-MC("p04","sicoe",2,"No SICOE, o Nível III corresponde a:",["Equipe interna com recursos próprios","Rotina operacional","Acionamento de equipe externa","Desastre com Comando Unificado de múltiplos órgãos do SINDEC"],3,"Nível I: equipe interna. Nível II: equipe externa. Nível III: desastre, com Comando Unificado."),
-MC("p05","sicoe",2,"Qual é a 1ª prioridade do SICOE?",["Proteger propriedades","Preservar vidas","Estabilizar o evento","Preservar o meio ambiente"],1,"As prioridades são: vidas, estabilizar o evento, sistemas essenciais e meio ambiente, e propriedades."),
-MC("p06","sicoe",2,"Quantas fases operacionais o SICOE tem, executadas de forma simultânea?",["5","6","7","8"],2,"São 7 fases operacionais simultâneas."),
-MC("p07","sicoe",2,"Qual é a amplitude de controle no SICOE?",["30 subordinados diretos por supervisor","7 subordinados","5 subordinados","3 subordinados"],0,"No SICOE, o limite é de 30 subordinados diretos por supervisor."),
-MC("p08","sicoe",2,"Quantas etapas tem o acionamento do SICOE pelos POPs?",["2","3","4","5"],1,"São 3 etapas: resposta imediata, plano de ação e desmobilização."),
-VF("p09","sicoe",2,[
-  V("O SICOE é escalável: os procedimentos básicos são os mesmos nos níveis I, II e III.","Verdadeiro."),
-  F("O limite de subordinados diretos por supervisor no SICOE é de 7.","Falso. É de 30."),
-  V("A hora de ouro se refere ao atendimento a trauma, com a vítima levada ao pronto-socorro em até 1 hora.","Verdadeiro."),
-  F("Em um desastre de Nível II, o SICOE não precisa ser acionado.","Falso. O Nível II exige o acionamento do SICOE.")
-]),
-
-/* ===== OPERAÇÃO: PAI, IMPLANTAÇÃO E TRANSFERÊNCIA ===== */
-MC("g01","oper",2,"O período reativo dura, em média, cerca de:",["4 horas","4 dias","4 semanas","40 minutos"],0,"O período reativo dura cerca de 4 horas, com PAI mental ou verbal."),
-MC("g02","oper",2,"No período proativo, o PAI é:",["Mental","Escrito e formalizado, com múltiplos períodos operacionais","Dispensado","Restrito ao primeiro período"],1,"No período proativo, o PAI é escrito e pode durar de horas a semanas."),
-MC("g03","oper",2,"Qual é a 1ª fase de implantação do SCI?",["Estabelecer objetivos","Chegada ao local","Preparar a transferência de comando","Estabelecer perímetro de segurança"],1,"A primeira fase é a chegada ao local."),
-MC("g04","oper",2,"Quantos itens são informados na transferência de comando?",["5","7","9","11"],2,"São 9 itens, do estado do incidente à provável evolução."),
-MC("g05","oper",2,"A transferência de comando deve ser feita:",["Por rádio","Por escrito","Cara a cara","Por e-mail"],2,"A transferência é feita cara a cara."),
-MC("g06","oper",2,"A chegada de uma pessoa mais qualificada ao incidente:",["Implica troca automática de comando","Não implica troca de comando","Exige desmobilização","Exige novo PAI"],1,"A chegada de pessoa mais qualificada não implica troca de comando."),
-MC("g07","oper",2,"A Tarjeta de Campo é portada por:",["Comandante do Incidente","Chefes de equipe","Oficiais de Ligação","Encarregados"],1,"Os chefes de equipe portam a Tarjeta de Campo."),
-MC("g08","oper",2,"A desmobilização de recursos só pode ocorrer:",["Quando o recurso solicitar","Por ordem do CI","Quando termina o turno","Quando o Chefe de Logística decidir"],1,"A desmobilização é feita por ordem do Comandante do Incidente."),
-MC("g09","oper",2,"O PAI comunica:",["Somente custos","Estratégia, atribuições e objetivos","Somente mapas","Somente a carga de incêndio"],1,"O PAI comunica estratégia, atribuições e objetivos."),
-VF("g10","oper",2,[
-  V("O PAI deve ser atualizado a cada período operacional.","Verdadeiro."),
-  F("O período reativo exige PAI escrito e formalizado.","Falso. No período reativo, o PAI é mental ou verbal."),
-  V("Cabe ao Comandante do Incidente autorizar a divulgação de informações à imprensa.","Verdadeiro. Toda informação é aprovada pelo CI."),
-  F("A Seção de Planejamento é responsável por autorizar a divulgação à imprensa.","Falso. Quem autoriza é o CI; o OIP é o porta-voz.")
-])
+{"id": "o01", "sub": "orig", "tipo": "mc", "nivel": 1, "enun": "Por que o SCI surgiu nos Estados Unidos?", "alts": ["Para padronizar a resposta a grandes incêndios, após falhas de coordenação entre órgãos", "Para reduzir o custo de equipamentos de bombeiros", "Para substituir a Defesa Civil", "Para limitar a atuação de bombeiros voluntários"], "correta": 0, "expl": "Os incêndios na Califórnia mostraram a falta de coordenação entre órgãos, e o SCI nasceu para padronizar a resposta."},
+{"id": "o03", "sub": "orig", "tipo": "mc", "nivel": 2, "enun": "Como o SCI chegou ao Brasil?", "alts": ["Por compra de equipamentos europeus", "Por acordo com a ONU", "Por intercâmbio com outro país da América do Sul", "Por meio de cooperação técnica com o serviço florestal dos EUA"], "correta": 3, "expl": "O USFS apoiou o Ibama por meio de um acordo de cooperação técnica."},
+{"id": "o04", "sub": "orig", "tipo": "mc", "nivel": 2, "enun": "Como o SCI é chamado no Paraná?", "alts": ["SCO", "SICOE", "ICS", "SINDEC"], "correta": 1, "expl": "No Paraná, o SCI é chamado de SICOE."},
+{"id": "o06", "sub": "orig", "tipo": "mc", "nivel": 1, "enun": "Qual é a base doutrinária do SICOE?", "alts": ["FEMA", "Estado-Maior da Escola Superior de Guerra", "Secretaria Nacional de Defesa Civil", "Corpo de Bombeiros do Distrito Federal"], "correta": 1, "expl": "A base doutrinária do SICOE vem do Estado-Maior da ESG."},
+{"id": "o09", "sub": "orig", "tipo": "mc", "nivel": 2, "enun": "Qual é a função da Defesa Civil?", "alts": ["Apenas combater incêndios", "Ações de prevenção, socorro, assistência e reconstrução", "Somente fiscalizar obras", "Apenas emitir alvarás"], "correta": 1, "expl": "A Defesa Civil reúne ações preventivas, de socorro, assistenciais e reconstrutivas."},
+{"id": "o11", "sub": "orig", "tipo": "mc", "nivel": 2, "enun": "Em qual fase da Defesa Civil se fazem capacitação, treinamentos e simulados?", "alts": ["Prevenção", "Preparação", "Resposta", "Reconstrução"], "correta": 1, "expl": "A preparação inclui capacitação, treinamento, simulados e planos de contingência."},
+{"id": "o13", "sub": "orig", "tipo": "mc", "nivel": 1, "enun": "Quando um evento é considerado desastre?", "alts": ["Sempre que houver fogo", "Quando há apenas um ferido", "Quando o órgão decide", "Quando causa desdobramentos graves à população, ao meio ambiente ou à infraestrutura"], "correta": 3, "expl": "Desastre é a consequência de um evento adverso com desdobramentos graves."},
+{"id": "c01", "sub": "conc", "tipo": "mc", "nivel": 2, "enun": "Segundo a ABNT, o que é um incidente?", "alts": ["Qualquer chamada de emergência", "Evento sem consequências", "Evento que causa dano à saúde, à propriedade ou ao meio ambiente", "Ocorrência de trânsito leve"], "correta": 2, "expl": "Incidente é o evento cuja ocorrência resulta em dano (ABNT, 2005)."},
+{"id": "c02", "sub": "conc", "tipo": "mc", "nivel": 2, "enun": "Na hierarquia do gerenciamento por objetivos, o que vem primeiro?", "alts": ["Objetivos", "Táticas", "Estratégias", "Recursos"], "correta": 0, "expl": "A hierarquia é objetivos, estratégias e táticas."},
+{"id": "c04", "sub": "conc", "tipo": "mc", "nivel": 1, "enun": "Para que serve a terminologia comum no SCI?", "alts": ["Criar siglas secretas", "Padronizar os termos entre instituições", "Esconder informações da imprensa", "Substituir o PAI"], "correta": 1, "expl": "A terminologia comum garante a interoperabilidade entre instituições."},
+{"id": "c05", "sub": "conc", "tipo": "mc", "nivel": 2, "enun": "O que é a organização modular?", "alts": ["A estrutura é fixa desde o início", "Cada órgão tem sua própria estrutura", "Só o CI decide a estrutura", "A estrutura cresce conforme a necessidade, e a forma segue a função"], "correta": 3, "expl": "Na organização modular, a forma segue a função e a estrutura cresce conforme a necessidade."},
+{"id": "c08", "sub": "conc", "tipo": "mc", "nivel": 2, "enun": "Em accountability, o que se busca?", "alts": ["Responsabilização e controle efetivo dos recursos", "Corte de verbas", "Troca de comando", "Divulgação na imprensa"], "correta": 0, "expl": "Accountability é a responsabilização e o controle efetivo dos recursos."},
+{"id": "s01", "sub": "staff", "tipo": "mc", "nivel": 1, "enun": "Quem é o único porta-voz do incidente?", "alts": ["Oficial de Segurança", "Oficial de Ligação", "Oficial de Informação Pública", "Chefe de Logística"], "correta": 2, "expl": "O OIP é o único porta-voz, e toda informação é aprovada pelo CI."},
+{"id": "s02", "sub": "staff", "tipo": "mc", "nivel": 2, "enun": "Quem faz a vigilância de situações perigosas?", "alts": ["Oficial de Informação Pública", "Oficial de Segurança", "Oficial de Ligação", "Chefe de Planejamento"], "correta": 1, "expl": "O Oficial de Segurança vigia situações perigosas e desenvolve medidas de segurança."},
+{"id": "s03", "sub": "staff", "tipo": "mc", "nivel": 2, "enun": "Quem integra as instituições que atuam no incidente?", "alts": ["Oficial de Segurança", "Chefe de Operações", "Encarregado da Base", "Oficial de Ligação"], "correta": 3, "expl": "O Oficial de Ligação integra as instituições."},
+{"id": "s04", "sub": "staff", "tipo": "mc", "nivel": 1, "enun": "Qual seção cuida de gastos e documentação para indenizações?", "alts": ["Planejamento", "Administração/Finanças", "Operações", "Logística"], "correta": 1, "expl": "Administração/Finanças controla gastos e mantém a documentação para indenizações."},
+{"id": "s05", "sub": "staff", "tipo": "mc", "nivel": 2, "enun": "Qual seção cuida de instalações, serviços e materiais?", "alts": ["Planejamento", "Operações", "Logística", "Administração/Finanças"], "correta": 2, "expl": "A Logística provê instalações, serviços, materiais e pessoal que opera equipamentos."},
+{"id": "s08", "sub": "staff", "tipo": "mc", "nivel": 2, "enun": "Quando chega uma pessoa mais qualificada, o que ocorre?", "alts": ["O CI é desligado imediatamente", "Todos os recursos são desmobilizados", "O PAI é encerrado", "A troca de comando é feita por transferência formal, cara a cara"], "correta": 3, "expl": "A chegada de pessoa mais qualificada não implica troca automática."},
+{"id": "a02", "sub": "area", "tipo": "mc", "nivel": 1, "enun": "O que é uma Base?", "alts": ["Local de pouso de helicópteros", "Área de triagem de vítimas", "Local de onde se coordenam as funções logísticas", "Área de descanso dos bombeiros"], "correta": 2, "expl": "A Base coordena as funções logísticas do incidente."},
+{"id": "a03", "sub": "area", "tipo": "mc", "nivel": 2, "enun": "O que é um heliponto?", "alts": ["Local de estacionamento e manutenção", "Área de triagem", "Local de pouso e decolagem de helicópteros", "Depósito de combustível"], "correta": 2, "expl": "O heliponto serve para pouso, decolagem e carga/descarga."},
+{"id": "a04", "sub": "area", "tipo": "mc", "nivel": 2, "enun": "Para que serve a Helibase?", "alts": ["Pouso de aeronaves de passageiros", "Estacionamento, abastecimento e manutenção de helicópteros", "Triagem de vítimas", "Reunião de equipes"], "correta": 1, "expl": "A Helibase é o local de estacionamento, abastecimento e manutenção."},
+{"id": "a05", "sub": "area", "tipo": "mc", "nivel": 1, "enun": "Onde deve ficar o PC?", "alts": ["Dentro da zona de risco", "Ao lado das vítimas", "No centro do incêndio", "Em local seguro, fora da zona de risco"], "correta": 3, "expl": "O PC deve ser seguro e ter visão integral da cena."},
+{"id": "a06", "sub": "area", "tipo": "mc", "nivel": 2, "enun": "Para que serve a ACV?", "alts": ["Concentrar vítimas para triagem e transporte ao hospital", "Armazenar equipamentos", "Abrigar a imprensa", "Reunir voluntários"], "correta": 0, "expl": "A ACV concentra as vítimas aguardando o transporte."},
+{"id": "a08", "sub": "area", "tipo": "mc", "nivel": 2, "enun": "Qual cor identifica as instalações de apoio, como E, ACV e B?", "alts": ["Laranja", "Verde", "Amarelo", "Azul"], "correta": 2, "expl": "As instalações de apoio são círculos amarelos de 90 cm."},
+{"id": "r01", "sub": "recu", "tipo": "mc", "nivel": 1, "enun": "Qual classificação de recurso indica a capacidade de carga e o número de pessoas?", "alts": ["Classe", "Categoria", "Estado", "Tipo"], "correta": 3, "expl": "Tipo define a capacidade operacional, de carga e o número de pessoas."},
+{"id": "r03", "sub": "recu", "tipo": "mc", "nivel": 2, "enun": "Quem registra o estado dos recursos e mantém o controle de todos eles?", "alts": ["Unidade de Tempo", "Unidade de Recursos", "Unidade de Custos", "Oficial de Ligação"], "correta": 1, "expl": "A Unidade de Recursos controla todos os recursos e informa o CI."},
+{"id": "r04", "sub": "recu", "tipo": "mc", "nivel": 2, "enun": "Qual é o estado de um recurso pronto para ser mobilizado?", "alts": ["Disponível", "Designado", "Indisponível", "Desmobilizado"], "correta": 0, "expl": "Os estados são disponível, designado e indisponível."},
+{"id": "r05", "sub": "recu", "tipo": "mc", "nivel": 1, "enun": "Qual formulário dá ao CI e às seções a visão geral do incidente?", "alts": ["SCI-201", "SCI-211", "SCI-219", "SCI-221"], "correta": 0, "expl": "O SCI-201 é o briefing do incidente."},
+{"id": "r06", "sub": "recu", "tipo": "mc", "nivel": 2, "enun": "Qual formulário é o cartão individual de cada recurso?", "alts": ["SCI-201", "SCI-211", "SCI-209", "SCI-219"], "correta": 3, "expl": "O SCI-219 é o T-Card, um por recurso."},
+{"id": "r07", "sub": "recu", "tipo": "mc", "nivel": 2, "enun": "Como se identificam equipamentos e viaturas nos T-Cards?", "alts": ["Cartão branco", "Cartão amarelo", "Cartão laranja", "Cartão verde"], "correta": 1, "expl": "Equipamentos e viaturas usam T-Card amarelo; funções, T-Card branco."},
+{"id": "g01", "sub": "oper", "tipo": "mc", "nivel": 1, "enun": "No período reativo, como é o PAI?", "alts": ["Escrito e formalizado", "Inexistente", "Mental ou verbal", "Entregue ao final do incidente"], "correta": 2, "expl": "No período reativo, o PAI é mental ou verbal, com resposta imediata."},
+{"id": "g02", "sub": "oper", "tipo": "mc", "nivel": 2, "enun": "No período proativo, o que caracteriza a resposta?", "alts": ["Resposta imediata sem registros", "Ausência de comando", "Fase de desmobilização", "Planejamento detalhado, com PAI escrito"], "correta": 3, "expl": "No período proativo, há PAI escrito e planejamento detalhado."},
+{"id": "g03", "sub": "oper", "tipo": "mc", "nivel": 2, "enun": "Qual é a primeira fase de implantação do SCI?", "alts": ["Estabelecer objetivos", "Preparar a transferência de comando", "Chegada ao local", "Determinar recursos"], "correta": 2, "expl": "A primeira fase é a chegada ao local."},
+{"id": "g06", "sub": "oper", "tipo": "mc", "nivel": 1, "enun": "O que comunica o PAI?", "alts": ["Estratégia, atribuições e objetivos", "Somente custos", "Somente mapas", "Somente a carga de incêndio"], "correta": 0, "expl": "O PAI comunica estratégia, atribuições e objetivos."},
+{"id": "p01", "sub": "sicoe", "tipo": "mc", "nivel": 2, "enun": "O que é a hora de ouro?", "alts": ["Período de descanso", "Tempo de desmobilização", "Tempo para elaborar o PAI", "Atendimento a trauma em até 1 hora"], "correta": 3, "expl": "Levar a vítima ao pronto-socorro em até 1 hora garante até 60% de sobrevivência."},
+{"id": "p02", "sub": "sicoe", "tipo": "mc", "nivel": 2, "enun": "Qual é a primeira prioridade do SICOE?", "alts": ["Preservar vidas", "Proteger propriedades", "Preservar o meio ambiente", "Estabilizar o evento"], "correta": 0, "expl": "A primeira prioridade é preservar vidas."},
+{"id": "p03", "sub": "sicoe", "tipo": "mc", "nivel": 1, "enun": "Quais são as etapas do acionamento do SICOE pelos POPs?", "alts": ["Resposta imediata, plano de ação e desmobilização", "Prevenção, preparação e reconstrução", "Triagem, transporte e internação", "Planejamento, execução e avaliação"], "correta": 0, "expl": "O acionamento tem três etapas: resposta imediata, plano de ação e desmobilização."},
+{"id": "p04", "sub": "sicoe", "tipo": "mc", "nivel": 2, "enun": "Como as fases operacionais do SICOE ocorrem?", "alts": ["Em sequência fixa", "Apenas na desmobilização", "Simultaneamente", "Só na chegada ao local"], "correta": 2, "expl": "As sete fases operacionais ocorrem simultaneamente."},
+{"id": "p05", "sub": "sicoe", "tipo": "mc", "nivel": 2, "enun": "Qual função é exclusiva do SICOE?", "alts": ["Auditor", "Comunicação", "Logística", "Segurança"], "correta": 0, "expl": "O Auditor é função exclusiva do SICOE, ligada ao comando."},
+{"id": "p07", "sub": "sicoe", "tipo": "mc", "nivel": 1, "enun": "O que o SICOE acrescenta ao SCI, em relação ao Paraná?", "alts": ["Origem nos EUA em 1990", "Aplicação apenas a incêndios", "Adaptação ao Paraná, com base na doutrina da ESG", "Ausência de comando unificado"], "correta": 2, "expl": "O SICOE é a adaptação brasileira instituída no Paraná."},
+{"id": "v01", "sub": "orig", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "O SCI pode ser usado para todos os tipos de incidentes.", "v": true, "e": "Verdadeiro."}], "expl": ""},
+{"id": "v02", "sub": "orig", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "O SCI se aplica somente a incêndios florestais.", "v": false, "e": "Falso."}], "expl": ""},
+{"id": "v03", "sub": "conc", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "A terminologia comum é a base da interoperabilidade entre instituições.", "v": true, "e": "Verdadeiro."}], "expl": ""},
+{"id": "v04", "sub": "conc", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "No SCI, a estrutura é fixa e não cresce com a necessidade.", "v": false, "e": "Falso."}], "expl": ""},
+{"id": "v05", "sub": "staff", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "O Comandante do Incidente é a única função sempre ativa em qualquer resposta.", "v": true, "e": "Verdadeiro."}], "expl": ""},
+{"id": "v06", "sub": "staff", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "O Staff Geral é composto pelos Oficiais de Segurança, Informação Pública e Ligação.", "v": false, "e": "Falso."}], "expl": ""},
+{"id": "v07", "sub": "staff", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "O Oficial de Informação Pública é o único porta-voz do incidente.", "v": true, "e": "Verdadeiro."}], "expl": ""},
+{"id": "v08", "sub": "staff", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "O Oficial de Segurança é responsável pela integração das instituições.", "v": false, "e": "Falso."}], "expl": ""},
+{"id": "v09", "sub": "staff", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "A Logística cuida de instalações, serviços e materiais.", "v": true, "e": "Verdadeiro."}], "expl": ""},
+{"id": "v10", "sub": "staff", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "A Administração/Finanças é responsável pela elaboração do PAI.", "v": false, "e": "Falso."}], "expl": ""},
+{"id": "v11", "sub": "oper", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "Os chefes de equipe portam a Tarjeta de Campo.", "v": true, "e": "Verdadeiro."}], "expl": ""},
+{"id": "v12", "sub": "oper", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "A desmobilização pode ser decidida pelo próprio recurso.", "v": false, "e": "Falso."}], "expl": ""},
+{"id": "v13", "sub": "area", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "O PC deve ficar em local seguro, fora da zona de risco.", "v": true, "e": "Verdadeiro."}], "expl": ""},
+{"id": "v14", "sub": "area", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "A Área de Espera deve ficar dentro da zona de risco para agilizar a designação.", "v": false, "e": "Falso."}], "expl": ""},
+{"id": "v15", "sub": "area", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "A ACV deve estar em área segura e próxima ao incidente.", "v": true, "e": "Verdadeiro."}], "expl": ""},
+{"id": "v16", "sub": "area", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "A Base é a instalação de pouso de helicópteros.", "v": false, "e": "Falso."}], "expl": ""},
+{"id": "v17", "sub": "area", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "O heliponto é usado para pouso, decolagem e carga/descarga.", "v": true, "e": "Verdadeiro."}], "expl": ""},
+{"id": "v18", "sub": "area", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "Só pode haver um Acampamento no incidente.", "v": false, "e": "Falso."}], "expl": ""},
+{"id": "v19", "sub": "recu", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "O SCI-201 é o briefing do incidente.", "v": true, "e": "Verdadeiro."}], "expl": ""},
+{"id": "v20", "sub": "recu", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "O SCI-219 é um formulário único para todo o incidente.", "v": false, "e": "Falso."}], "expl": ""},
+{"id": "v21", "sub": "recu", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "O SCI-211 registra os recursos que chegam ao local.", "v": true, "e": "Verdadeiro."}], "expl": ""},
+{"id": "v22", "sub": "recu", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "O T-Card de funções e pessoas é amarelo.", "v": false, "e": "Falso."}], "expl": ""},
+{"id": "v23", "sub": "recu", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "O T-Card de equipamentos e viaturas é amarelo.", "v": true, "e": "Verdadeiro."}], "expl": ""},
+{"id": "v24", "sub": "recu", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "Um recurso único é formado por dois ou mais recursos da mesma classe e tipo.", "v": false, "e": "Falso."}], "expl": ""},
+{"id": "v25", "sub": "recu", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "Dois ou mais recursos únicos da mesma classe e tipo formam uma equipe de intervenção.", "v": true, "e": "Verdadeiro."}], "expl": ""},
+{"id": "v26", "sub": "recu", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "Uma força-tarefa é formada por recursos da mesma classe e tipo.", "v": false, "e": "Falso."}], "expl": ""},
+{"id": "v27", "sub": "recu", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "O CI pode recusar recursos enviados sem solicitação.", "v": true, "e": "Verdadeiro."}], "expl": ""},
+{"id": "v28", "sub": "recu", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "Um recurso designado está pronto para ser mobilizado.", "v": false, "e": "Falso."}], "expl": ""},
+{"id": "v29", "sub": "sicoe", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "A hora de ouro está ligada ao atendimento a trauma.", "v": true, "e": "Verdadeiro."}], "expl": ""},
+{"id": "v30", "sub": "sicoe", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "A hora de ouro garante 100% de sobrevivência.", "v": false, "e": "Falso."}], "expl": ""},
+{"id": "v31", "sub": "sicoe", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "No SICOE, a primeira prioridade é preservar vidas.", "v": true, "e": "Verdadeiro."}], "expl": ""},
+{"id": "v32", "sub": "sicoe", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "No SICOE, a primeira prioridade é proteger propriedades.", "v": false, "e": "Falso."}], "expl": ""},
+{"id": "v33", "sub": "oper", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "No período reativo, o PAI pode ser mental ou verbal.", "v": true, "e": "Verdadeiro."}], "expl": ""},
+{"id": "v34", "sub": "oper", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "No período proativo, a resposta é imediata e sem PAI escrito.", "v": false, "e": "Falso."}], "expl": ""},
+{"id": "v35", "sub": "oper", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "A transferência de comando deve ser feita cara a cara.", "v": true, "e": "Verdadeiro."}], "expl": ""},
+{"id": "v36", "sub": "oper", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "A chegada de pessoa mais qualificada transfere o comando automaticamente.", "v": false, "e": "Falso."}], "expl": ""},
+{"id": "v37", "sub": "orig", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "O SCI integra várias instituições e assegura o correto gerenciamento de recursos.", "v": true, "e": "Verdadeiro."}], "expl": ""},
+{"id": "v38", "sub": "conc", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "A comunicação formal serve apenas para trocar opiniões entre os integrantes.", "v": false, "e": "Falso."}], "expl": ""},
+{"id": "v39", "sub": "orig", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "No Paraná, o SCI é chamado de SICOE.", "v": true, "e": "Verdadeiro."}], "expl": ""},
+{"id": "v40", "sub": "orig", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "A reconstrução é a primeira fase da Defesa Civil.", "v": false, "e": "Falso."}], "expl": ""},
 ];
-
 </script>
 <script>
 (() => {
@@ -671,6 +595,7 @@ document.addEventListener("input", e => {
   const el = e.target.closest('[data-act="texto"], [data-act="tabtxt"]');
   if (el) act(el.dataset.act, el);
 });
+if (!store.session || store.session.done) startFromSetup(freshSetup("practice"));
 render();
 })();
 </script>

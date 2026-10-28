@@ -4,598 +4,244 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Questões de SCI – Fontana</title>
-<meta name="description" content="Questões objetivas e de V ou F sobre o Sistema de Controle de Incidentes (SCI).">
+<meta name="description" content="Questões objetivas e de V ou F sobre o Sistema de Controle de Incidentes (SCI), com explicação em cada resposta.">
 <style>
-:root{--bg:#fff;--txt:#1c1c1c;--mut:#666;--line:#d9d9d9;--soft:#f5f5f5;--ok:#1b7f3b;--bad:#b3261e;--acc:#1c1c1c;--r:8px}
+:root{--bg:#f6f7f9;--card:#fff;--txt:#1b1e23;--mut:#5f6772;--line:#dde1e6;--acc:#1f5fa8;--accsoft:#e8f0fa;--ok:#1b7f3b;--oksoft:#e6f4ea;--bad:#b3261e;--badsoft:#fdecea;--warn:#8a5a00;--warnsoft:#fff4de;--r:12px}
 @media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){--bg:#161616;--txt:#eee;--mut:#aaa;--line:#3a3a3a;--soft:#222;--ok:#6fcf8a;--bad:#ff8a80;--acc:#eee}
+  :root{--bg:#121417;--card:#1b1f24;--txt:#eceef1;--mut:#a3abb5;--line:#323840;--acc:#7fb2ee;--accsoft:#1e2d40;--ok:#6fcf8a;--oksoft:#16301f;--bad:#ff8a80;--badsoft:#3a1c1a;--warn:#f0c36a;--warnsoft:#33290f}
 }
-:root[data-theme="dark"]{--bg:#161616;--txt:#eee;--mut:#aaa;--line:#3a3a3a;--soft:#222;--ok:#6fcf8a;--bad:#ff8a80;--acc:#eee}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--txt);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
-button,input,select,textarea{font:inherit;color:inherit}
-.wrap{max-width:760px;margin:0 auto;padding:20px 16px 60px}
-header{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;border-bottom:1px solid var(--line);padding-bottom:12px;margin-bottom:20px}
+body{margin:0;background:var(--bg);color:var(--txt);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+button{font:inherit;color:inherit;cursor:pointer}
+.wrap{max-width:740px;margin:0 auto;padding:18px 16px 56px}
+header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
 h1{font-size:20px;margin:0}
-h2{font-size:17px;margin:22px 0 8px}
-p{margin:0 0 10px}
-.muted{color:var(--mut);font-size:14px}
-.box{border:1px solid var(--line);border-radius:var(--r);padding:16px;margin-bottom:14px}
-.btn{display:inline-block;padding:9px 16px;border-radius:var(--r);border:1px solid var(--line);background:var(--bg);cursor:pointer;text-decoration:none;color:var(--txt)}
-.btn.pri{background:var(--acc);color:var(--bg);border-color:var(--acc)}
-.btn.link{border:none;padding:4px 0;color:var(--mut);text-decoration:underline;background:none}
-.btn.danger{color:var(--bad);border-color:var(--bad)}
+.btn{padding:9px 16px;border-radius:10px;border:1px solid var(--line);background:var(--card)}
+.btn:hover{border-color:var(--acc)}
+.btn.pri{background:var(--acc);border-color:var(--acc);color:#fff}
+@media (prefers-color-scheme: dark){.btn.pri{color:#0d1722}}
+.btn.small{padding:6px 12px;font-size:14px}
 .btn:disabled{opacity:.4;cursor:not-allowed}
-.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-.grp label{display:block;padding:3px 0;cursor:pointer}
-.grp input{margin-right:8px}
-.grp.inline label{display:inline-block;margin-right:14px}
-.bar{height:6px;background:var(--soft);border-radius:4px;overflow:hidden;margin:10px 0}
-.bar>i{display:block;height:100%;background:var(--acc);width:0}
-.tag{display:inline-block;font-size:12px;color:var(--mut);border:1px solid var(--line);border-radius:4px;padding:1px 7px;margin-right:6px}
-.enun{font-size:17px;margin:8px 0 14px}
-.alt{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1px solid var(--line);border-radius:var(--r);margin-bottom:8px;cursor:pointer}
-.alt.ok{border-color:var(--ok);color:var(--ok)}
-.alt.bad{border-color:var(--bad);color:var(--bad)}
-.alt.sel{border-color:var(--acc);border-width:2px}
-.alt .let{font-weight:700;min-width:18px}
-.item{border:1px solid var(--line);border-radius:var(--r);padding:10px 12px;margin-bottom:10px}
-.tf{display:flex;gap:8px;margin-top:6px}
-.tf button{padding:6px 12px;border:1px solid var(--line);border-radius:6px;background:var(--bg);cursor:pointer}
-.tf button.on{border-color:var(--acc);border-width:2px}
-select,textarea,input[type=text]{background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:7px 9px;max-width:100%}
-textarea{width:100%;min-height:90px}
-input[type=text].campo{width:100%;margin-top:4px}
-.fb{margin-top:6px;font-size:15px}
-.fb.ok{color:var(--ok)} .fb.bad{color:var(--bad)}
-.expl{margin-top:14px;padding:12px 14px;background:var(--soft);border-radius:var(--r)}
-.step{border-top:1px solid var(--line);padding-top:12px;margin-top:12px}
-.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;align-items:center}
-.msg{color:var(--bad)}
-details{border-bottom:1px solid var(--line);padding:8px 0}
-summary{cursor:pointer}
-table{width:100%;border-collapse:collapse;font-size:14px}
-th,td{text-align:left;padding:6px;border-bottom:1px solid var(--line);vertical-align:top}
-.st-ok{color:var(--ok)} .st-bad{color:var(--bad)} .st-no{color:var(--mut)}
-.gab td:first-child{width:38%;color:var(--mut)}
-@media (max-width:520px){ .gab td:first-child{width:auto} }
+.btn:focus-visible,.opt:focus-visible,.cell:focus-visible,summary:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.stats{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.chip{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:3px 12px;font-size:14px;color:var(--mut)}
+.chip b{color:var(--txt)}
+.chip.rev{background:var(--warnsoft);border-color:transparent;color:var(--warn)}
+.bar{height:8px;background:var(--line);border-radius:6px;overflow:hidden;margin-bottom:12px}
+.bar i{display:block;height:100%;background:var(--acc);transition:width .3s}
+details.map{margin-bottom:14px}
+details.map summary{cursor:pointer;color:var(--mut);font-size:14px;padding:4px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(34px,1fr));gap:6px;margin-top:8px}
+.cell{border:1px solid var(--line);background:var(--card);border-radius:8px;height:34px;font-size:13px}
+.cell.ok{background:var(--oksoft);border-color:var(--ok);color:var(--ok)}
+.cell.bad{background:var(--badsoft);border-color:var(--bad);color:var(--bad)}
+.cell.cur{outline:2px solid var(--acc);outline-offset:1px;font-weight:700}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}
+.tag{font-size:12px;color:var(--mut);border:1px solid var(--line);border-radius:6px;padding:1px 8px}
+.tag.t{background:var(--accsoft);border-color:transparent;color:var(--acc)}
+.q{font-size:19px;line-height:1.45;margin:6px 0 16px;font-weight:600}
+.opt{display:flex;gap:12px;align-items:flex-start;width:100%;text-align:left;padding:12px 14px;margin-bottom:9px;border:1.5px solid var(--line);border-radius:10px;background:var(--card)}
+.opt:hover:not(.done){border-color:var(--acc);background:var(--accsoft)}
+.opt .let{font-weight:700;min-width:22px;color:var(--mut)}
+.opt .st{margin-left:auto;font-size:13px;font-weight:700;white-space:nowrap;padding-left:8px}
+.opt.done{cursor:default}
+.opt.ok{border-color:var(--ok);background:var(--oksoft)}
+.opt.ok .let,.opt.ok .st{color:var(--ok)}
+.opt.bad{border-color:var(--bad);background:var(--badsoft)}
+.opt.bad .let,.opt.bad .st{color:var(--bad)}
+.opt.dim{opacity:.55}
+.vf{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.vf .opt{justify-content:center;font-weight:600;font-size:17px;padding:16px 10px;margin:0}
+.vf .opt .st{margin-left:8px;padding:0}
+.fb{margin-top:16px;padding:14px 16px;border-radius:10px;border-left:6px solid var(--line)}
+.fb.ok{background:var(--oksoft);border-left-color:var(--ok)}
+.fb.bad{background:var(--badsoft);border-left-color:var(--bad)}
+.verdict{font-size:18px;font-weight:700;margin-bottom:6px}
+.fb.ok .verdict{color:var(--ok)} .fb.bad .verdict{color:var(--bad)}
+.fb h3{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);margin:14px 0 4px}
+.fb p{margin:0 0 6px}
+.fb ul{margin:4px 0 0;padding-left:20px}
+.fb li{margin-bottom:6px}
+.fb li.mine strong{color:var(--bad)}
+.muted{color:var(--mut)}
+.dica{margin-top:12px;padding:9px 12px;background:var(--warnsoft);color:var(--warn);border-radius:8px;font-weight:600}
+.nav{display:flex;justify-content:space-between;gap:10px;margin-top:16px}
+.hint{margin-top:18px;font-size:13px;color:var(--mut);text-align:center}
+.score{text-align:center;padding:10px 0 4px}
+.score .big{font-size:56px;font-weight:800;line-height:1}
+.score p{margin:6px 0}
+.row{display:grid;grid-template-columns:1fr auto;gap:4px 10px;align-items:center;margin:10px 0;font-size:14px}
+.row .track{grid-column:1 / -1;height:8px;background:var(--line);border-radius:6px;overflow:hidden}
+.row .track i{display:block;height:100%;background:var(--ok)}
+.err{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:8px;background:var(--card)}
+.err summary{cursor:pointer;font-weight:600}
+.err .ans{color:var(--ok);font-weight:600;margin:8px 0 4px}
+.act{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+h2.sec{font-size:15px;margin:22px 0 6px}
+@media (max-width:520px){.q{font-size:18px}.card{padding:14px}}
 </style>
 </head>
 <body>
-<div class="wrap">
-<header>
-  <h1>Questões de SCI</h1>
-</header>
-<main id="app" aria-live="polite"></main>
+<div class="wrap" id="top">
+  <header><h1>Questões de SCI</h1><button class="btn small" id="restart" type="button">Recomeçar</button></header>
+  <main id="app" aria-live="polite"></main>
+  <p class="hint">Atalhos: A–D ou 1–4 respondem · V e F nas afirmações · → próxima · ← anterior</p>
 </div>
 <script>
-/* Banco de questões de SCI (CFP BM 2026): objetivas (A a D) e V ou F, uma afirmação por questão. Fonte: slides do curso. */
-const ASSUNTOS = [{"id": "orig", "nome": "Origem, linha do tempo e legislação"}, {"id": "conc", "nome": "Conceitos, princípios e características"}, {"id": "staff", "nome": "Comando, staff e títulos"}, {"id": "area", "nome": "Instalações, áreas e símbolos"}, {"id": "recu", "nome": "Recursos e formulários"}, {"id": "sicoe", "nome": "SICOE, Defesa Civil e hora de ouro"}, {"id": "oper", "nome": "Operação: PAI, implantação e transferência"}];
-const NIVEIS = {1:"Fácil", 2:"Intermediário", 3:"Difícil"};
-const TIPOS = {vf:"V ou F", mc:"Múltipla escolha"};
-const QUESTOES = [
-{"id": "o01", "sub": "orig", "tipo": "mc", "nivel": 1, "enun": "Por que o SCI surgiu nos Estados Unidos?", "alts": ["Para padronizar a resposta a grandes incêndios, após falhas de coordenação entre órgãos", "Para reduzir o custo de equipamentos de bombeiros", "Para substituir a Defesa Civil", "Para limitar a atuação de bombeiros voluntários"], "correta": 0, "expl": "Os incêndios na Califórnia mostraram a falta de coordenação entre órgãos, e o SCI nasceu para padronizar a resposta."},
-{"id": "o03", "sub": "orig", "tipo": "mc", "nivel": 2, "enun": "Como o SCI chegou ao Brasil?", "alts": ["Por compra de equipamentos europeus", "Por acordo com a ONU", "Por intercâmbio com outro país da América do Sul", "Por meio de cooperação técnica com o serviço florestal dos EUA"], "correta": 3, "expl": "O USFS apoiou o Ibama por meio de um acordo de cooperação técnica."},
-{"id": "o04", "sub": "orig", "tipo": "mc", "nivel": 2, "enun": "Como o SCI é chamado no Paraná?", "alts": ["SCO", "SICOE", "ICS", "SINDEC"], "correta": 1, "expl": "No Paraná, o SCI é chamado de SICOE."},
-{"id": "o06", "sub": "orig", "tipo": "mc", "nivel": 1, "enun": "Qual é a base doutrinária do SICOE?", "alts": ["FEMA", "Estado-Maior da Escola Superior de Guerra", "Secretaria Nacional de Defesa Civil", "Corpo de Bombeiros do Distrito Federal"], "correta": 1, "expl": "A base doutrinária do SICOE vem do Estado-Maior da ESG."},
-{"id": "o09", "sub": "orig", "tipo": "mc", "nivel": 2, "enun": "Qual é a função da Defesa Civil?", "alts": ["Apenas combater incêndios", "Ações de prevenção, socorro, assistência e reconstrução", "Somente fiscalizar obras", "Apenas emitir alvarás"], "correta": 1, "expl": "A Defesa Civil reúne ações preventivas, de socorro, assistenciais e reconstrutivas."},
-{"id": "o11", "sub": "orig", "tipo": "mc", "nivel": 2, "enun": "Em qual fase da Defesa Civil se fazem capacitação, treinamentos e simulados?", "alts": ["Prevenção", "Preparação", "Resposta", "Reconstrução"], "correta": 1, "expl": "A preparação inclui capacitação, treinamento, simulados e planos de contingência."},
-{"id": "o13", "sub": "orig", "tipo": "mc", "nivel": 1, "enun": "Quando um evento é considerado desastre?", "alts": ["Sempre que houver fogo", "Quando há apenas um ferido", "Quando o órgão decide", "Quando causa desdobramentos graves à população, ao meio ambiente ou à infraestrutura"], "correta": 3, "expl": "Desastre é a consequência de um evento adverso com desdobramentos graves."},
-{"id": "c01", "sub": "conc", "tipo": "mc", "nivel": 2, "enun": "Segundo a ABNT, o que é um incidente?", "alts": ["Qualquer chamada de emergência", "Evento sem consequências", "Evento que causa dano à saúde, à propriedade ou ao meio ambiente", "Ocorrência de trânsito leve"], "correta": 2, "expl": "Incidente é o evento cuja ocorrência resulta em dano (ABNT, 2005)."},
-{"id": "c02", "sub": "conc", "tipo": "mc", "nivel": 2, "enun": "Na hierarquia do gerenciamento por objetivos, o que vem primeiro?", "alts": ["Objetivos", "Táticas", "Estratégias", "Recursos"], "correta": 0, "expl": "A hierarquia é objetivos, estratégias e táticas."},
-{"id": "c04", "sub": "conc", "tipo": "mc", "nivel": 1, "enun": "Para que serve a terminologia comum no SCI?", "alts": ["Criar siglas secretas", "Padronizar os termos entre instituições", "Esconder informações da imprensa", "Substituir o PAI"], "correta": 1, "expl": "A terminologia comum garante a interoperabilidade entre instituições."},
-{"id": "c05", "sub": "conc", "tipo": "mc", "nivel": 2, "enun": "O que é a organização modular?", "alts": ["A estrutura é fixa desde o início", "Cada órgão tem sua própria estrutura", "Só o CI decide a estrutura", "A estrutura cresce conforme a necessidade, e a forma segue a função"], "correta": 3, "expl": "Na organização modular, a forma segue a função e a estrutura cresce conforme a necessidade."},
-{"id": "c08", "sub": "conc", "tipo": "mc", "nivel": 2, "enun": "Em accountability, o que se busca?", "alts": ["Responsabilização e controle efetivo dos recursos", "Corte de verbas", "Troca de comando", "Divulgação na imprensa"], "correta": 0, "expl": "Accountability é a responsabilização e o controle efetivo dos recursos."},
-{"id": "s01", "sub": "staff", "tipo": "mc", "nivel": 1, "enun": "Quem é o único porta-voz do incidente?", "alts": ["Oficial de Segurança", "Oficial de Ligação", "Oficial de Informação Pública", "Chefe de Logística"], "correta": 2, "expl": "O OIP é o único porta-voz, e toda informação é aprovada pelo CI."},
-{"id": "s02", "sub": "staff", "tipo": "mc", "nivel": 2, "enun": "Quem faz a vigilância de situações perigosas?", "alts": ["Oficial de Informação Pública", "Oficial de Segurança", "Oficial de Ligação", "Chefe de Planejamento"], "correta": 1, "expl": "O Oficial de Segurança vigia situações perigosas e desenvolve medidas de segurança."},
-{"id": "s03", "sub": "staff", "tipo": "mc", "nivel": 2, "enun": "Quem integra as instituições que atuam no incidente?", "alts": ["Oficial de Segurança", "Chefe de Operações", "Encarregado da Base", "Oficial de Ligação"], "correta": 3, "expl": "O Oficial de Ligação integra as instituições."},
-{"id": "s04", "sub": "staff", "tipo": "mc", "nivel": 1, "enun": "Qual seção cuida de gastos e documentação para indenizações?", "alts": ["Planejamento", "Administração/Finanças", "Operações", "Logística"], "correta": 1, "expl": "Administração/Finanças controla gastos e mantém a documentação para indenizações."},
-{"id": "s05", "sub": "staff", "tipo": "mc", "nivel": 2, "enun": "Qual seção cuida de instalações, serviços e materiais?", "alts": ["Planejamento", "Operações", "Logística", "Administração/Finanças"], "correta": 2, "expl": "A Logística provê instalações, serviços, materiais e pessoal que opera equipamentos."},
-{"id": "s08", "sub": "staff", "tipo": "mc", "nivel": 2, "enun": "Quando chega uma pessoa mais qualificada, o que ocorre?", "alts": ["O CI é desligado imediatamente", "Todos os recursos são desmobilizados", "O PAI é encerrado", "A troca de comando é feita por transferência formal, cara a cara"], "correta": 3, "expl": "A chegada de pessoa mais qualificada não implica troca automática."},
-{"id": "a02", "sub": "area", "tipo": "mc", "nivel": 1, "enun": "O que é uma Base?", "alts": ["Local de pouso de helicópteros", "Área de triagem de vítimas", "Local de onde se coordenam as funções logísticas", "Área de descanso dos bombeiros"], "correta": 2, "expl": "A Base coordena as funções logísticas do incidente."},
-{"id": "a03", "sub": "area", "tipo": "mc", "nivel": 2, "enun": "O que é um heliponto?", "alts": ["Local de estacionamento e manutenção", "Área de triagem", "Local de pouso e decolagem de helicópteros", "Depósito de combustível"], "correta": 2, "expl": "O heliponto serve para pouso, decolagem e carga/descarga."},
-{"id": "a04", "sub": "area", "tipo": "mc", "nivel": 2, "enun": "Para que serve a Helibase?", "alts": ["Pouso de aeronaves de passageiros", "Estacionamento, abastecimento e manutenção de helicópteros", "Triagem de vítimas", "Reunião de equipes"], "correta": 1, "expl": "A Helibase é o local de estacionamento, abastecimento e manutenção."},
-{"id": "a05", "sub": "area", "tipo": "mc", "nivel": 1, "enun": "Onde deve ficar o PC?", "alts": ["Dentro da zona de risco", "Ao lado das vítimas", "No centro do incêndio", "Em local seguro, fora da zona de risco"], "correta": 3, "expl": "O PC deve ser seguro e ter visão integral da cena."},
-{"id": "a06", "sub": "area", "tipo": "mc", "nivel": 2, "enun": "Para que serve a ACV?", "alts": ["Concentrar vítimas para triagem e transporte ao hospital", "Armazenar equipamentos", "Abrigar a imprensa", "Reunir voluntários"], "correta": 0, "expl": "A ACV concentra as vítimas aguardando o transporte."},
-{"id": "a08", "sub": "area", "tipo": "mc", "nivel": 2, "enun": "Qual cor identifica as instalações de apoio, como E, ACV e B?", "alts": ["Laranja", "Verde", "Amarelo", "Azul"], "correta": 2, "expl": "As instalações de apoio são círculos amarelos de 90 cm."},
-{"id": "r01", "sub": "recu", "tipo": "mc", "nivel": 1, "enun": "Qual classificação de recurso indica a capacidade de carga e o número de pessoas?", "alts": ["Classe", "Categoria", "Estado", "Tipo"], "correta": 3, "expl": "Tipo define a capacidade operacional, de carga e o número de pessoas."},
-{"id": "r03", "sub": "recu", "tipo": "mc", "nivel": 2, "enun": "Quem registra o estado dos recursos e mantém o controle de todos eles?", "alts": ["Unidade de Tempo", "Unidade de Recursos", "Unidade de Custos", "Oficial de Ligação"], "correta": 1, "expl": "A Unidade de Recursos controla todos os recursos e informa o CI."},
-{"id": "r04", "sub": "recu", "tipo": "mc", "nivel": 2, "enun": "Qual é o estado de um recurso pronto para ser mobilizado?", "alts": ["Disponível", "Designado", "Indisponível", "Desmobilizado"], "correta": 0, "expl": "Os estados são disponível, designado e indisponível."},
-{"id": "r05", "sub": "recu", "tipo": "mc", "nivel": 1, "enun": "Qual formulário dá ao CI e às seções a visão geral do incidente?", "alts": ["SCI-201", "SCI-211", "SCI-219", "SCI-221"], "correta": 0, "expl": "O SCI-201 é o briefing do incidente."},
-{"id": "r06", "sub": "recu", "tipo": "mc", "nivel": 2, "enun": "Qual formulário é o cartão individual de cada recurso?", "alts": ["SCI-201", "SCI-211", "SCI-209", "SCI-219"], "correta": 3, "expl": "O SCI-219 é o T-Card, um por recurso."},
-{"id": "r07", "sub": "recu", "tipo": "mc", "nivel": 2, "enun": "Como se identificam equipamentos e viaturas nos T-Cards?", "alts": ["Cartão branco", "Cartão amarelo", "Cartão laranja", "Cartão verde"], "correta": 1, "expl": "Equipamentos e viaturas usam T-Card amarelo; funções, T-Card branco."},
-{"id": "g01", "sub": "oper", "tipo": "mc", "nivel": 1, "enun": "No período reativo, como é o PAI?", "alts": ["Escrito e formalizado", "Inexistente", "Mental ou verbal", "Entregue ao final do incidente"], "correta": 2, "expl": "No período reativo, o PAI é mental ou verbal, com resposta imediata."},
-{"id": "g02", "sub": "oper", "tipo": "mc", "nivel": 2, "enun": "No período proativo, o que caracteriza a resposta?", "alts": ["Resposta imediata sem registros", "Ausência de comando", "Fase de desmobilização", "Planejamento detalhado, com PAI escrito"], "correta": 3, "expl": "No período proativo, há PAI escrito e planejamento detalhado."},
-{"id": "g03", "sub": "oper", "tipo": "mc", "nivel": 2, "enun": "Qual é a primeira fase de implantação do SCI?", "alts": ["Estabelecer objetivos", "Preparar a transferência de comando", "Chegada ao local", "Determinar recursos"], "correta": 2, "expl": "A primeira fase é a chegada ao local."},
-{"id": "g06", "sub": "oper", "tipo": "mc", "nivel": 1, "enun": "O que comunica o PAI?", "alts": ["Estratégia, atribuições e objetivos", "Somente custos", "Somente mapas", "Somente a carga de incêndio"], "correta": 0, "expl": "O PAI comunica estratégia, atribuições e objetivos."},
-{"id": "p01", "sub": "sicoe", "tipo": "mc", "nivel": 2, "enun": "O que é a hora de ouro?", "alts": ["Período de descanso", "Tempo de desmobilização", "Tempo para elaborar o PAI", "Atendimento a trauma em até 1 hora"], "correta": 3, "expl": "Levar a vítima ao pronto-socorro em até 1 hora garante até 60% de sobrevivência."},
-{"id": "p02", "sub": "sicoe", "tipo": "mc", "nivel": 2, "enun": "Qual é a primeira prioridade do SICOE?", "alts": ["Preservar vidas", "Proteger propriedades", "Preservar o meio ambiente", "Estabilizar o evento"], "correta": 0, "expl": "A primeira prioridade é preservar vidas."},
-{"id": "p03", "sub": "sicoe", "tipo": "mc", "nivel": 1, "enun": "Quais são as etapas do acionamento do SICOE pelos POPs?", "alts": ["Resposta imediata, plano de ação e desmobilização", "Prevenção, preparação e reconstrução", "Triagem, transporte e internação", "Planejamento, execução e avaliação"], "correta": 0, "expl": "O acionamento tem três etapas: resposta imediata, plano de ação e desmobilização."},
-{"id": "p04", "sub": "sicoe", "tipo": "mc", "nivel": 2, "enun": "Como as fases operacionais do SICOE ocorrem?", "alts": ["Em sequência fixa", "Apenas na desmobilização", "Simultaneamente", "Só na chegada ao local"], "correta": 2, "expl": "As sete fases operacionais ocorrem simultaneamente."},
-{"id": "p05", "sub": "sicoe", "tipo": "mc", "nivel": 2, "enun": "Qual função é exclusiva do SICOE?", "alts": ["Auditor", "Comunicação", "Logística", "Segurança"], "correta": 0, "expl": "O Auditor é função exclusiva do SICOE, ligada ao comando."},
-{"id": "p07", "sub": "sicoe", "tipo": "mc", "nivel": 1, "enun": "O que o SICOE acrescenta ao SCI, em relação ao Paraná?", "alts": ["Origem nos EUA em 1990", "Aplicação apenas a incêndios", "Adaptação ao Paraná, com base na doutrina da ESG", "Ausência de comando unificado"], "correta": 2, "expl": "O SICOE é a adaptação brasileira instituída no Paraná."},
-{"id": "v01", "sub": "orig", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "O SCI pode ser usado para todos os tipos de incidentes.", "v": true, "e": "Verdadeiro. O SCI serve a todos os tipos de incidentes, inclusive os que envolvem várias instituições."}], "expl": ""},
-{"id": "v02", "sub": "orig", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "O SCI se aplica somente a incêndios florestais.", "v": false, "e": "Falso. O SCI é aplicável a todo tipo de incidente, não só a incêndios florestais. Os slides listam desde desastres naturais até eventos planejados."}], "expl": ""},
-{"id": "v03", "sub": "conc", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "A terminologia comum é a base da interoperabilidade entre instituições.", "v": true, "e": "Verdadeiro. A terminologia comum padroniza nomes de funções, cargos e recursos, o que permite que instituições diferentes trabalhem juntas."}], "expl": ""},
-{"id": "v04", "sub": "conc", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "No SCI, a estrutura é fixa e não cresce com a necessidade.", "v": false, "e": "Falso. Na organização modular, a estrutura cresce ou diminui conforme a necessidade. A forma segue a função."}], "expl": ""},
-{"id": "v05", "sub": "staff", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "O Comandante do Incidente é a única função sempre ativa em qualquer resposta.", "v": true, "e": "Verdadeiro. O CI é a única função sempre ativa. Em qualquer resposta, alguém assume o comando."}], "expl": ""},
-{"id": "v06", "sub": "staff", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "O Staff Geral é composto pelos Oficiais de Segurança, Informação Pública e Ligação.", "v": false, "e": "Falso. O Staff de Comando é formado pelos Oficiais (Segurança, Informação Pública e Ligação). O Staff Geral é formado pelos Chefes das seções de Planejamento, Operações, Logística e Administração/Finanças."}], "expl": ""},
-{"id": "v07", "sub": "staff", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "O Oficial de Informação Pública é o único porta-voz do incidente.", "v": true, "e": "Verdadeiro. O OIP é o único porta-voz. Toda informação à imprensa é aprovada pelo CI."}], "expl": ""},
-{"id": "v08", "sub": "staff", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "O Oficial de Segurança é responsável pela integração das instituições.", "v": false, "e": "Falso. A integração das instituições é função do Oficial de Ligação. O Oficial de Segurança cuida da vigilância de situações perigosas e da segurança do pessoal."}], "expl": ""},
-{"id": "v09", "sub": "staff", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "A Logística cuida de instalações, serviços e materiais.", "v": true, "e": "Verdadeiro. A Logística provê instalações, serviços, materiais e o pessoal que opera equipamentos."}], "expl": ""},
-{"id": "v10", "sub": "staff", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "A Administração/Finanças é responsável pela elaboração do PAI.", "v": false, "e": "Falso. O PAI é elaborado pela Seção de Planejamento. A Administração/Finanças controla gastos e a documentação para indenizações."}], "expl": ""},
-{"id": "v11", "sub": "oper", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "Os chefes de equipe portam a Tarjeta de Campo.", "v": true, "e": "Verdadeiro. Os chefes de equipe portam a Tarjeta de Campo, um check-list para orientar o primeiro respondedor."}], "expl": ""},
-{"id": "v12", "sub": "oper", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "A desmobilização pode ser decidida pelo próprio recurso.", "v": false, "e": "Falso. A desmobilização só ocorre por ordem do CI, depois de atingidos os objetivos e respeitados os critérios de carga horária e substituição."}], "expl": ""},
-{"id": "v13", "sub": "area", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "O PC deve ficar em local seguro, fora da zona de risco.", "v": true, "e": "Verdadeiro. O PC deve ser seguro, fora da zona de risco e com visão integral da cena."}], "expl": ""},
-{"id": "v14", "sub": "area", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "A Área de Espera deve ficar dentro da zona de risco para agilizar a designação.", "v": false, "e": "Falso. A Área de Espera deve ficar longe de qualquer zona perigosa e afastada da cena."}], "expl": ""},
-{"id": "v15", "sub": "area", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "A ACV deve estar em área segura e próxima ao incidente.", "v": true, "e": "Verdadeiro. A ACV é uma área segura, ampliável e próxima ao incidente, com acesso para as equipes de socorro."}], "expl": ""},
-{"id": "v16", "sub": "area", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "A Base é a instalação de pouso de helicópteros.", "v": false, "e": "Falso. A Base é o local de coordenação das funções logísticas. O pouso de helicópteros é função do heliponto."}], "expl": ""},
-{"id": "v17", "sub": "area", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "O heliponto é usado para pouso, decolagem e carga/descarga.", "v": true, "e": "Verdadeiro. O heliponto (H1, H2…) é usado para pouso, decolagem e carga e descarga."}], "expl": ""},
-{"id": "v18", "sub": "area", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "Só pode haver um Acampamento no incidente.", "v": false, "e": "Falso. Podem existir vários acampamentos, cada um com um encarregado."}], "expl": ""},
-{"id": "v19", "sub": "recu", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "O SCI-201 é o briefing do incidente.", "v": true, "e": "Verdadeiro. O SCI-201 é o briefing do incidente e deve ser preenchido em todo incidente."}], "expl": ""},
-{"id": "v20", "sub": "recu", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "O SCI-219 é um formulário único para todo o incidente.", "v": false, "e": "Falso. Há um SCI-219 para cada recurso, pessoa ou equipamento, esteja ele disponível ou não."}], "expl": ""},
-{"id": "v21", "sub": "recu", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "O SCI-211 registra os recursos que chegam ao local.", "v": true, "e": "Verdadeiro. O SCI-211 (check-in) lista os recursos a caminho, disponíveis, indisponíveis e designados."}], "expl": ""},
-{"id": "v22", "sub": "recu", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "O T-Card de funções e pessoas é amarelo.", "v": false, "e": "Falso. O T-Card branco é para funções e recursos humanos. O amarelo é para equipamentos e viaturas."}], "expl": ""},
-{"id": "v23", "sub": "recu", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "O T-Card de equipamentos e viaturas é amarelo.", "v": true, "e": "Verdadeiro. O T-Card amarelo identifica equipamentos e viaturas."}], "expl": ""},
-{"id": "v24", "sub": "recu", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "Um recurso único é formado por dois ou mais recursos da mesma classe e tipo.", "v": false, "e": "Falso. Recurso único é um equipamento e seu complemento de pessoal. Dois ou mais recursos da mesma classe e tipo formam uma equipe de intervenção."}], "expl": ""},
-{"id": "v25", "sub": "recu", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "Dois ou mais recursos únicos da mesma classe e tipo formam uma equipe de intervenção.", "v": true, "e": "Verdadeiro. Equipe de intervenção são recursos únicos da mesma classe e tipo, com um só líder e comunicações integradas."}], "expl": ""},
-{"id": "v26", "sub": "recu", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "Uma força-tarefa é formada por recursos da mesma classe e tipo.", "v": false, "e": "Falso. Força-tarefa combina recursos de classes e tipos diferentes, com um só líder."}], "expl": ""},
-{"id": "v27", "sub": "recu", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "O CI pode recusar recursos enviados sem solicitação.", "v": true, "e": "Verdadeiro. É o direito de recusa: o CI pode recusar recursos enviados sem solicitação ou sem aplicação no incidente."}], "expl": ""},
-{"id": "v28", "sub": "recu", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "Um recurso designado está pronto para ser mobilizado.", "v": false, "e": "Falso. Designado é o recurso em uso. Disponível é o que está pronto para ser mobilizado."}], "expl": ""},
-{"id": "v29", "sub": "sicoe", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "A hora de ouro está ligada ao atendimento a trauma.", "v": true, "e": "Verdadeiro. A hora de ouro se refere ao atendimento a trauma, com a vítima levada ao pronto-socorro em até 1 hora."}], "expl": ""},
-{"id": "v30", "sub": "sicoe", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "A hora de ouro garante 100% de sobrevivência.", "v": false, "e": "Falso. A hora de ouro garante até 60% de chance de sobrevivência, não 100%."}], "expl": ""},
-{"id": "v31", "sub": "sicoe", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "No SICOE, a primeira prioridade é preservar vidas.", "v": true, "e": "Verdadeiro. A 1ª prioridade do SICOE é preservar vidas."}], "expl": ""},
-{"id": "v32", "sub": "sicoe", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "No SICOE, a primeira prioridade é proteger propriedades.", "v": false, "e": "Falso. A 1ª prioridade é preservar vidas. Proteger propriedades é a 4ª."}], "expl": ""},
-{"id": "v33", "sub": "oper", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "No período reativo, o PAI pode ser mental ou verbal.", "v": true, "e": "Verdadeiro. No período reativo, que dura cerca de 4 horas, o PAI é mental ou verbal."}], "expl": ""},
-{"id": "v34", "sub": "oper", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "No período proativo, a resposta é imediata e sem PAI escrito.", "v": false, "e": "Falso. No período proativo, há PAI escrito e formalizado, com múltiplos períodos operacionais."}], "expl": ""},
-{"id": "v35", "sub": "oper", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "A transferência de comando deve ser feita cara a cara.", "v": true, "e": "Verdadeiro. A transferência de comando é feita cara a cara, com briefing."}], "expl": ""},
-{"id": "v36", "sub": "oper", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "A chegada de pessoa mais qualificada transfere o comando automaticamente.", "v": false, "e": "Falso. A chegada de pessoa mais qualificada não implica troca de comando."}], "expl": ""},
-{"id": "v37", "sub": "orig", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "O SCI integra várias instituições e assegura o correto gerenciamento de recursos.", "v": true, "e": "Verdadeiro. O SCI integra instituições e assegura o uso correto dos recursos."}], "expl": ""},
-{"id": "v38", "sub": "conc", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "A comunicação formal serve apenas para trocar opiniões entre os integrantes.", "v": false, "e": "Falso. A comunicação formal serve para receber e designar tarefas, pedir recursos e relatar progresso."}], "expl": ""},
-{"id": "v39", "sub": "orig", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "No Paraná, o SCI é chamado de SICOE.", "v": true, "e": "Verdadeiro. No Paraná, o SCI é chamado de SICOE."}], "expl": ""},
-{"id": "v40", "sub": "orig", "tipo": "vf", "nivel": 2, "enun": "Julgue a afirmação como verdadeira (V) ou falsa (F).", "itens": [{"t": "A reconstrução é a primeira fase da Defesa Civil.", "v": false, "e": "Falso. A primeira fase da Defesa Civil é a prevenção. A reconstrução é a última."}], "expl": ""},
-];
-</script>
-<script>
+const DATA = {"subs": [{"id": "orig", "n": "Origem e história"}, {"id": "aplic", "n": "Aplicabilidade e ocorrências"}, {"id": "def", "n": "Defesa Civil, SICOE e hora de ouro"}, {"id": "conc", "n": "Princípios e características"}, {"id": "staff", "n": "Comando e staff"}, {"id": "area", "n": "Instalações e áreas"}, {"id": "recu", "n": "Recursos"}, {"id": "form", "n": "Formulários e cores"}, {"id": "oper", "n": "Operação do incidente"}], "q": [{"id": "m01", "sub": "orig", "t": "mc", "q": "Qual situação levou à criação do SCI nos Estados Unidos?", "alts": ["Um terremoto que destruiu a estrutura de defesa civil americana", "Incêndios florestais na Califórnia, nos quais a falta de coordenação entre as instituições dificultou a resposta", "Uma guerra em que os militares precisavam de comando único", "Um acidente industrial com produtos perigosos"], "c": 1, "why": ["O gatilho foi o fogo, não um terremoto.", null, "A origem não é militar. Veio da gestão de incêndios civis.", "Esse tipo de acidente é uma aplicação do SCI, não a sua origem."], "e": "O SCI nasceu nos anos 1970, depois de incêndios devastadores na Califórnia. Vários órgãos atuavam no mesmo cenário, mas cada um com seus termos, suas comunicações e suas prioridades. Isso atrapalhou a resposta. A solução foi criar um modelo comum de comando: primeiro o FIRESCOPE, com a 1ª versão do SCI.", "d": "SCI nasceu do fogo: Califórnia, anos 70."}, {"id": "m02", "sub": "orig", "t": "mc", "q": "Como o SCI chegou ao Brasil?", "alts": ["Por cooperação técnica com o serviço florestal dos EUA, ligada ao combate a incêndios florestais", "Por um decreto federal que o importou logo depois da criação nos EUA", "Por iniciativa de empresas de petróleo, que o repassaram aos bombeiros", "Por intercâmbio com um país europeu de proteção civil"], "c": 0, "why": [null, "Os decretos federais vieram muito depois, para tornar o SCI obrigatório.", "As empresas de petróleo usam o sistema (ICS ou IMS), mas não foram a porta de entrada.", "A influência veio dos EUA, pelo serviço florestal (USFS)."], "e": "O caminho foi o fogo: o serviço florestal dos EUA apoiou o Ibama por cooperação técnica, e bombeiros militares passaram a ser treinados em brigadas Hotshot Crew. Os conceitos do SCI foram entrando nas instituições aos poucos. Só nos anos 2000 o sistema ganhou nomes próprios e se espalhou.", "d": "Brasil: USFS + Ibama + incêndio florestal."}, {"id": "m03", "sub": "orig", "t": "mc", "q": "Por que o mesmo modelo aparece com nomes diferentes (SCI, SICOE, SCO, ICS)?", "alts": ["Porque são modelos diferentes, com regras incompatíveis", "Porque só o SCI é oficial e os outros nomes foram extintos", "Porque cada instituição adotou a sua própria denominação para o mesmo modelo", "Porque cada nome se aplica a um tipo diferente de incidente"], "c": 2, "why": ["São o mesmo modelo, com a mesma base filosófica.", "Todos continuam em uso: SICOE (SP e PR), SCO (Defesa Civil), ICS ou IMS (petróleo e gás).", null, "O nome não muda o tipo de incidente. Todos servem a qualquer incidente."], "e": "SCI (CBMDF e SENASP), SICOE (CBMs de São Paulo e do Paraná), SCO (Defesa Civil nacional e Santa Catarina) e ICS ou IMS (setor de petróleo e gás) são denominações do mesmo modelo de comando. Muda a sigla, não o sistema.", "d": "Muda a sigla, não o sistema."}, {"id": "m04", "sub": "aplic", "t": "mc", "q": "Qual destes incidentes se encaixa na aplicabilidade do SCI segundo o curso?", "alts": ["Ocorrência de trânsito simples, sem vítimas e sem risco", "Rompimento de barragem", "Atendimento de rotina a um único paciente em casa", "Fiscalização de rotina em edificações"], "c": 1, "why": ["Não exige várias instituições nem estrutura de comando.", null, "É uma ocorrência rotineira, resolvida com recursos próprios.", "É atividade administrativa, não um incidente."], "e": "A lista de aplicabilidade do curso reúne incidentes grandes ou complexos: produtos perigosos, rompimento de barragens, inundações, deslizamentos, explosões, acidentes de transporte, incêndios florestais fora de controle e até pânico em eventos planejados. O ponto em comum é a necessidade de coordenar muitas pessoas e instituições.", "d": "SCI é para o que é grande, complexo ou multi-instituição."}, {"id": "m05", "sub": "aplic", "t": "mc", "q": "O que mais caracteriza os incidentes em que o SCI faz diferença?", "alts": ["Acontecem sempre em área rural", "Envolvem sempre fogo", "Envolvem várias instituições e muitos recursos, exigindo coordenação", "Têm apenas uma equipe atuando"], "c": 2, "why": ["Aplicam-se a qualquer lugar, urbano ou rural.", "A lista inclui inundações, explosões, atentados, fugas em presídios e muitos outros.", null, "Com uma só equipe o comando é simples. O SCI faz diferença quando há muitos atores."], "e": "Na lista de aplicabilidade do curso, o SCI vale para qualquer tipo de incidente. Ele ajuda mais quando há várias instituições e muitos recursos, porque proporciona a interação entre as instituições e o gerenciamento correto dos recursos.", "d": "Muitas instituições + muitos recursos = SCI."}, {"id": "m06", "sub": "def", "t": "mc", "q": "Qual é a sequência das 4 fases de atuação da Defesa Civil?", "alts": ["Preparação, prevenção, resposta e reconstrução", "Prevenção, resposta, preparação e reconstrução", "Prevenção, preparação, resposta e reconstrução", "Resposta, reconstrução, prevenção e preparação"], "c": 2, "why": ["Primeiro se previne, depois se prepara. A ordem estava trocada.", "A preparação (treinos, planos) vem antes da resposta, e não depois.", null, "Começa na prevenção e termina na reconstrução."], "e": "A administração de desastres atua em quatro fases: prevenção (evitar ou minimizar acidentes e danos), preparação (capacitação, simulados e planos de contingência), resposta (socorro à comunidade e redução dos danos) e reconstrução (retorno à normalidade).", "d": "P-P-R-R: Prevenção, Preparação, Resposta, Reconstrução."}, {"id": "m07", "sub": "def", "t": "mc", "q": "Em qual fase da Defesa Civil a COMDEC mobiliza o SINDEC e a ação pode escalar para o estado e a União?", "alts": ["Resposta", "Prevenção", "Preparação", "Reconstrução"], "c": 0, "why": [null, "Na prevenção se evitam ou se reduzem danos, sem mobilizar o sistema.", "A preparação capacita e treina antes do evento.", "A reconstrução é o retorno à normalidade, depois do socorro."], "e": "Na fase de resposta, a ação parte da base municipal (a COMDEC), que aciona o SINDEC. Se o município não dá conta, a mobilização escala para as esferas estadual e federal.", "d": "Resposta = socorro: começa na COMDEC e sobe."}, {"id": "m08", "sub": "def", "t": "mc", "q": "Quais são as prioridades do SICOE, na ordem?", "alts": ["Propriedades, vidas, meio ambiente e estabilizar o evento", "Vidas, estabilizar o evento, sistemas essenciais e meio ambiente, e propriedades", "Estabilizar o evento, vidas, propriedades e meio ambiente", "Meio ambiente, propriedades, vidas e estabilizar o evento"], "c": 1, "why": ["Propriedade é a última prioridade, não a primeira.", null, "A vida vem antes da estabilização do evento.", "O meio ambiente vem em terceiro lugar, junto com os sistemas essenciais."], "e": "A ordem é: 1º preservar vidas; 2º estabilizar o evento (impedir o agravamento e novos riscos); 3º preservar sistemas essenciais e o meio ambiente; 4º proteger propriedades.", "d": "Gente primeiro, bens por último."}, {"id": "m09", "sub": "def", "t": "mc", "q": "A que se refere a hora de ouro (Golden Hour)?", "alts": ["Ao tempo máximo para elaborar o PAI", "Ao período máximo em que o CI pode ficar no comando", "Ao atendimento a trauma: chegar ao pronto-socorro em até 1 hora aumenta muito a chance de sobreviver", "Ao prazo para desmobilizar os recursos"], "c": 2, "why": ["O PAI não tem relação com a hora de ouro.", "Não há esse limite associado à hora de ouro.", null, "A desmobilização é decidida pelo CI, e não por esse prazo."], "e": "Hora de ouro é o conceito de que, no atendimento a trauma, levar a vítima ao pronto-socorro em até 1 hora garante até 60% de chance de sobrevivência. Depois da primeira hora, cada minuto de atraso reduz as chances. Por isso o fator tempo é crítico em todas as fases do SICOE.", "d": "1 hora, até 60%."}, {"id": "m10", "sub": "def", "t": "mc", "q": "O que diferencia o Nível III dos níveis I e II no SICOE?", "alts": ["É o nível resolvido só com recursos do próprio local", "É o nível que não exige estrutura de comando", "É desastre, com Comando Unificado de vários órgãos do SINDEC", "É o nível exclusivo de incêndios florestais"], "c": 2, "why": ["Isso descreve o Nível I (equipe interna, recursos próprios).", "Todos os níveis usam a mesma estrutura básica, que é escalável.", null, "O nível indica a dimensão do evento, e não o tipo."], "e": "Nível I: equipe interna do local, com recursos próprios. Nível II: exige equipe externa e acionamento do SICOE. Nível III: desastre, com Comando Unificado de múltiplos órgãos do SINDEC. Os procedimentos básicos são os mesmos nos três níveis, e é isso que torna o SICOE escalável.", "d": "I = local, II = ajuda de fora, III = desastre."}, {"id": "m11", "sub": "conc", "t": "mc", "q": "Quais são as três grandes finalidades do SCI?", "alts": ["Rapidez, economia e visibilidade na imprensa", "Hierarquia, disciplina e responsabilização", "Padronização de uniformes, rádios e viaturas", "Segurança das equipes, objetivos táticos definidos e uso eficiente dos recursos"], "c": 3, "why": ["A imprensa não é finalidade do SCI. O foco é segurança, objetivos e recursos.", "São características da corporação, mas não as finalidades do SCI.", "A padronização do SCI é de termos, funções e processos, não de equipamentos.", null], "e": "O SCI busca garantir três pontos: segurança das equipes e demais envolvidos, alcance dos objetivos táticos previamente estabelecidos e uso eficiente e eficaz dos recursos (humanos, materiais, financeiros, tecnológicos e de informação).", "d": "Segurança, objetivos, eficiência."}, {"id": "m12", "sub": "conc", "t": "mc", "q": "Em qual categoria das 14 características ficam o estabelecimento e a transferência de comando, a cadeia e unidade de comando e o comando unificado?", "alts": ["Planejamento", "Comando", "Profissionalismo", "Instalações e Recursos"], "c": 1, "why": ["Planejamento reúne objetivos, PAI, organização modular e amplitude de controle.", null, "Profissionalismo reúne responsabilização, despacho e mobilização.", "Essa categoria reúne instalações do incidente e gerenciamento de recursos."], "e": "As 14 características do NIMS/SCI são agrupadas em 6 categorias: Padronização, Comando, Planejamento, Instalações e Recursos, Gerenciamento de Informações e Comunicações, e Profissionalismo. As três características de comando (transferência, cadeia e unidade, comando unificado) ficam na categoria Comando.", "d": "6 categorias: a de Comando tem 3 características."}, {"id": "m13", "sub": "conc", "t": "mc", "q": "Qual característica diz que a estrutura cresce e diminui conforme a necessidade, e que a forma segue a função?", "alts": ["Comando unificado", "Amplitude de controle", "Cadeia de comando", "Organização modular"], "c": 3, "why": ["Trata de atuação conjunta de várias instituições, e não do tamanho da estrutura.", "Define quantos subordinados cada supervisor comanda.", "Define a linha de autoridade, sem tratar do crescimento da estrutura.", null], "e": "Na organização modular só se ativam as funções necessárias, e cada uma tem um responsável. A estrutura se expande quando um supervisor passa de 7 subordinados (criam-se equipes, divisões, grupos ou seções) e é desmobilizada quando os objetivos são atingidos.", "d": "Módulos: liga o que precisa, desliga o que acabou."}, {"id": "m14", "sub": "conc", "t": "mc", "q": "Qual é a amplitude de controle ideal no SCI?", "alts": ["5 subordinados por supervisor, com variação de 3 a 7", "2 subordinados por supervisor", "10 subordinados por supervisor", "Sem limite fixo"], "c": 0, "why": [null, "Menos de 3 é pouco. O mínimo recomendado é 3.", "Acima de 7 o supervisor perde o controle. A estrutura deve ser expandida.", "O limite existe, e monitorá-lo é responsabilidade do CI."], "e": "A amplitude de controle no SCI é de 3 (mínimo), 5 (ideal) e 7 (máximo) subordinados por supervisor. Se passa de 7, expande-se a estrutura. Se a relação cai abaixo de 3, os elementos são desmobilizados. Quem monitora isso é o Comandante do Incidente. No SICOE o limite é de 30.", "d": "3 – 5 – 7."}, {"id": "m15", "sub": "conc", "t": "mc", "q": "O que significa unidade de comando?", "alts": ["Existe um único comandante, sem staff", "Cada pessoa tem apenas um supervisor, a quem se reporta", "Todas as instituições obedecem a um único órgão", "O comandante atua sozinho, sem delegar"], "c": 1, "why": ["O CI pode ter staff de comando e de seções.", null, "Isso é o oposto do comando unificado, em que as agências mantêm a autoridade.", "O SCI incentiva delegar funções conforme o incidente cresce."], "e": "Unidade de comando: cada indivíduo que participa das operações tem um supervisor designado na cena. Já a cadeia de comando é a linha hierárquica de autoridade, com comunicação com quem está imediatamente acima ou abaixo.", "d": "Um chefe só, para cada pessoa."}, {"id": "m16", "sub": "conc", "t": "mc", "q": "O que a terminologia comum evita durante uma crise?", "alts": ["Perda de tempo e mal-entendidos entre instituições que usam termos diferentes", "A necessidade de formulários", "A atuação de várias instituições", "O uso de rádio"], "c": 0, "why": [null, "Os formulários continuam sendo usados.", "O objetivo é permitir que várias atuem juntas, e não evitá-las.", "A terminologia comum melhora o uso do rádio, mas não o elimina."], "e": "Em uma crise não há tempo para aprender termos novos. Por isso funções, cargos, instalações e recursos recebem nomes padronizados, e instituições diferentes se entendem de forma clara e concisa.", "d": "Mesmo nome para a mesma coisa, em qualquer órgão."}, {"id": "m17", "sub": "staff", "t": "mc", "q": "Qual é a diferença básica entre Staff de Comando e Staff Geral?", "alts": ["O Staff de Comando é operacional e o Staff Geral é administrativo", "O Staff Geral assessora o CI e o Staff de Comando executa as operações", "O Staff de Comando assessora o CI (Oficiais). O Staff Geral conduz as seções funcionais (Chefes)", "Não há diferença: os dois usam os mesmos cargos"], "c": 2, "why": ["As duas coisas estão invertidas: o Staff Geral inclui Operações.", "Quem executa a resposta é a seção de Operações, do Staff Geral.", null, "Os títulos são diferentes: Oficial no Staff de Comando e Chefe no Staff Geral."], "e": "O Staff de Comando tem 3 funções de assessoria ao CI (Segurança, Informação Pública e Ligação), e os integrantes são chamados de Oficiais. O Staff Geral tem 4 seções funcionais (Planejamento, Operações, Logística e Administração/Finanças), e os integrantes são chamados de Chefes.", "d": "Comando: 3 Oficiais. Geral: 4 Chefes."}, {"id": "m18", "sub": "staff", "t": "mc", "q": "Quais são os Oficiais do Staff de Comando?", "alts": ["Planejamento, Operações e Logística", "Segurança, Operações e Finanças", "Informação Pública, Logística e Ligação", "Segurança, Informação Pública e Ligação"], "c": 3, "why": ["São seções do Staff Geral, lideradas por Chefes.", "Operações e Finanças são do Staff Geral.", "Logística é seção do Staff Geral.", null], "e": "O Staff de Comando tem três funções: Oficial de Segurança, Oficial de Informação Pública e Oficial de Ligação. Dependendo do incidente, o CI pode exercer essas funções ou delegá-las.", "d": "Segurança, Informação, Ligação."}, {"id": "m19", "sub": "staff", "t": "mc", "q": "Quais são as quatro seções do Staff Geral?", "alts": ["Segurança, Informação Pública, Ligação e Operações", "Comando, Planejamento, Logística e Finanças", "Operações, Logística, Comunicação e Imprensa", "Planejamento, Operações, Logística e Administração/Finanças"], "c": 3, "why": ["As três primeiras são do Staff de Comando.", "O comando é uma função própria, fora das seções.", "Comunicação e imprensa não são seções do Staff Geral.", null], "e": "O Staff Geral divide-se em Planejamento (informação, PAI, controle de recursos), Operações (execução da resposta), Logística (instalações, serviços e materiais) e Administração/Finanças (gastos, contratos e documentação).", "d": "P-O-L-A: Planejamento, Operações, Logística, Administração."}, {"id": "m20", "sub": "staff", "t": "mc", "q": "Quem fala oficialmente com a imprensa em nome do incidente?", "alts": ["Oficial de Informação Pública", "Qualquer bombeiro presente na cena", "Oficial de Ligação", "Chefe de Operações"], "c": 0, "why": [null, "Só o OIP, para evitar informações desencontradas.", "Ele integra as instituições, e não fala com a imprensa.", "Ele conduz a execução da resposta, e não a comunicação pública."], "e": "O Oficial de Informação Pública é o único porta-voz do incidente. Ele centraliza as informações, responde à imprensa e ao público, e toda a informação precisa ser aprovada pelo CI.", "d": "Uma só voz: o OIP."}, {"id": "m21", "sub": "staff", "t": "mc", "q": "Qual seção elabora o PAI e mantém o controle da situação e dos recursos?", "alts": ["Operações", "Logística", "Administração/Finanças", "Planejamento"], "c": 3, "why": ["Executa o PAI, mas quem o elabora é o Planejamento.", "Provê instalações, serviços e materiais.", "Controla gastos e documentação para indenizações.", null], "e": "Planejamento coleta, avalia e difunde as informações, elabora o PAI e mantém o controle dos recursos. Suas unidades são Recursos, Situação, Documentação e Desmobilização.", "d": "Plano = Planejamento."}, {"id": "m22", "sub": "staff", "t": "mc", "q": "Qual função do SCI está sempre ativa, em qualquer incidente?", "alts": ["Oficial de Segurança", "Comandante do Incidente", "Chefe de Operações", "Chefe de Planejamento"], "c": 1, "why": ["Pode ser exercida pelo CI em incidentes pequenos.", null, "Só é ativado quando a complexidade exige.", "Só é ativado conforme a necessidade."], "e": "O Comandante do Incidente é a única função que estará ativa em qualquer resposta, independentemente do tipo, tamanho, complexidade ou duração. O primeiro a chegar à cena com capacidade de resposta já age como CI, mesmo sem usar a terminologia.", "d": "Sem CI não há incidente: é a única função fixa."}, {"id": "m23", "sub": "area", "t": "mc", "q": "Como o PC é identificado?", "alts": ["Retângulo laranja com as letras PC", "Círculo amarelo com a letra P", "Quadrado vermelho com uma cruz", "Triângulo azul com as letras CI"], "c": 0, "why": [null, "O círculo amarelo é das instalações de apoio, como E, ACV e B.", "Não é o padrão do SCI.", "Não é o padrão do SCI."], "e": "O PC é sinalizado com um retângulo laranja com as letras PC em preto. As demais instalações de apoio (Área de Espera, ACV, Base, Acampamento, Helibase e Heliponto) usam círculo amarelo de 90 cm com a letra ou sigla em preto.", "d": "PC = retângulo laranja. Todo o resto = círculo amarelo."}, {"id": "m24", "sub": "area", "t": "mc", "q": "Onde deve ser instalado o PC?", "alts": ["Em local seguro, fora da zona de risco, com visão da cena e possibilidade de expansão", "O mais próximo possível do foco, para ver tudo de perto", "Na área de espera, junto com os recursos", "Qualquer local, desde que tenha sombra"], "c": 0, "why": [null, "Perto demais expõe o comando ao risco.", "A Área de Espera é uma instalação separada, com outra função.", "Há critérios: segurança, visibilidade, acesso, comunicação e expansão."], "e": "O PC deve ser seguro, ficar fora da zona de risco, ter visão integral da cena, boa comunicação, acesso e capacidade de expansão. Também precisa ficar longe de ruído e confusão. Usa-se comumente a viatura do Oficial de Área.", "d": "Seguro, longe do risco, com visão."}, {"id": "m25", "sub": "area", "t": "mc", "q": "Qual é a função da Base?", "alts": ["Coordenar e administrar as funções logísticas do incidente", "Pouso e abastecimento de helicópteros", "Triagem de vítimas", "Alimentação e repouso do pessoal"], "c": 0, "why": [null, "Isso é a helibase e o heliponto.", "Isso é a ACV.", "Isso é o Acampamento."], "e": "A Base é a instalação de onde as funções logísticas são coordenadas e administradas. É gerenciada pelo Chefe da Seção de Logística, identificada por um círculo amarelo com a letra B, e pode funcionar junto ao PC.", "d": "Base = Logística."}, {"id": "m26", "sub": "area", "t": "mc", "q": "Qual é a diferença entre helibase e heliponto?", "alts": ["Helibase: pouso e decolagem. Heliponto: estacionamento e manutenção", "Helibase: estacionamento, abastecimento e manutenção. Heliponto: pouso, decolagem e carga/descarga", "Helibase é para aeronaves de asa fixa e heliponto para helicópteros", "São a mesma instalação, com nomes diferentes"], "c": 1, "why": ["Estão invertidos.", null, "Ambas tratam de helicópteros.", "São instalações distintas, com siglas diferentes (H e H1, H2…)."], "e": "A Helibase (H) é um lugar de estacionamento, abastecimento e manutenção de helicópteros. O Heliponto (H1, H2…) é onde as aeronaves pousam, decolam e fazem carga e descarga de pessoas, equipamentos e materiais.", "d": "Heli-BASE = base de apoio. Heli-PONTO = ponto de pouso."}, {"id": "m27", "sub": "area", "t": "mc", "q": "Para que serve a Área de Concentração de Vítimas (ACV)?", "alts": ["Concentrar vítimas para triagem, estabilização e transporte ao hospital de referência", "Guardar equipamentos de resgate", "Abrigar a imprensa e os familiares", "Reunir os recursos que aguardam designação"], "c": 0, "why": [null, "A ACV é para vítimas, e não para material.", "Isso é tratado pelo Oficial de Informação Pública.", "Isso é a Área de Espera."], "e": "A ACV é o local do incidente onde as vítimas ficam concentradas, aguardando o momento exato do transporte ao hospital de referência. Ela precisa estar em área segura, ampliável e próxima ao incidente, com acesso para as equipes de socorro.", "d": "ACV = vítimas. Espera = recursos."}, {"id": "m28", "sub": "area", "t": "mc", "q": "Como a equipe de atendimento pré-hospitalar se divide dentro da ACV?", "alts": ["Em quatro divisões: transporte, triagem, estabilização e monitoramento, e manejo de mortos", "Em três divisões: triagem, tratamento e alta", "Em duas divisões: vítimas leves e graves", "Em cinco divisões, uma por cor de triagem"], "c": 0, "why": [null, "Não existe 'alta' na ACV, e são quatro divisões.", "A classificação por gravidade é parte da triagem, e não uma divisão.", "As divisões são por função."], "e": "Dentro da ACV as vítimas são constantemente monitoradas e reclassificadas pela equipe de atendimento pré-hospitalar, que atua em 4 divisões: transporte, triagem, estabilização e monitoramento, e manejo de mortos.", "d": "4 divisões: transporte, triagem, estabilização, mortos."}, {"id": "m29", "sub": "recu", "t": "mc", "q": "O que a classe de um recurso informa?", "alts": ["A capacidade de carga e o número de pessoas", "O estado atual do recurso", "A natureza da missão ou função do recurso, como salvamento, transporte ou combate a incêndio", "A cor do cartão no quadro de status"], "c": 2, "why": ["Isso é o tipo.", "Estado é disponível, designado ou indisponível.", null, "Cor é padrão dos T-Cards, e não classificação do recurso."], "e": "Classe define a natureza da missão ou função (ex.: salvamento, transporte, combate a incêndio). Tipo define a capacidade operacional (capacidade de trabalho, de carga e número de pessoas). A categoria diz se é recurso único, equipe de intervenção ou força-tarefa.", "d": "Classe = para quê. Tipo = quanto."}, {"id": "m30", "sub": "recu", "t": "mc", "q": "O que o tipo de um recurso informa?", "alts": ["A natureza da missão que o recurso cumpre", "A capacidade operacional: de trabalho, de carga e número de pessoas", "Se é recurso único ou força-tarefa", "O órgão ao qual ele pertence"], "c": 1, "why": ["Isso é a classe.", null, "Isso é a categoria.", "A instituição aparece no registro, mas não define o tipo."], "e": "O tipo mede a capacidade do recurso. Ex.: uma ambulância e outra de maior capacidade podem ser da mesma classe (transporte), mas de tipos diferentes.", "d": "Classe = para quê. Tipo = quanto."}, {"id": "m31", "sub": "recu", "t": "mc", "q": "O que é uma força-tarefa?", "alts": ["Conjunto de recursos da mesma classe e tipo", "Um equipamento com sua guarnição", "Combinação de recursos de classes e tipos diferentes, com um só líder", "Equipe do Staff de Comando"], "c": 2, "why": ["Isso é a equipe de intervenção.", "Isso é o recurso único.", null, "Staff de Comando é assessoria ao CI, e não categoria de recurso."], "e": "Existem três categorias: recurso único (um equipamento com seu pessoal, ex.: 1 AA), equipe de intervenção (recursos únicos da mesma classe e tipo, ex.: 2 AA) e força-tarefa (classes e tipos diferentes, ex.: 2 AA + 1 ABTR). Nas duas últimas há um só líder e comunicações integradas.", "d": "Mesmo = equipe. Misturado = força-tarefa."}, {"id": "m32", "sub": "recu", "t": "mc", "q": "Duas ambulâncias iguais atuando juntas na mesma área, com um líder, formam o quê?", "alts": ["Um recurso único", "Uma força-tarefa", "Uma base auxiliar", "Uma equipe de intervenção"], "c": 3, "why": ["Recurso único é uma ambulância sozinha.", "Força-tarefa mistura classes e tipos diferentes, e aqui são iguais.", "Base é instalação, e não categoria de recurso.", null], "e": "Uma ambulância atuando é um recurso único. Quando outra da mesma classe e tipo chega em apoio, passa a existir uma equipe de intervenção, com um só líder e comunicações integradas, na mesma área geográfica.", "d": "1 = único. 2 iguais = equipe."}, {"id": "m33", "sub": "recu", "t": "mc", "q": "Quais são os estados possíveis de um recurso no incidente?", "alts": ["Ativo, passivo e reserva", "Solicitado, enviado e recebido", "Pronto, em trânsito e extinto", "Disponível, designado e indisponível"], "c": 3, "why": ["Não são os estados do SCI.", "Descrevem o pedido, e não o estado do recurso.", "Não são os estados do SCI.", null], "e": "Disponível é o recurso pronto para ser mobilizado. Designado é o que está em uso ou em apoio direto ao incidente. Indisponível é o danificado, em manutenção ou sem condições. A posição do T-Card no quadro mostra esse estado.", "d": "Disponível, designado, indisponível."}, {"id": "m34", "sub": "form", "t": "mc", "q": "Qual formulário apresenta o resumo do incidente ao CI e ao staff (briefing)?", "alts": ["SCI-211", "SCI-201", "SCI-219", "SCI-221"], "c": 1, "why": ["É a lista de registro de chegada (check-in).", null, "É o cartão individual de cada recurso.", "É o checkout de desmobilização."], "e": "O SCI-201 (briefing do incidente) tem 4 páginas: croqui da cena (que pode virar o mapa de situação), resumo das ações, organização atual e resumo dos recursos. Deve ser preenchido em todo incidente.", "d": "201 = visão geral."}, {"id": "m35", "sub": "form", "t": "mc", "q": "Para que serve o SCI-211?", "alts": ["Desenhar o croqui da cena", "Registrar a chegada dos recursos ao incidente (check-in)", "Descrever o plano médico", "Listar apenas as vítimas atendidas"], "c": 1, "why": ["O croqui fica na primeira página do SCI-201.", null, "O plano médico é outro formulário (SCI-206).", "O SCI-211 lista recursos, e não vítimas."], "e": "O SCI-211 é a lista de registro. Mostra os recursos solicitados (a caminho), disponíveis, indisponíveis e designados. Traz instituição, identificação do recurso, data e hora de registro, nome do chefe, número de pessoas e contato por telefone ou rádio. É preenchido inicialmente no PC.", "d": "211 = chegou? registra."}, {"id": "m36", "sub": "form", "t": "mc", "q": "Como funciona o SCI-219 (T-Card)?", "alts": ["Há um único cartão para todo o incidente", "É usado apenas ao final, para o relatório", "Serve só para registrar vítimas", "Há um cartão para cada recurso, e a posição dele no quadro mostra o estado"], "c": 3, "why": ["É um cartão por recurso.", "Ele é usado durante o incidente, para controle em tempo real.", "Registra recursos, pessoal e equipamentos.", null], "e": "O SCI-219 é um formulário individual para cada recurso, esteja disponível ou não. Na frente ficam instituição, tipo, local de registro, chegada, líder e designação. No verso, o local designado, a hora e a situação (até 3 designações). No quadro, a posição do cartão indica o estado.", "d": "Um recurso, um cartão."}, {"id": "m37", "sub": "form", "t": "mc", "q": "Qual é a cor do T-Card usado para funções (pessoal)?", "alts": ["Amarelo", "Laranja", "Vermelho", "Branco"], "c": 3, "why": ["O amarelo é de equipamentos e viaturas.", "Laranja é a cor do PC, e não do T-Card.", "Não é padrão do curso.", null], "e": "O padrão adotado é: T-Card branco para funções (recursos humanos) e T-Card amarelo para equipamentos e viaturas.", "d": "Branco = gente. Amarelo = máquina."}, {"id": "m38", "sub": "form", "t": "mc", "q": "Em qual formulário constam o contato por telefone ou rádio do efetivo empregado?", "alts": ["SCI-201", "SCI-219", "SCI-211", "SCI-209"], "c": 2, "why": ["Traz a visão geral do incidente.", "Traz dados do recurso, mas o contato aparece na lista de registro.", null, "É o resumo das ações do incidente."], "e": "O SCI-211 reúne, para cada recurso registrado, o contato por telefone ou rádio, junto do número de pessoas e do estado do recurso.", "d": "Contato = lista de registro (211)."}, {"id": "m39", "sub": "oper", "t": "mc", "q": "Como deve ser feita a transferência de comando?", "alts": ["Por e-mail, para ficar registrada", "Por rádio, sem apresentar o staff", "Por ordem escrita, sem encontro", "Cara a cara, com briefing de quem sai para quem entra"], "c": 3, "why": ["O curso exige o contato direto.", "O comandante que sai deve apresentar o staff e os chefes de seção.", "É necessário o briefing presencial.", null], "e": "A transferência de comando deve ser feita cara a cara. O comandante que sai apresenta o staff e os chefes de seção e informa o estado do incidente, a situação de segurança, os objetivos, a organização, os recursos, as instalações, o plano de comunicações e a provável evolução.", "d": "Cara a cara + briefing."}, {"id": "m40", "sub": "oper", "t": "mc", "q": "Como costuma ser o PAI no período reativo?", "alts": ["Escrito e aprovado por todas as instituições", "Inexistente: o PAI só vale depois da desmobilização", "Mental ou verbal, numa resposta imediata e sob pressão de tempo", "Elaborado por uma instituição externa"], "c": 2, "why": ["Isso é típico do período proativo.", "Existe PAI, mesmo que mental.", null, "Quem decide é o comando do incidente."], "e": "O período reativo (cerca de 4 horas) é o da resposta imediata, com decisões rápidas e PAI mental ou verbal. No período proativo há planejamento detalhado, PAI escrito e formalizado e vários períodos operacionais.", "d": "Reativo = verbal. Proativo = escrito."}, {"id": "v01", "sub": "orig", "t": "vf", "q": "A experiência do Paraná com o grande incêndio florestal da década de 1960 é citada como origem empírica do SICOE.", "v": true, "e": "O material descreve o \"Paraná em Flagelo\" como o grande incêndio em que já se aplicava, na prática, uma metodologia parecida com a do ICS. Mais tarde isso foi formalizado no SICOE.", "d": "Prática antiga, formalizada depois."}, {"id": "v02", "sub": "orig", "t": "vf", "q": "O SCI foi criado no Brasil e depois adotado pelos Estados Unidos.", "v": false, "e": "O caminho foi o inverso: o SCI nasceu nos EUA, nos anos 1970, e chegou ao Brasil por cooperação técnica. O Paraná tinha uma prática parecida, mas o SCI como sistema é de origem americana.", "d": "EUA primeiro, Brasil depois."}, {"id": "v03", "sub": "aplic", "t": "vf", "q": "O SCI é útil também em eventos planejados com grande aglomeração, como desfiles e competições esportivas.", "v": true, "e": "O pânico em eventos planejados (celebrações, desfiles, concertos, competições) está na lista de aplicabilidade. O SCI serve a incidentes de qualquer origem.", "d": "Planejado ou não, serve."}, {"id": "v04", "sub": "aplic", "t": "vf", "q": "O SCI só deve ser usado em desastres naturais.", "v": false, "e": "A lista inclui produtos perigosos, explosões, atentados, fugas em presídios, acidentes de transporte e muito mais. O SCI é útil na administração de todos os tipos de incidentes.", "d": "Qualquer tipo de incidente."}, {"id": "v05", "sub": "def", "t": "vf", "q": "A capacitação, o treinamento e os simulados fazem parte da fase de preparação da Defesa Civil.", "v": true, "e": "A preparação é a fase em que os integrantes são capacitados e treinados, e em que são feitos simulados e planos de contingência antes de qualquer evento crítico.", "d": "Preparação = treino."}, {"id": "v06", "sub": "def", "t": "vf", "q": "A reconstrução é a primeira fase da Defesa Civil.", "v": false, "e": "A sequência é prevenção, preparação, resposta e reconstrução. A reconstrução é a última e consiste no retorno à normalidade.", "d": "Começa na prevenção, termina na reconstrução."}, {"id": "v07", "sub": "def", "t": "vf", "q": "No SICOE, preservar vidas é a 1ª prioridade e proteger propriedades é a última.", "v": true, "e": "As prioridades são: vidas, estabilizar o evento, sistemas essenciais e meio ambiente, e propriedades.", "d": "Gente primeiro, bens por último."}, {"id": "v08", "sub": "def", "t": "vf", "q": "A hora de ouro garante 100% de sobrevivência se a vítima chegar ao pronto-socorro em até 1 hora.", "v": false, "e": "A hora de ouro está associada a até 60% de chance de sobrevivência, e não a 100%. Depois da primeira hora, cada minuto de atraso reduz ainda mais as chances.", "d": "Até 60%, não 100%."}, {"id": "v09", "sub": "def", "t": "vf", "q": "As fases operacionais do SICOE ocorrem uma de cada vez, e a seguinte só começa quando a anterior termina.", "v": false, "e": "As 7 fases operacionais do SICOE (detecção, comunicação, mobilização, chegada ao local, estudo de situação, operacionalização e desmobilização) ocorrem simultaneamente.", "d": "Sete fases, todas ao mesmo tempo."}, {"id": "v10", "sub": "conc", "t": "vf", "q": "Em accountability, todo o pessoal deve fazer check-in ao chegar e check-out ao sair, independentemente do órgão.", "v": true, "e": "Responsabilização exige check-in e check-out de todos, operação conforme o PAI, unidade de comando, responsabilidade individual, amplitude de controle e registro das mudanças de estado dos recursos. No Brasil também se diz \"efetivo controle dos recursos\".", "d": "Quem entra e quem sai, tudo registrado."}, {"id": "v11", "sub": "conc", "t": "vf", "q": "A amplitude de controle ideal no SCI é de 7 subordinados por supervisor.", "v": false, "e": "O ideal é 5. O mínimo é 3 e o máximo é 7. Passou de 7, a estrutura deve ser expandida.", "d": "3 – 5 – 7 (ideal é o do meio)."}, {"id": "v12", "sub": "conc", "t": "vf", "q": "No comando unificado há um único PC e um único PAI, e cada instituição mantém a sua autoridade.", "v": true, "e": "No comando unificado não há um CI acima dos outros. As instituições compartilham objetivos e estratégias e usam um PC e um PAI. As autoridades das agências não são afetadas.", "d": "Um plano, várias autoridades."}, {"id": "v13", "sub": "conc", "t": "vf", "q": "O PAI deve ser escrito quando o incidente é complexo, envolve várias agências ou ultrapassa um período operacional.", "v": true, "e": "O PAI comunica estratégia, atribuições e objetivos. Em incidentes pequenos e rápidos ele pode ser mental. Nos complexos, ele é escrito e atualizado a cada período operacional.", "d": "Complexo ou longo: por escrito."}, {"id": "v14", "sub": "conc", "t": "vf", "q": "Em uma emergência, a comunicação deve esperar a autorização formal da cadeia de comando.", "v": false, "e": "O curso diz que, em emergência, a comunicação é livre e imediata. A comunicação formal serve para receber e designar tarefas, pedir recursos e relatar progresso.", "d": "Emergência: comunica na hora."}, {"id": "v15", "sub": "staff", "t": "vf", "q": "Os integrantes do Staff de Comando recebem o título de Oficial, e os do Staff Geral, o de Chefe.", "v": true, "e": "O Staff de Comando tem 3 Oficiais (Segurança, Informação Pública e Ligação). O Staff Geral tem 4 Chefes de seção (Planejamento, Operações, Logística e Administração/Finanças).", "d": "Oficial assessora, Chefe conduz seção."}, {"id": "v16", "sub": "staff", "t": "vf", "q": "O Oficial de Ligação é o porta-voz do incidente.", "v": false, "e": "O porta-voz é o Oficial de Informação Pública. O Oficial de Ligação é o ponto de contato com os representantes das instituições que atuam no incidente.", "d": "Ligação liga instituições. Informação fala com a imprensa."}, {"id": "v17", "sub": "staff", "t": "vf", "q": "A Administração/Finanças cuida de gastos, contratos e da documentação para indenizações.", "v": true, "e": "Essa seção justifica, controla e registra gastos, faz compras, locações e contratações e mantém a documentação para processos indenizatórios. Suas unidades são Tempo, Provedoria e Custos.", "d": "Dinheiro e papelada."}, {"id": "v18", "sub": "staff", "t": "vf", "q": "Em incidentes pequenos, o CI pode acumular todas as funções.", "v": true, "e": "As seções e funções são ativadas conforme a complexidade. Em incidentes pequenos, o CI pode exercer ele próprio as funções do staff.", "d": "Só se ativa o que precisa."}, {"id": "v19", "sub": "staff", "t": "vf", "q": "O Chefe de Operações faz parte do Staff de Comando.", "v": false, "e": "Operações é uma seção do Staff Geral, chefiada por um Chefe. O Staff de Comando tem só Segurança, Informação Pública e Ligação.", "d": "Operações é Staff Geral."}, {"id": "v20", "sub": "staff", "t": "vf", "q": "Quem chega primeiro ao incidente só pode assumir o comando depois de autorizado pelo Chefe de Planejamento.", "v": false, "e": "O primeiro a chegar com capacidade de resposta já age como CI, mesmo sem usar a terminologia. O comando só passa a outra pessoa à medida que chegam outras com a competência requerida.", "d": "Chegou primeiro, comanda."}, {"id": "v21", "sub": "area", "t": "vf", "q": "A Área de Espera deve ficar a no máximo cinco minutos de deslocamento da cena.", "v": true, "e": "A Área de Espera deve ficar afastada da cena a uma distância não superior a cinco minutos de deslocamento, longe de qualquer zona perigosa, com rotas diferentes de entrada e saída e espaço para expandir.", "d": "Perto o bastante, longe do perigo."}, {"id": "v22", "sub": "area", "t": "vf", "q": "A ACV deve ficar em área segura, ampliável e próxima ao incidente.", "v": true, "e": "A ACV precisa estar em área segura, com possibilidade de ampliação, próxima ao incidente e com acesso para as equipes de socorro e evacuação organizada.", "d": "Segura, ampliável, próxima."}, {"id": "v23", "sub": "area", "t": "vf", "q": "O Acampamento é a instalação que coordena as funções logísticas do incidente.", "v": false, "e": "Quem coordena a logística é a Base. O Acampamento oferece alimentação, hidratação, repouso e serviços sanitários, e pode haver vários, cada um com um encarregado.", "d": "Base coordena. Acampamento descansa."}, {"id": "v24", "sub": "area", "t": "vf", "q": "As instalações de apoio, como E, ACV, B, A e H, são identificadas por círculos amarelos de 90 cm.", "v": true, "e": "O PC é o retângulo laranja. As demais instalações usam círculos amarelos de 90 cm com a letra ou sigla em preto no centro.", "d": "Círculo amarelo para tudo, menos o PC."}, {"id": "v25", "sub": "area", "t": "vf", "q": "O PC pode ficar dentro da zona de risco se isso permitir ver melhor a cena.", "v": false, "e": "O PC deve ficar em local seguro, fora da zona de risco, e ainda assim ter boa visão da cena. A segurança do comando vem primeiro.", "d": "PC fora do risco."}, {"id": "v26", "sub": "area", "t": "vf", "q": "A Área de Espera é o local onde as vítimas aguardam o transporte ao hospital.", "v": false, "e": "Isso é a ACV. Na Área de Espera ficam os recursos que fizeram check-in e aguardam a designação para uma missão.", "d": "Espera = recursos. ACV = vítimas."}, {"id": "v27", "sub": "recu", "t": "vf", "q": "Recurso único é um equipamento e seu complemento de pessoal, como uma viatura com a sua guarnição.", "v": true, "e": "É a menor unidade de recurso, designada para uma missão tática e com um líder responsável. Ex.: 1 AA = recurso único.", "d": "Uma viatura + guarnição."}, {"id": "v28", "sub": "recu", "t": "vf", "q": "Um recurso designado é aquele que está pronto para ser mobilizado.", "v": false, "e": "Esse é o recurso disponível. Designado é o que está em uso ou em apoio direto ao incidente.", "d": "Disponível espera. Designado trabalha."}, {"id": "v29", "sub": "recu", "t": "vf", "q": "O CI pode recusar recursos enviados sem solicitação ou sem aplicação no incidente.", "v": true, "e": "É o direito de recusa. Nenhum recurso deve se deslocar sem solicitação ou designação, e o CI não é obrigado a aceitar o que chega sem utilidade.", "d": "Sem pedido, o CI pode recusar."}, {"id": "v30", "sub": "recu", "t": "vf", "q": "A desmobilização de um recurso pode ocorrer por decisão do próprio chefe do recurso, sem ordem do CI.", "v": false, "e": "A desmobilização só ocorre por ordem do CI, atendidos critérios como objetivos atingidos, carga horária máxima, descanso obrigatório e substituição disponível. No check-out, o cartão T é removido.", "d": "Quem manda soltar é o CI."}, {"id": "v31", "sub": "form", "t": "vf", "q": "O SCI-201 deve ser preenchido em todo incidente.", "v": true, "e": "O briefing do incidente reúne a base de informação para os demais formulários e deve ser preenchido em todo incidente.", "d": "201 sempre."}, {"id": "v32", "sub": "form", "t": "vf", "q": "Há um único SCI-219 para todos os recursos do incidente.", "v": false, "e": "O SCI-219 é preenchido de forma individual, um para cada recurso, esteja ele disponível ou não.", "d": "Um cartão por recurso."}, {"id": "v33", "sub": "form", "t": "vf", "q": "O T-Card amarelo é usado para equipamentos e viaturas.", "v": true, "e": "O padrão é: T-Card branco para funções (recursos humanos) e T-Card amarelo para equipamentos e viaturas.", "d": "Amarelo = máquina."}, {"id": "v34", "sub": "form", "t": "vf", "q": "O SCI-211 mostra apenas os recursos que já estão designados a uma missão.", "v": false, "e": "O SCI-211 mostra os recursos a caminho, disponíveis, indisponíveis e designados. É o registro completo de chegada.", "d": "211 mostra todos os estados."}, {"id": "v35", "sub": "form", "t": "vf", "q": "O SCI-211 é preenchido no final do incidente, só para compor o relatório.", "v": false, "e": "O SCI-211 é o check-in, preenchido inicialmente no PC, conforme os recursos chegam. Serve ao controle em tempo real.", "d": "Check-in é na chegada."}, {"id": "v36", "sub": "oper", "t": "vf", "q": "A chegada de alguém mais qualificado ao local transfere o comando automaticamente.", "v": false, "e": "A chegada de pessoa mais qualificada não implica troca de comando. A troca só ocorre por transferência, cara a cara, com briefing.", "d": "Mais qualificado ≠ comando automático."}, {"id": "v37", "sub": "oper", "t": "vf", "q": "A Tarjeta de Campo é um check-list de apoio ao primeiro respondedor.", "v": true, "e": "É um cartão impermeável e resistente, portado pelos chefes de equipe, que orienta o estabelecimento do SCI, o manejo de recursos, a instalação das estruturas e a primeira transferência de comando.", "d": "Check-list de bolso."}, {"id": "v38", "sub": "oper", "t": "vf", "q": "No período proativo, o PAI é escrito e pode abranger vários períodos operacionais.", "v": true, "e": "O período proativo tem planejamento detalhado, PAI escrito e formalizado e múltiplos períodos operacionais, podendo durar de horas a semanas.", "d": "Proativo = por escrito."}, {"id": "v39", "sub": "oper", "t": "vf", "q": "Os recursos podem se deslocar ao incidente mesmo sem solicitação ou designação.", "v": false, "e": "Nenhum recurso se desloca sem solicitação ou designação. O despacho e a mobilização seguem passos: solicitação, autorização, despacho, check-in, emprego e desmobilização.", "d": "Sem pedido, ninguém se desloca."}, {"id": "v40", "sub": "oper", "t": "vf", "q": "O PAI comunica a estratégia, as atribuições e os objetivos do incidente.", "v": true, "e": "É a ferramenta que comunica o que se vai fazer, quem faz o quê e onde, e é atualizada a cada período operacional.", "d": "PAI = plano que todo mundo entende."}]};
 (() => {
 "use strict";
-const KEY = "sci-questoes-v1";
-const LET = "ABCDE";
-const $ = s => document.querySelector(s);
+const Q = DATA.q, BY = Object.fromEntries(Q.map(q => [q.id, q])), SUB = Object.fromEntries(DATA.subs.map(s => [s.id, s.n]));
+const KEY = "sci-quiz-v2", LET = "ABCD";
 const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const BY = Object.fromEntries(QUESTOES.map(q => [q.id, q]));
-const SUBS = Object.fromEntries(ASSUNTOS.map(a => [a.id, a]));
-const TIPOS_ROTULO = TIPOS;
-
-/* ---------- armazenamento local, com proteção ---------- */
-function loadStore(){
-  let s = null;
-  try { s = JSON.parse(localStorage.getItem(KEY)); } catch (e) { s = null; }
-  return Object.assign({ answers:{}, fav:[], session:null }, s && typeof s === "object" ? s : {});
-}
-let store = loadStore();
-function persist(){ try { localStorage.setItem(KEY, JSON.stringify(store)); } catch (e) { /* sem armazenamento: segue sem salvar */ } }
-
-/* ---------- utilidades ---------- */
+const $ = s => document.querySelector(s);
 function shuffle(a){ a = a.slice(); for (let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
-function perm(key, n){
-  const s = store.session;
-  if (!s.perms[key] || s.perms[key].length !== n){ s.perms[key] = shuffle([...Array(n).keys()]); persist(); }
-  return s.perms[key];
+function fresh(ids){ return { order: shuffle(ids || Q.map(q => q.id)), idx: 0, ans: {}, streak: 0, best: 0, review: !!ids }; }
+function load(){
+  try {
+    const j = JSON.parse(localStorage.getItem(KEY));
+    if (j && Array.isArray(j.order) && j.order.length && j.order.every(id => BY[id]) && j.ans && typeof j.idx === "number"
+        && (j.review || j.order.length === Q.length)) return j;
+  } catch (e) { /* sem armazenamento: segue sem salvar */ }
+  return fresh();
 }
-function curQ(){ return BY[store.session.ids[store.session.idx]]; }
-function setResp(q, v){ store.session.resp[q.id] = v; persist(); }
-function defaultResp(q){
-  switch (q.tipo){
-    case "mc": case "ac": return null;
-    case "vf": return q.itens.map(() => null);
-    case "assoc": return q.pares.map(() => null);
-    case "lac": return q.lacunas.map(() => null);
-    case "prat": return q.etapas.map(() => null);
-    case "disc": return { texto: "", marks: null };
-    case "tab": return q.campos.map(() => "");
-  }
-}
-function getResp(q){ const s = store.session; if (s.resp[q.id] === undefined) s.resp[q.id] = defaultResp(q); return s.resp[q.id]; }
+let S = load();
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { /* ignora */ } }
+const answered = () => S.order.filter(id => S.ans[id]).length;
+const rights = () => S.order.filter(id => S.ans[id] && S.ans[id].ok).length;
+const cur = () => BY[S.order[S.idx]];
+let view = (answered() === S.order.length) ? "result" : "quiz";
+let askRestart = false, askTimer = null;
 
-/* ---------- avaliação ---------- */
-function evaluate(q){
-  const s = store.session, r = getResp(q);
-  switch (q.tipo){
-    case "mc": case "ac": { const ok = r !== null && perm(q.id, q.alts.length)[r] === q.correta; return { ok, parts:[ok] }; }
-    case "vf": { const parts = q.itens.map((it, i) => r[i] === it.v); return { ok: parts.every(Boolean), parts }; }
-    case "assoc": { const p = perm(q.id, q.pares.length); const parts = q.pares.map((_, i) => r[i] !== null && p[r[i]] === i); return { ok: parts.every(Boolean), parts }; }
-    case "lac": { const parts = q.lacunas.map((L, k) => r[k] !== null && perm(q.id + "#" + k, L.opcoes.length)[r[k]] === L.correta); return { ok: parts.every(Boolean), parts }; }
-    case "prat": { const parts = q.etapas.map((E, i) => r[i] !== null && perm(q.id + "#" + i, E.alts.length)[r[i]] === E.correta); return { ok: parts.every(Boolean), parts }; }
-    case "disc": { const m = r.marks || []; return { ok: m.length === q.criterios.length && m.every(Boolean), parts: m }; }
-    case "tab": { const m = (s.marks && s.marks[q.id]) || []; const ok = m.length === q.campos.length && m.every(Boolean); return { ok, parts: m }; }
+function optMC(q, i, a){
+  let cls = "", st = "";
+  if (a){
+    if (i === q.c){ cls = "ok"; st = "✓ Correta"; }
+    else if (i === a.p){ cls = "bad"; st = "✗ Sua resposta"; }
+    else cls = "dim";
   }
+  return `<button type="button" class="opt ${cls} ${a ? "done" : ""}" data-act="ans" data-v="${i}" ${a ? 'aria-disabled="true"' : ""}><span class="let">${LET[i]}</span><span>${esc(q.alts[i])}</span>${st ? `<span class="st">${st}</span>` : ""}</button>`;
 }
-function gabaritoHTML(q){
-  switch (q.tipo){
-    case "mc": case "ac": return `<p><strong>Resposta correta:</strong> ${esc(LET[perm(q.id, q.alts.length).indexOf(q.correta)])}) ${esc(q.alts[q.correta])}</p>`;
-    case "vf": return "<ul>" + q.itens.map(it => `<li>${it.v ? "V" : "F"}: ${esc(it.t)}</li>`).join("") + "</ul>";
-    case "assoc": return "<ul>" + q.pares.map(([a, b]) => `<li>${esc(a)} → ${esc(b)}</li>`).join("") + "</ul>";
-    case "lac": return "<ul>" + q.lacunas.map((L, k) => `<li>Lacuna ${k + 1}: ${esc(L.opcoes[L.correta])}</li>`).join("") + "</ul>";
-    case "prat": return "<ol>" + q.etapas.map(E => `<li>${esc(E.alts[E.correta])}</li>`).join("") + "</ol>";
-    case "disc": return `<p><strong>Modelo de resposta:</strong> ${esc(q.modelo)}</p><p><strong>Critérios:</strong></p><ul>${q.criterios.map(c => `<li>${esc(c)}</li>`).join("")}</ul>`;
-    case "tab": return `<table class="gab">${q.campos.map((c, i) => `<tr><td>${esc(c)}</td><td>${esc(q.gab[i])}</td></tr>`).join("")}</table>`;
+function optVF(q, v, a){
+  let cls = "", st = "";
+  if (a){
+    if (v === q.v){ cls = "ok"; st = "✓"; }
+    else if (v === a.p){ cls = "bad"; st = "✗"; }
+    else cls = "dim";
   }
+  return `<button type="button" class="opt ${cls} ${a ? "done" : ""}" data-act="ans" data-v="${v}" ${a ? 'aria-disabled="true"' : ""}><span>${v ? "Verdadeiro" : "Falso"}</span>${st ? `<span class="st">${st}</span>` : ""}</button>`;
 }
-function explHTML(q){ return q.expl ? `<div class="expl"><strong>Resolução</strong><p>${esc(q.expl)}</p></div>` : ""; }
-
-/* ---------- sessões ---------- */
-function newSession(kind, ids, title){
-  store.session = { kind, title, ids, idx:0, resp:{}, checked:{}, revealed:{}, perms:{}, marks:{}, done:false };
-  persist();
-}
-function poolFor(st){
-  let ids = QUESTOES.filter(q => st.subs.includes(q.sub) && st.tipos.includes(q.tipo) && st.niveis.includes(q.nivel)).map(q => q.id);
-  if (st.mode === "sim") ids = ids.filter(id => BY[id].tipo !== "disc");
-  if (st.onlyNew) ids = ids.filter(id => !store.answers[id]);
-  if (st.onlyFav) ids = ids.filter(id => store.fav.includes(id));
-  if (st.onlyWrong) ids = ids.filter(id => store.answers[id] && !store.answers[id].ok);
-  return ids;
-}
-function startFromSetup(st){
-  if (st.mode === "sim" && st.count === "prova"){
-    const pick = (f, n) => shuffle(QUESTOES.filter(f).map(q => q.id)).slice(0, n);
-    const ids = [...pick(q => q.tipo === "vf", 8), ...pick(q => q.tipo === "mc", 12)];
-    newSession("sim", ids, "Prova modelo: 8 itens de V ou F e 12 questões de múltipla escolha");
-    ui.view = "quiz"; ui.msg = ""; render(); return;
+function feedback(q, a){
+  const head = a.ok ? "✓ Acertou!" : "✗ Errou.";
+  const correto = q.t === "mc" ? `${LET[q.c]}) ${esc(q.alts[q.c])}` : (q.v ? "Verdadeiro" : "Falso");
+  let h = `<section class="fb ${a.ok ? "ok" : "bad"}"><div class="verdict">${head}</div>
+    <p><strong>Resposta correta:</strong> ${correto}</p>
+    <h3>Explicação</h3><p>${esc(q.e)}</p>`;
+  if (q.t === "mc"){
+    h += `<h3>Por que as outras estão erradas</h3><ul>` + q.alts.map((t, i) => i === q.c ? "" :
+      `<li class="${i === a.p ? "mine" : ""}"><strong>${LET[i]})</strong> ${esc(t)}<br><span class="muted">${esc(q.why[i])}${i === a.p ? " (foi a sua escolha)" : ""}</span></li>`).join("") + `</ul>`;
   }
-  let ids = poolFor(st);
-  if (!ids.length){ ui.msg = "Nenhuma questão com esses filtros."; render(); return; }
-  if (st.mode === "sim"){
-    ids = shuffle(ids);
-    if (st.count !== "all") ids = ids.slice(0, Math.min(+st.count, ids.length));
-    newSession("sim", ids, `Simulado com ${ids.length} questões`);
-  } else {
-    if (st.shuffle) ids = shuffle(ids);
-    newSession("practice", ids, "Questões");
-  }
-  ui.view = "quiz"; ui.msg = ""; render();
+  if (q.d) h += `<div class="dica">Para memorizar: ${esc(q.d)}</div>`;
+  return h + `</section>`;
 }
-function startFromIds(kind, ids, title){
-  if (!ids.length) return;
-  newSession(kind, ids, title); ui.view = "quiz"; render();
-}
-function submit(q){
-  const s = store.session;
-  if (s.checked[q.id]) return;
-  const ev = evaluate(q);
-  s.checked[q.id] = true;
-  if (s.kind === "practice") store.answers[q.id] = { ok: ev.ok && !s.revealed[q.id], consulted: !!s.revealed[q.id], ts: Date.now() };
-  persist(); render();
-}
-function next(){
-  const s = store.session, q = curQ();
-  if (s.kind === "sim" && q.tipo === "tab" && !s.checked[q.id] && getResp(q).some(v => v.trim() !== "")) s.checked[q.id] = true;
-  s.idx++;
-  if (s.idx >= s.ids.length) finish();
-  persist(); render();
-}
-function finish(){
-  const s = store.session;
-  if (s.done) return;
-  s.done = true;
-  if (s.kind === "sim") for (const id of s.ids) if (s.checked[id]) store.answers[id] = { ok: evaluate(BY[id]).ok, ts: Date.now(), mode:"sim" };
-  persist();
-  ui.view = "result";
-}
-
-/* ---------- interface ---------- */
-const ui = { view:"setup", st: freshSetup("practice"), msg:"", resetAsk:false };
-function freshSetup(mode){
-  return { mode, subs: ASSUNTOS.map(a => a.id), tipos: Object.keys(TIPOS_ROTULO).filter(t => mode !== "sim" || t !== "disc"),
-    niveis:[1,2,3], onlyNew:false, onlyFav:false, onlyWrong:false, shuffle:true, count: mode === "sim" ? "prova" : "20" };
-}
-function pct(a, b){ return b ? Math.round(a / b * 100) : 0; }
-
-function optionList(q){
-  const s = store.session, r = getResp(q), checked = !!s.checked[q.id];
-  const showFb = s.kind === "practice" && (checked || s.revealed[q.id]);
-  const p = perm(q.id, q.alts.length);
-  return p.map((orig, d) => {
-    let cls = "";
-    if (showFb){ if (orig === q.correta) cls = "ok"; else if (r === d) cls = "bad"; }
-    else if (r === d) cls = "sel";
-    return `<label class="alt ${cls}"><input type="radio" name="q-${esc(q.id)}" data-act="pick" data-q="${q.id}" data-v="${d}" ${r === d ? "checked" : ""} ${checked ? "disabled" : ""}><span class="let">${LET[d]})</span><span>${esc(q.alts[orig])}</span></label>`;
-  }).join("");
-}
-function bodyHTML(q){
-  const s = store.session, r = getResp(q), checked = !!s.checked[q.id], rev = !!s.revealed[q.id];
-  const prac = s.kind === "practice";
-  const showFb = prac && (checked || rev);
-  switch (q.tipo){
-    case "mc": return `<p class="enun">${esc(q.enun)}</p>` + optionList(q);
-    case "ac": return `<p class="enun">Julgue as duas afirmações.</p>
-      <div class="item"><strong>I.</strong> ${esc(q.afirm)}</div><div class="item"><strong>II.</strong> ${esc(q.just)}</div>` + optionList(q);
-    case "vf": return `<p class="enun">${esc(q.enun)}</p>` + q.itens.map((it, i) => {
-        const fb = showFb ? `<div class="fb ${r[i] === it.v ? "ok" : "bad"}">${r[i] === it.v ? "✓ Correto." : "✗ Incorreto."} ${esc(it.e)}</div>` : "";
-        return `<div class="item"><p>${esc(it.t)}</p><div class="tf">
-          <button data-act="vf" data-q="${q.id}" data-i="${i}" data-v="1" class="${r[i] === true ? "on" : ""}" ${checked ? "disabled" : ""}>Verdadeiro</button>
-          <button data-act="vf" data-q="${q.id}" data-i="${i}" data-v="0" class="${r[i] === false ? "on" : ""}" ${checked ? "disabled" : ""}>Falso</button></div>${fb}</div>`;
-      }).join("");
-    case "assoc": {
-      const p = perm(q.id, q.pares.length);
-      return `<p class="enun">${esc(q.enun)}</p>` + q.pares.map(([a], i) => {
-        const ok = showFb && r[i] !== null && p[r[i]] === i;
-        const opts = p.map((pi, d) => `<option value="${d}" ${r[i] === d ? "selected" : ""}>${esc(q.pares[pi][1])}</option>`).join("");
-        const fb = showFb ? `<div class="fb ${ok ? "ok" : "bad"}">${ok ? "✓ Correto." : "✗ Correto: " + esc(q.pares[i][1])}</div>` : "";
-        return `<div class="item"><p><strong>${esc(a)}</strong></p><select data-act="assoc" data-q="${q.id}" data-i="${i}" ${checked ? "disabled" : ""}><option value="">Escolha…</option>${opts}</select>${fb}</div>`;
-      }).join("");
-    }
-    case "lac": {
-      const parts = q.enun.split(/\{(\d)\}/);
-      let txt = "";
-      parts.forEach((t, idx) => {
-        if (idx % 2 === 0){ txt += esc(t); return; }
-        const k = +t, L = q.lacunas[k], p = perm(q.id + "#" + k, L.opcoes.length);
-        const opts = p.map((oi, d) => `<option value="${d}" ${r[k] === d ? "selected" : ""}>${esc(L.opcoes[oi])}</option>`).join("");
-        txt += `<select data-act="lac" data-q="${q.id}" data-k="${k}" ${checked ? "disabled" : ""}><option value="">…</option>${opts}</select>`;
-      });
-      const ev = showFb ? evaluate(q) : null;
-      const fb = showFb ? `<div class="fb ${ev.ok ? "ok" : "bad"}">${ev.ok ? "✓ Todas as lacunas corretas." : "✗ Há lacuna incorreta."}</div>` : "";
-      return `<p class="enun">${txt}</p>${fb}`;
-    }
-    case "prat": return `<p class="enun">${esc(q.enun)}</p>` + q.etapas.map((E, i) => {
-        const p = perm(q.id + "#" + i, E.alts.length);
-        const opts = p.map((orig, d) => {
-          let cls = "";
-          if (showFb){ if (orig === E.correta) cls = "ok"; else if (r[i] === d) cls = "bad"; }
-          else if (r[i] === d) cls = "sel";
-          return `<label class="alt ${cls}"><input type="radio" name="p-${q.id}-${i}" data-act="step" data-q="${q.id}" data-i="${i}" data-v="${d}" ${r[i] === d ? "checked" : ""} ${checked ? "disabled" : ""}><span class="let">${LET[d]})</span><span>${esc(E.alts[orig])}</span></label>`;
-        }).join("");
-        const fb = showFb ? `<div class="fb ${r[i] !== null && p[r[i]] === E.correta ? "ok" : "bad"}">${esc(E.expl)}</div>` : "";
-        return `<div class="step"><strong>Etapa ${i + 1}.</strong> ${esc(E.enun)}${opts}${fb}</div>`;
-      }).join("");
-    case "disc": {
-      const marks = r.marks;
-      let h = `<p class="enun">${esc(q.enun)}</p>
-        <textarea data-act="texto" data-q="${q.id}" placeholder="Escreva sua resposta aqui." ${checked ? "disabled" : ""}>${esc(r.texto)}</textarea>`;
-      if (prac && rev){
-        h += `<div class="expl"><strong>Critérios</strong><ul>${q.criterios.map(c => `<li>${esc(c)}</li>`).join("")}</ul><strong>Modelo de resposta</strong><p>${esc(q.modelo)}</p></div>`;
-        if (!checked) h += `<p class="muted" style="margin-top:10px">Marque os critérios que sua resposta atende:</p>` + q.criterios.map((c, i) =>
-          `<label class="alt"><input type="checkbox" data-act="mark" data-q="${q.id}" data-i="${i}" ${marks && marks[i] ? "checked" : ""}><span>${esc(c)}</span></label>`).join("");
-      }
-      return h;
-    }
-    case "tab": {
-      const m = s.marks[q.id];
-      const showGab = (prac && rev) || (checked && prac);
-      let h = `<p class="enun">${esc(q.enun)}</p>` + q.campos.map((c, i) =>
-        `<div class="item"><label><strong>${esc(c)}</strong><input type="text" class="campo" data-act="tabtxt" data-q="${q.id}" data-i="${i}" value="${esc(r[i])}" ${checked ? "disabled" : ""}></label></div>`).join("");
-      if (showGab){
-        h += `<p class="muted" style="margin-top:12px">Compare com o gabarito e marque o que você acertou:</p>` + q.campos.map((c, i) =>
-          `<div class="item"><label class="row"><input type="checkbox" data-act="tabmark" data-q="${q.id}" data-i="${i}" ${m && m[i] ? "checked" : ""} ${checked ? "disabled" : ""}><span><strong>${esc(c)}${/[?:]$/.test(c) ? "" : ":"}</strong> ${esc(q.gab[i])}</span></label></div>`).join("");
-      }
-      return h;
-    }
-  }
-}
-
-function viewSetup(){
-  const st = ui.st, isSim = st.mode === "sim";
-  const pool = poolFor(st).length;
-  const total = Object.keys(store.answers).filter(id => BY[id]).length;
-  const correct = Object.keys(store.answers).filter(id => BY[id] && store.answers[id].ok).length;
-  const resume = store.session && !store.session.done ? `<p><button class="btn" data-act="resume">Continuar onde parei (${store.session.idx + 1}/${store.session.ids.length})</button></p>` : "";
-  const tipos = Object.keys(TIPOS_ROTULO).filter(t => !(isSim && t === "disc"));
+function quizView(){
+  const q = cur(), a = S.ans[q.id], n = S.order.length, isLast = S.idx === n - 1;
+  const cells = S.order.map((id, i) => { const x = S.ans[id]; return `<button type="button" class="cell ${x ? (x.ok ? "ok" : "bad") : ""} ${i === S.idx ? "cur" : ""}" data-act="go" data-i="${i}" aria-label="Questão ${i + 1}">${i + 1}</button>`; }).join("");
   return `
-  <div class="box">
-    <div class="row" style="justify-content:space-between">
-      <div><button class="btn ${isSim ? "" : "pri"}" data-act="mode" data-mode="practice">Questões</button>
-      <button class="btn ${isSim ? "pri" : ""}" data-act="mode" data-mode="sim">Simulado</button></div>
+  <div class="stats">
+    ${S.review ? '<span class="chip rev">Revisão de erros</span>' : ""}
+    <span class="chip">Questão <b>${S.idx + 1}</b> de ${n}</span>
+    <span class="chip">Acertos <b>${rights()}</b> de ${answered()}</span>
+    <span class="chip">Sequência <b>${S.streak}</b></span>
+  </div>
+  <div class="bar"><i style="width:${Math.round(answered() / n * 100)}%"></i></div>
+  <details class="map"><summary>Mapa de questões</summary><div class="grid">${cells}</div></details>
+  <article class="card">
+    <p class="tags"><span class="tag">${esc(SUB[q.sub])}</span><span class="tag t">${q.t === "mc" ? "Múltipla escolha" : "Verdadeiro ou falso"}</span></p>
+    <h2 class="q">${esc(q.q)}</h2>
+    ${q.t === "mc" ? [0,1,2,3].map(i => optMC(q, i, a)).join("") : `<div class="vf">${optVF(q, true, a)}${optVF(q, false, a)}</div>`}
+    ${a ? feedback(q, a) : ""}
+    <div class="nav">
+      <button type="button" class="btn" data-act="prev" ${S.idx === 0 ? "disabled" : ""}>← Anterior</button>
+      <button type="button" class="btn ${a ? "pri" : ""}" data-act="next">${isLast ? "Ver resultado" : (a ? "Próxima →" : "Pular →")}</button>
     </div>
-    <p class="muted" style="margin-top:10px">${isSim ? "No simulado, as respostas e o gabarito só aparecem no final." : "Você vê a resolução logo depois de cada resposta."}</p>
-    <p class="muted">A VA terá V ou F sobre todo o conteúdo e questões abertas: altura da edificação, classificação pela Portaria 476/2025 e classificação geral (ocupação, carga, risco, altura, área, medidas, hidrante, brigada e extintores da central de GLP). Nas abertas, escreva sua resposta, veja o gabarito e marque o que acertou.</p>
-  </div>
-  ${resume}
-  ${ui.msg ? `<p class="msg">${esc(ui.msg)}</p>` : ""}
-  <div class="box grp">
-    <h2 style="margin-top:0">Assuntos</h2>
-    ${ASSUNTOS.map(a => `<label><input type="checkbox" data-act="sf" data-f="subs" data-v="${a.id}" ${st.subs.includes(a.id) ? "checked" : ""}>${esc(a.nome)}</label>`).join("")}
-  </div>
-  <div class="box grp inline">
-    <h2 style="margin-top:0">Tipos</h2>
-    ${tipos.map(t => `<label><input type="checkbox" data-act="sf" data-f="tipos" data-v="${t}" ${st.tipos.includes(t) ? "checked" : ""}>${esc(TIPOS_ROTULO[t])}</label>`).join("")}
-    <h2>Dificuldade</h2>
-    ${[1,2,3].map(n => `<label><input type="checkbox" data-act="sf" data-f="niveis" data-v="${n}" ${st.niveis.includes(n) ? "checked" : ""}>${NIVEIS[n]}</label>`).join("")}
-  </div>
-  <div class="box grp">
-    <h2 style="margin-top:0">Mostrar só</h2>
-    <label><input type="checkbox" data-act="sf" data-f="onlyNew" ${st.onlyNew ? "checked" : ""}>Não respondidas</label>
-    <label><input type="checkbox" data-act="sf" data-f="onlyWrong" ${st.onlyWrong ? "checked" : ""}>Erradas antes</label>
-    <label><input type="checkbox" data-act="sf" data-f="onlyFav" ${st.onlyFav ? "checked" : ""}>Favoritas</label>
-    ${isSim
-      ? `<h2>Tamanho do simulado</h2>${["prova","10","20","30","all"].map(c => `<label><input type="radio" name="cnt" data-act="sf" data-f="count" data-v="${c}" ${st.count === c ? "checked" : ""}>${c === "prova" ? "Prova modelo (8 blocos de V ou F + altura + Portaria 476 + classificação geral)" : c === "all" ? "Todas disponíveis" : c + " questões"}</label>`).join("")}`
-      : `<label style="margin-top:8px"><input type="checkbox" data-act="sf" data-f="shuffle" ${st.shuffle ? "checked" : ""}>Embaralhar a ordem</label>`}
-  </div>
-  <div class="row">
-    <button class="btn pri" data-act="start" ${pool || (isSim && st.count === "prova") ? "" : "disabled"}>${isSim && st.count === "prova" ? "Começar prova modelo (20 questões)" : `Começar (${pool} questões)`}</button>
-  </div>
-  <p class="muted" style="margin-top:22px">Respondidas: ${total} de ${QUESTOES.length}${total ? ` · acerto ${pct(correct, total)}%` : ""}.
-    ${ui.resetAsk
-      ? `Tem certeza? <button class="btn link danger" data-act="resetOk">Sim, apagar</button> <button class="btn link" data-act="resetNo">Cancelar</button>`
-      : `<button class="btn link" data-act="resetAsk">Apagar meu progresso</button>`}</p>`;
+  </article>`;
 }
-
-function viewQuiz(){
-  const s = store.session;
-  const q = curQ(), n = s.ids.length, cur = s.idx + 1;
-  const prac = s.kind === "practice";
-  const checked = !!s.checked[q.id], rev = !!s.revealed[q.id];
-  const fav = store.fav.includes(q.id);
-  const isLast = s.idx === n - 1;
-  let acts = "";
-  if (!checked){
-    if (q.tipo === "disc"){
-      const canSubmit = rev && Array.isArray(getResp(q).marks);
-      acts += `<button class="btn pri" data-act="submit" data-q="${q.id}" ${canSubmit ? "" : "disabled"}>Registrar autoavaliação</button>`;
-      if (prac && !rev) acts += `<button class="btn" data-act="reveal" data-q="${q.id}">Ver critérios e modelo</button>`;
-    } else if (q.tipo === "tab"){
-      if (prac && !rev) acts += `<button class="btn" data-act="reveal" data-q="${q.id}">Ver gabarito</button>`;
-      if (prac && rev) acts += `<button class="btn pri" data-act="submit" data-q="${q.id}">Registrar conferência</button>`;
-    } else {
-      acts += `<button class="btn pri" data-act="submit" data-q="${q.id}" ${complete(q) ? "" : "disabled"}>Responder</button>`;
-      if (prac && !rev) acts += `<button class="btn" data-act="reveal" data-q="${q.id}">Ver resolução</button>`;
-    }
-  }
-  acts += `<button class="btn" data-act="next">${isLast ? "Finalizar" : (checked ? "Próxima" : "Pular")}</button>`;
-  acts += `<button class="btn link" data-act="finish">Encerrar agora</button>`;
-  const showExpl = prac && (checked || rev) && q.tipo !== "disc" && q.tipo !== "tab";
-  const showTabExpl = prac && rev && q.tipo === "tab";
-  let status = "";
-  if (checked && prac){
-    const ok = store.answers[q.id] && store.answers[q.id].ok;
-    const vfInfo = q.tipo === "vf" ? ` ${evaluate(q).parts.filter(Boolean).length} de ${q.itens.length} itens certos.` : "";
-    status = `<p class="fb ${ok ? "ok" : "bad"}">${ok ? "Acertou." : (rev ? "Resolução consultada: não conta como acerto." : "Errou.")}${vfInfo}</p>`;
-  } else if (checked){
-    status = `<p class="muted">Resposta registrada.</p>`;
-  }
-  return `
-  <p class="muted"><span class="tag">${esc(SUBS[q.sub].nome)}</span><span class="tag">${esc(TIPOS_ROTULO[q.tipo])}</span><span class="tag">${esc(NIVEIS[q.nivel])}</span>${q.origem ? `<span class="tag">${esc(q.origem)}</span>` : ""}</p>
-  <div class="row" style="justify-content:space-between"><span class="muted">${s.kind === "sim" ? "Simulado" : "Questões"} · ${cur} de ${n}</span>
-    <button class="btn link" data-act="fav" data-q="${q.id}">${fav ? "★ Favorita" : "☆ Favoritar"}</button></div>
-  <div class="bar"><i style="width:${pct(s.idx, n)}%"></i></div>
-  <div class="box">
-    ${bodyHTML(q)}
-    ${showExpl ? explHTML(q) : ""}
-    ${showTabExpl ? explHTML(q) : ""}
-    ${status}
-    <div class="actions">${acts}</div>
-  </div>`;
-}
-function complete(q){
-  const r = getResp(q);
-  if (q.tipo === "mc" || q.tipo === "ac") return r !== null;
-  return r.every(x => x !== null);
-}
-
-function viewResult(){
-  const s = store.session;
-  const checkedIds = s.ids.filter(id => s.checked[id]);
-  const oks = checkedIds.filter(id => evaluate(BY[id]).ok);
-  const wrong = checkedIds.filter(id => !evaluate(BY[id]).ok);
-  const bySub = ASSUNTOS.map(a => {
-    const ids = s.ids.filter(id => BY[id].sub === a.id); if (!ids.length) return "";
-    const c = ids.filter(id => s.checked[id]), ok = c.filter(id => evaluate(BY[id]).ok);
-    return `<tr><td>${esc(a.nome)}</td><td>${ok.length}/${c.length}</td><td>${pct(ok.length, c.length)}%</td></tr>`;
+function resultView(){
+  const n = S.order.length, ans = answered(), ok = rights(), p = ans ? Math.round(ok / n * 100) : 0;
+  const msg = p >= 90 ? "Excelente! Você domina o conteúdo." : p >= 70 ? "Bom desempenho. Revise os erros abaixo." : p >= 50 ? "Está no caminho. Releia as explicações dos erros." : "Releia o resumo e tente de novo.";
+  const bySub = DATA.subs.map(s => {
+    const ids = S.order.filter(id => BY[id].sub === s.id); if (!ids.length) return "";
+    const r = ids.filter(id => S.ans[id] && S.ans[id].ok).length;
+    return `<div class="row"><span>${esc(s.n)}</span><span>${r}/${ids.length}</span><div class="track"><i style="width:${Math.round(r / ids.length * 100)}%"></i></div></div>`;
   }).join("");
-  const rows = s.ids.map((id, i) => {
-    const q = BY[id];
-    const st = !s.checked[id] ? `<span class="st-no">não respondida</span>` : evaluate(q).ok ? `<span class="st-ok">certa</span>` : `<span class="st-bad">errada</span>`;
-    const txt = (q.enun || q.afirm).replace(/\{\d\}/g, "___");
-    let extra = "";
-    if (q.tipo === "tab" && s.kind === "sim"){
-      const m = s.marks[id] || [];
-      extra = `<p class="muted">Sua resposta: ${q.campos.map((c, k) => `<br><b>${esc(c)}</b> ${esc((getResp(q)[k] || "—"))}`).join("")}</p>
-        <p class="muted">Marque o que você acertou:</p>` + q.campos.map((c, k) =>
-          `<label class="row"><input type="checkbox" data-act="tabmark" data-q="${id}" data-i="${k}" ${m[k] ? "checked" : ""}><span>${esc(c)}</span></label>`).join("");
-    }
-    return `<details><summary>${i + 1}. ${esc(txt.slice(0, 120))}${txt.length > 120 ? "…" : ""} — ${st}</summary>
-      <div style="margin-top:8px">${gabaritoHTML(q)}${explHTML(q)}${extra}</div></details>`;
-  }).join("");
-  const scored = checkedIds.length;
-  const vfIds = checkedIds.filter(id => BY[id].tipo === "vf");
-  const vfTot = vfIds.reduce((n, id) => n + BY[id].itens.length, 0);
-  const vfOk = vfIds.reduce((n, id) => n + evaluate(BY[id]).parts.filter(Boolean).length, 0);
+  const wrong = S.order.filter(id => S.ans[id] && !S.ans[id].ok);
+  const list = wrong.map(id => { const q = BY[id];
+    const c = q.t === "mc" ? `${LET[q.c]}) ${q.alts[q.c]}` : (q.v ? "Verdadeiro" : "Falso");
+    return `<details class="err"><summary>${esc(q.q)}</summary><p class="ans">Resposta correta: ${esc(c)}</p><p>${esc(q.e)}</p>${q.d ? `<div class="dica">Para memorizar: ${esc(q.d)}</div>` : ""}</details>`; }).join("");
   return `
-  <h2 style="margin-top:0">Resultado: ${pct(oks.length, scored)}% de acerto</h2>
-  <p class="muted">${esc(s.title)} · ${oks.length} certas, ${wrong.length} erradas, ${s.ids.length - scored} não respondidas.</p>
-  ${vfTot ? `<p><strong>Itens de V ou F:</strong> ${vfOk} de ${vfTot} certos (${pct(vfOk, vfTot)}%). Um bloco só conta como certo se todos os itens estiverem certos.</p>` : ""}
-  ${s.kind === "sim" ? `<p class="muted">Confira cada exercício de tabela com o gabarito, marcando os campos que você acertou. Os campos não marcados contam como erro.</p>` : ""}
-  <div class="box"><table><thead><tr><th>Assunto</th><th>Certas</th><th>%</th></tr></thead><tbody>${bySub}</tbody></table></div>
-  <h2>Questões</h2>
-  ${rows}
-  <div class="row" style="margin-top:18px">
-    ${wrong.length ? `<button class="btn pri" data-act="revisar" data-ids="${esc(wrong.join(","))}">Revisar as ${wrong.length} erradas</button>` : ""}
-    <button class="btn" data-act="retry">Refazer estas questões</button>
-    <button class="btn" data-act="home">Começar de novo</button>
-  </div>`;
+  <article class="card">
+    <div class="score"><div class="big">${p}%</div><p><strong>${ok} de ${n}</strong> acertos${S.review ? " (revisão de erros)" : ""}</p><p class="muted">${msg}</p>
+    ${ans < n ? `<p class="muted">${n - ans} questão(ões) sem resposta.</p>` : ""}
+    ${S.best ? `<p class="muted">Maior sequência de acertos: ${S.best}</p>` : ""}</div>
+    <h2 class="sec">Por assunto</h2>${bySub}
+    ${wrong.length ? `<h2 class="sec">Questões que você errou (${wrong.length})</h2>${list}` : ""}
+    <div class="act">
+      ${wrong.length ? `<button type="button" class="btn pri" data-act="review">Refazer só os erros</button>` : ""}
+      ${ans < n ? `<button type="button" class="btn" data-act="back">Voltar às questões</button>` : ""}
+      <button type="button" class="btn" data-act="again">Recomeçar tudo</button>
+    </div>
+  </article>`;
 }
-
 function render(){
-  let html;
-  if (ui.view === "quiz" && store.session && !store.session.done) html = viewQuiz();
-  else if (ui.view === "result" && store.session) html = viewResult();
-  else { ui.view = "setup"; html = viewSetup(); }
-  $("#app").innerHTML = html;
+  $("#app").innerHTML = view === "result" ? resultView() : quizView();
+  const r = $("#restart"); r.textContent = askRestart ? "Confirmar?" : "Recomeçar";
 }
+function scrollTop(){ $("#top").scrollIntoView({ behavior:"smooth", block:"start" }); }
+function answer(v){
+  const q = cur(); if (view !== "quiz" || S.ans[q.id]) return;
+  const ok = q.t === "mc" ? v === q.c : v === q.v;
+  S.ans[q.id] = { p: v, ok };
+  S.streak = ok ? S.streak + 1 : 0; S.best = Math.max(S.best, S.streak);
+  save(); render();
+  const f = document.querySelector(".fb"); if (f) f.scrollIntoView({ behavior:"smooth", block:"nearest" });
+}
+function go(i){ S.idx = Math.max(0, Math.min(S.order.length - 1, i)); view = "quiz"; save(); render(); scrollTop(); }
+function next(){ if (S.idx === S.order.length - 1) { view = "result"; render(); scrollTop(); } else go(S.idx + 1); }
+function prev(){ if (S.idx > 0) go(S.idx - 1); }
+function restartAll(){ S = fresh(); view = "quiz"; askRestart = false; save(); render(); scrollTop(); }
 
-/* ---------- eventos ---------- */
-function act(a, el){
-  switch (a){
-    case "mode": ui.st = freshSetup(el.dataset.mode); ui.msg = ""; render(); break;
-    case "sf": {
-      const st = ui.st, f = el.dataset.f, v = el.dataset.v;
-      if (["onlyNew","onlyFav","onlyWrong","shuffle"].includes(f)) st[f] = el.checked;
-      else if (f === "count") st.count = v;
-      else {
-        const val = f === "niveis" ? +v : v, arr = st[f], i = arr.indexOf(val);
-        if (el.checked && i < 0) arr.push(val);
-        if (!el.checked && i >= 0) arr.splice(i, 1);
-      }
-      render(); break;
-    }
-    case "start": startFromSetup(ui.st); break;
-    case "resume": ui.view = "quiz"; render(); break;
-    case "home": startFromSetup(freshSetup("practice")); break;
-    case "pick": { const q = BY[el.dataset.q]; setResp(q, +el.dataset.v); if (store.session.kind === "practice" && !store.session.checked[q.id]) submit(q); else render(); break; }
-    case "step": { const q = BY[el.dataset.q], i = +el.dataset.i, r = getResp(q).slice(); r[i] = +el.dataset.v; setResp(q, r); render(); break; }
-    case "vf": { const q = BY[el.dataset.q], i = +el.dataset.i, r = getResp(q).slice(); r[i] = el.dataset.v === "1"; setResp(q, r); if (store.session.kind === "practice" && !store.session.checked[q.id] && complete(q)) submit(q); else render(); break; }
-    case "assoc": case "lac": {
-      const q = BY[el.dataset.q], i = +(el.dataset.i ?? el.dataset.k), r = getResp(q).slice();
-      r[i] = el.value === "" ? null : +el.value; setResp(q, r); render(); break;
-    }
-    case "texto": getResp(BY[el.dataset.q]).texto = el.value; persist(); break;
-    case "tabtxt": { const q = BY[el.dataset.q], r = getResp(q).slice(); r[+el.dataset.i] = el.value; setResp(q, r); break; }
-    case "mark": {
-      const q = BY[el.dataset.q], r = getResp(q);
-      const marks = r.marks ? r.marks.slice() : q.criterios.map(() => false);
-      marks[+el.dataset.i] = el.checked; r.marks = marks; persist(); render(); break;
-    }
-    case "tabmark": {
-      const s = store.session, q = BY[el.dataset.q];
-      const m = (s.marks[q.id] || q.campos.map(() => false)).slice();
-      m[+el.dataset.i] = el.checked; s.marks[q.id] = m;
-      if (s.kind === "sim" || !s.checked[q.id]) {
-        if (s.kind === "sim") store.answers[q.id] = { ok: evaluate(q).ok, ts: Date.now(), mode:"sim" };
-      }
-      persist(); render(); break;
-    }
-    case "reveal": store.session.revealed[el.dataset.q] = true; if (BY[el.dataset.q].tipo === "tab") store.session.marks[el.dataset.q] = store.session.marks[el.dataset.q] || BY[el.dataset.q].campos.map(() => false); persist(); render(); break;
-    case "submit": submit(BY[el.dataset.q]); break;
-    case "next": next(); break;
-    case "finish": finish(); render(); break;
-    case "fav": {
-      const id = el.dataset.q, i = store.fav.indexOf(id);
-      if (i < 0) store.fav.push(id); else store.fav.splice(i, 1);
-      persist(); render(); break;
-    }
-    case "revisar": startFromIds("practice", el.dataset.ids.split(",").filter(Boolean), "Revisão das erradas"); break;
-    case "retry": { const s = store.session; startFromIds(s.kind, s.ids.slice(), s.title); break; }
-    case "resetAsk": ui.resetAsk = true; render(); break;
-    case "resetNo": ui.resetAsk = false; render(); break;
-    case "resetOk": store = { answers:{}, fav:[], session:null }; persist(); ui.resetAsk = false; ui.view = "setup"; render(); break;
-  }
-}
 document.addEventListener("click", e => {
   const el = e.target.closest("[data-act]");
-  if (!el || ["INPUT","SELECT","TEXTAREA"].includes(el.tagName)) return;
-  act(el.dataset.act, el);
+  if (e.target.id === "restart"){
+    if (askRestart){ clearTimeout(askTimer); restartAll(); }
+    else { askRestart = true; render(); askTimer = setTimeout(() => { askRestart = false; render(); }, 3000); }
+    return;
+  }
+  if (!el) return;
+  const act = el.dataset.act;
+  if (act === "ans") answer(el.dataset.v === "true" ? true : el.dataset.v === "false" ? false : +el.dataset.v);
+  else if (act === "next") next();
+  else if (act === "prev") prev();
+  else if (act === "go") go(+el.dataset.i);
+  else if (act === "again") restartAll();
+  else if (act === "back"){ const i = S.order.findIndex(id => !S.ans[id]); view = "quiz"; S.idx = i < 0 ? 0 : i; save(); render(); scrollTop(); }
+  else if (act === "review"){ const ids = S.order.filter(id => S.ans[id] && !S.ans[id].ok); S = fresh(ids); view = "quiz"; save(); render(); scrollTop(); }
 });
-document.addEventListener("change", e => {
-  const el = e.target.closest("[data-act]");
-  if (!el || el.tagName === "TEXTAREA" || (el.tagName === "INPUT" && el.type === "text")) return;
-  act(el.dataset.act, el);
+document.addEventListener("keydown", e => {
+  if (e.ctrlKey || e.metaKey || e.altKey) return;
+  const k = e.key.toLowerCase();
+  if (view === "quiz"){
+    const q = cur(), a = S.ans[q.id];
+    if (!a){
+      if (q.t === "mc"){ const i = "abcd".indexOf(k); const j = ["1","2","3","4"].indexOf(k); const x = i >= 0 ? i : j; if (x >= 0){ answer(x); return; } }
+      else { if (k === "v") { answer(true); return; } if (k === "f") { answer(false); return; } }
+    }
+    if (k === "arrowright" || (k === "enter" && a)) { if (document.activeElement && document.activeElement.tagName === "BUTTON" && k === "enter") return; e.preventDefault(); next(); }
+    else if (k === "arrowleft") { e.preventDefault(); prev(); }
+  }
 });
-document.addEventListener("input", e => {
-  const el = e.target.closest('[data-act="texto"], [data-act="tabtxt"]');
-  if (el) act(el.dataset.act, el);
-});
-if (!store.session || store.session.done) startFromSetup(freshSetup("practice"));
 render();
 })();
 </script>

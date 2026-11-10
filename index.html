@@ -25,7 +25,8 @@ main{max-width:760px;margin:0 auto;padding:16px}
 .phase{font-size:13px;color:var(--acc);font-weight:600;text-transform:uppercase;letter-spacing:.03em}
 .q{font-size:18px;font-weight:600;margin:6px 0 12px}
 .fig{background:#fff;border-radius:10px;border:1px solid var(--bd);padding:6px;display:flex;justify-content:center;cursor:zoom-in;position:relative}
-.fig svg{width:100%;max-width:640px;height:auto;display:block}
+.fig svg{width:92%;max-width:380px;height:auto;display:block}
+.fig.small svg{width:75%;max-width:260px}
 .zoomhint{position:absolute;right:8px;bottom:8px;background:rgba(17,24,39,.72);color:#fff;font-size:12px;padding:3px 8px;border-radius:999px;pointer-events:none}
 .ov{position:fixed;inset:0;background:#0b0f15;z-index:10;overflow:auto;-webkit-overflow-scrolling:touch}
 .ov .inner{background:#fff;margin:56px auto 24px;width:max(100vw,1100px);max-width:1600px}
@@ -40,13 +41,15 @@ main{max-width:760px;margin:0 auto;padding:16px}
 .opt.right{background:var(--okbg);border-color:var(--ok);color:var(--ok);font-weight:600}
 .opt.wrong{background:var(--badbg);border-color:var(--bad);color:var(--bad)}
 .ans{display:flex;gap:8px;margin-top:14px}
-.ans input{flex:1;padding:12px 14px;border-radius:10px;border:1px solid var(--bd);background:var(--card);color:var(--tx);font:inherit}
+.ans input{flex:1;min-width:0;padding:12px 14px;border-radius:10px;border:1px solid var(--bd);background:var(--card);color:var(--tx);font:inherit}
 .ans input:focus{outline:2px solid var(--acc);outline-offset:1px}
 .fb{margin-top:14px;padding:12px 14px;border-radius:10px;border-left:4px solid var(--mut);background:var(--card);border:1px solid var(--bd)}
 .fb.ok{border-left-color:var(--ok);background:var(--okbg)}
 .fb.bad{border-left-color:var(--bad);background:var(--badbg)}
 .fb b{display:block;margin-bottom:4px}
 .nav{display:flex;justify-content:space-between;align-items:center;margin-top:14px;gap:8px;flex-wrap:wrap}
+.navbtns{display:flex;gap:8px;margin-left:auto}
+.skip{color:var(--mut)}
 .kb{font-size:12px;color:var(--mut)}
 .res h2{margin:4px 0 8px}
 .res ul{padding-left:20px}
@@ -76,7 +79,7 @@ const FIG = {
   f2:{src:'data:image/jpeg;base64,'+IMG.f2, w:170, h:156, title:'Peça facial (Figura 44)'},
   f3:{src:'data:image/jpeg;base64,'+IMG.f3, w:202, h:126, title:'Regulador de respiração (Figura 43)'}
 };
-const CLUSTER_VIEW = [226, 226, 176, 124];
+const CLUSTER_VIEW = [190, 196, 260, 170];
 const STOP = new Set(['de','do','da','dos','das','ou','em','com','tipo','para','uma','nos','nas','por']);
 function tokens(s){
   return s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase()
@@ -109,7 +112,7 @@ order1.forEach((pi,k)=>{
 });
 order2.forEach(pi=>Q.push({kind:'type', pi}));
 
-let cur = 0, score = {id:0, type:0}, wrong = [], answered = false;
+let cur = 0, A = {}, answered = false; // A[i] = {i:escolha} ou {v:texto, ok}
 const stage = document.getElementById('stage');
 
 function viewOf(p, full){
@@ -118,7 +121,7 @@ function viewOf(p, full){
   if(p.cl) return CLUSTER_VIEW.slice();
   // recorte ao redor da seta (mais zoom no celular), proporção ~ 4:3
   const xs=[p.s[0],p.t[0]], ys=[p.s[1],p.t[1]];
-  let w=Math.max(300, Math.max(...xs)-Math.min(...xs)+150), h=w*0.7;
+  let w=Math.max(480, Math.max(...xs)-Math.min(...xs)+220), h=w*0.62;
   let cx=(Math.min(...xs)+Math.max(...xs))/2, cy=(Math.min(...ys)+Math.max(...ys))/2;
   let x=Math.min(Math.max(0,cx-w/2), fig.w-w), y=Math.min(Math.max(0,cy-h/2), fig.h-h);
   return [x,y,w,h];
@@ -126,10 +129,10 @@ function viewOf(p, full){
 function figSVG(p, full){
   const fig = FIG[p.fig];
   const [vx,vy,vw,vh] = viewOf(p, full);
-  const sw = full ? vw/170 : vw/95, hl = sw*3.6, hw = sw*1.9;
+  const sw = full ? vw/220 : vw/140, hl = sw*3.4, hw = sw*1.8;
   let [sx,sy] = p.s; const [tx,ty] = p.t;
   let ux=tx-sx, uy=ty-sy, L=Math.hypot(ux,uy)||1; ux/=L; uy/=L;
-  const Lmin = vw*0.17;
+  const Lmin = vw*0.13;
   if(L<Lmin){ sx=tx-ux*Lmin; sy=ty-uy*Lmin; }
   const m=sw*1.5; sx=Math.min(vx+vw-m,Math.max(vx+m,sx)); sy=Math.min(vy+vh-m,Math.max(vy+m,sy));
   const nx=-uy, ny=ux, bx=tx-ux*hl, by=ty-uy*hl;
@@ -146,7 +149,7 @@ function figSVG(p, full){
 }
 function figHTML(p){
   const cap = p.fig==='f1' ? (p.cl ? 'Detalhe da válvula do cilindro' : 'Detalhe do equipamento completo') : FIG[p.fig].title;
-  return `<div class="fig" id="figbox" title="Toque para ampliar">${figSVG(p,false)}<span class="zoomhint">🔍 ampliar</span></div>
+  return `<div class="fig${p.fig==='f1'?'':' small'}" id="figbox" title="Toque para ampliar">${figSVG(p,false)}<span class="zoomhint">🔍 ampliar</span></div>
     <div class="fig-cap">${cap}. Toque na imagem para ver a figura inteira ampliada.</div>`;
 }
 function openZoom(p){
@@ -162,13 +165,24 @@ function openZoom(p){
   requestAnimationFrame(()=>{const k=inner.clientWidth/fig.w; ov.scrollLeft=Math.max(0,p.t[0]*k-ov.clientWidth/2); ov.scrollTop=Math.max(0,p.t[1]*k+56-ov.clientHeight/2);});
 }
 function esc(s){return s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+const isOk = k => { const a=A[k]; if(!a) return null; const q=Q[k]; return q.kind==='id' ? a.i===q.c : a.ok; };
+function counts(){
+  let id=0,type=0,done=0; Q.forEach((q,k)=>{const o=isOk(k); if(o!==null) done++; if(o){ if(q.kind==='id') id++; else type++; }});
+  return {id,type,done};
+}
 function updateTop(){
-  const total = Q.length;
-  document.getElementById('count').textContent = `Questão ${Math.min(cur+1,total)} de ${total}`;
-  document.getElementById('prog').style.width = (cur/total*100)+'%';
-  const tot = s=>s; 
+  const total = Q.length, c = counts();
+  document.getElementById('count').textContent = cur<total ? `Questão ${cur+1} de ${total}` : 'Resultado';
+  document.getElementById('prog').style.width = (c.done/total*100)+'%';
   document.getElementById('stats').textContent =
-    `Parte 1 (identificar): ${score.id}/${order1.length}   ·   Parte 2 (completar): ${score.type}/${order2.length}`;
+    `Acertos · Parte 1: ${c.id}/${order1.length} · Parte 2: ${c.type}/${order2.length} · Respondidas: ${c.done}/${total}`;
+}
+function navHTML(hint){
+  const last = cur===Q.length-1;
+  return `<div class="nav"><span class="kb">${hint}</span><div class="navbtns">
+    <button class="btn" id="prev" type="button" ${cur===0?'disabled':''}>← Anterior</button>
+    <button class="btn skip" id="skip" type="button">${last?'Ver resultado':'Pular →'}</button>
+    <button class="btn primary hide" id="next" type="button">${last?'Ver resultado':'Próxima →'}</button></div></div>`;
 }
 function render(){
   updateTop();
@@ -181,7 +195,7 @@ function render(){
       ${figHTML(p)}
       <div class="opts">${q.opts.map((o,i)=>`<button class="opt" data-i="${i}" type="button"><b>${'ABCD'[i]})</b> ${esc(o)}</button>`).join('')}</div>
       <div id="fbbox"></div>
-      <div class="nav"><span class="kb">Atalhos: A–D ou 1–4 · Enter avança</span><button class="btn primary hide" id="next" type="button">Próxima →</button></div>`;
+      ${navHTML('Atalhos: A–D ou 1–4 · Enter avança · ← → navegam')}`;
     stage.querySelectorAll('.opt').forEach(b=>b.addEventListener('click',()=>chooseId(+b.dataset.i)));
   } else {
     stage.innerHTML = `
@@ -190,59 +204,74 @@ function render(){
       ${figHTML(p)}
       <form class="ans" id="ansform" autocomplete="off"><input id="ans" type="text" placeholder="Digite o nome da peça" aria-label="Nome da peça"><button class="btn primary" type="submit" id="check">Verificar</button></form>
       <div id="fbbox"></div>
-      <div class="nav"><span class="kb">Enter confirma · Depois, Enter ou “Próxima”</span><button class="btn primary hide" id="next" type="button">Próxima →</button></div>`;
+      ${navHTML('Enter confirma · Depois, Enter ou “Próxima”')}`;
     document.getElementById('ansform').addEventListener('submit',e=>{e.preventDefault(); if(!answered) checkType(); else next();});
-    setTimeout(()=>document.getElementById('ans').focus(),30);
   }
   document.getElementById('next').addEventListener('click',next);
-  const fb_=document.getElementById('figbox'); if(fb_) fb_.addEventListener('click',()=>openZoom(p));
+  document.getElementById('skip').addEventListener('click',next);
+  document.getElementById('prev').addEventListener('click',prev);
+  document.getElementById('figbox').addEventListener('click',()=>openZoom(p));
+  if(A[cur]) showAnswered(); else if(q.kind==='type') setTimeout(()=>{const i=document.getElementById('ans'); if(i && matchMedia('(pointer:fine)').matches) i.focus();},30);
+}
+function showAnswered(){
+  const q = Q[cur]; const p = P[q.pi]; const a = A[cur];
+  if(q.kind==='id'){
+    const btns = stage.querySelectorAll('.opt');
+    btns.forEach(b=>b.disabled=true);
+    btns[q.c].classList.add('right');
+    const ok = a.i===q.c; if(!ok) btns[a.i].classList.add('wrong');
+    fb(ok, p, `Esta é a peça ${p.n} do quadro “${FIG[p.fig].title}”.`);
+  } else {
+    const inp=document.getElementById('ans'); inp.value=a.v; inp.disabled=true;
+    document.getElementById('check').disabled=true;
+    fb(a.ok,p, a.ok ? `Sua resposta: “${a.v}”.` : `Sua resposta: “${a.v}”. Esta é a peça ${p.n} do quadro “${FIG[p.fig].title}”.`);
+  }
+  updateTop();
 }
 function fb(ok, p, note){
-  const box = document.getElementById('fbbox');
-  box.innerHTML = `<div class="fb ${ok?'ok':'bad'}"><b>${ok?'Acertou!':'Errou.'}</b>
+  document.getElementById('fbbox').innerHTML = `<div class="fb ${ok?'ok':'bad'}"><b>${ok?'Acertou!':'Errou.'}</b>
     Nome da peça: <strong>${esc(p.name)}</strong><br>
     <span class="small">${esc(note)}</span></div>`;
   document.getElementById('next').classList.remove('hide');
+  document.getElementById('skip').classList.add('hide');
   answered = true;
 }
-function chooseId(i){
-  if(answered) return;
-  const q = Q[cur]; const p = P[q.pi];
-  const btns = stage.querySelectorAll('.opt');
-  btns.forEach(b=>b.disabled=true);
-  btns[q.c].classList.add('right');
-  const ok = i===q.c;
-  if(!ok){ btns[i].classList.add('wrong'); wrong.push({k:'id',p}); } else score.id++;
-  fb(ok, p, `Esta é a peça ${p.n} do quadro “${FIG[p.fig].title}”.`);
-}
+function chooseId(i){ if(answered||A[cur]) return; A[cur]={i}; showAnswered(); }
 function checkType(){
-  const q = Q[cur]; const p = P[q.pi];
   const v = document.getElementById('ans').value;
-  if(!v.trim()) return;
-  const ok = accepts(v,p);
-  if(ok) score.type++; else wrong.push({k:'type',p,given:v});
-  document.getElementById('ans').disabled = true;
-  document.getElementById('check').disabled = true;
-  fb(ok,p, ok ? `Sua resposta: “${v}”.` : `Sua resposta: “${v}”. Esta é a peça ${p.n} do quadro “${FIG[p.fig].title}”.`);
+  if(!v.trim() || A[cur]) return;
+  A[cur]={v, ok:accepts(v,P[Q[cur].pi])}; showAnswered();
 }
-function next(){ cur++; render(); }
+function next(){ cur=Math.min(cur+1,Q.length); render(); window.scrollTo(0,0); }
+function prev(){ if(cur>0){ cur--; render(); window.scrollTo(0,0); } }
 function renderResult(){
-  const total = order1.length + order2.length;
-  const hits = score.id + score.type;
-  document.getElementById('prog').style.width='100%';
+  const total = Q.length, c = counts();
+  const skipped = Q.map((_,k)=>k).filter(k=>!A[k]);
+  const wrongs = Q.map((_,k)=>k).filter(k=>isOk(k)===false);
+  document.getElementById('prog').style.width=(c.done/total*100)+'%';
+  const item = k => { const q=Q[k], p=P[q.pi], a=A[k];
+    return `<li><a href="#" data-k="${k}">Questão ${k+1}</a> – ${esc(p.name)}${q.kind==='type'&&a?` <span class="small">(você escreveu: “${esc(a.v)}”)</span>`:''}</li>`; };
   stage.innerHTML = `<div class="res"><h2>Fim do quiz</h2>
-    <p>Acertos: <strong>${hits}</strong> de ${total}.</p>
-    <p>Parte 1 (identificar): ${score.id}/${order1.length} · Parte 2 (completar): ${score.type}/${order2.length}</p>
-    ${wrong.length?`<p><b>Peças que você errou:</b></p><ul>${wrong.map(w=>`<li>${esc(w.p.name)}${w.k==='type'?` <span class="small">(você escreveu: “${esc(w.given)}”)</span>`:''}</li>`).join('')}</ul>`:'<p>Nenhum erro. Ótimo!</p>'}
-    <div class="nav"><button class="btn primary" id="again" type="button">Refazer</button></div></div>`;
+    <p>Acertos: <strong>${c.id+c.type}</strong> de ${total}.</p>
+    <p>Parte 1 (identificar): ${c.id}/${order1.length} · Parte 2 (completar): ${c.type}/${order2.length}</p>
+    ${wrongs.length?`<p><b>Peças que você errou:</b></p><ul>${wrongs.map(item).join('')}</ul>`:'<p>Nenhum erro entre as respondidas.</p>'}
+    ${skipped.length?`<p><b>Questões puladas (${skipped.length}):</b></p><ul>${skipped.map(item).join('')}</ul>`:''}
+    <div class="nav"><button class="btn" id="back" type="button">← Voltar à última</button>
+    <div class="navbtns">${skipped.length?'<button class="btn" id="goskip" type="button">Responder as puladas</button>':''}<button class="btn primary" id="again" type="button">Refazer tudo</button></div></div></div>`;
   document.getElementById('again').addEventListener('click',restart);
+  document.getElementById('back').addEventListener('click',()=>{cur=Q.length-1;render();});
+  const gs=document.getElementById('goskip'); if(gs) gs.addEventListener('click',()=>{cur=skipped[0];render();window.scrollTo(0,0);});
+  stage.querySelectorAll('a[data-k]').forEach(el=>el.addEventListener('click',e=>{e.preventDefault();cur=+el.dataset.k;render();window.scrollTo(0,0);}));
 }
-function restart(){cur=0;score={id:0,type:0};wrong=[];render();}
+function restart(){cur=0;A={};render();window.scrollTo(0,0);}
 document.getElementById('restart').addEventListener('click',restart);
 document.addEventListener('keydown',e=>{
   if(e.target.tagName==='INPUT' || document.querySelector('.ov')) return;
+  if(cur>=Q.length) return;
   const q = Q[cur];
-  if(!q || q.kind!=='id') { if(e.key==='Enter' && answered) next(); return; }
+  if(e.key==='ArrowLeft'){ prev(); return; }
+  if(e.key==='ArrowRight'){ next(); return; }
+  if(q.kind!=='id') { if(e.key==='Enter' && answered) next(); return; }
   const map={a:0,b:1,c:2,d:3,'1':0,'2':1,'3':2,'4':3};
   const k=e.key.toLowerCase();
   if(k in map && !answered) chooseId(map[k]);
